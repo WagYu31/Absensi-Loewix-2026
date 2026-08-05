@@ -833,19 +833,15 @@ $asset_version = time();
         $('#nativeCameraInput').change(function(e) {
             if (e.target.files && e.target.files[0]) {
                 const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    const dataUrl = evt.target.result;
-                    const photoImg = document.getElementById('photoPreviewImg');
-                    photoImg.src = dataUrl;
-                    $('#photoPreviewImg').removeClass('d-none');
-                    $('#cameraPreview').addClass('d-none');
-                    $('#captureBtnLabel').addClass('d-none');
-                    $('#retakeBtn').removeClass('d-none');
-                    $('#uploadPhotoBtn').prop('disabled', false);
-                    stopCamera();
-                };
-                reader.readAsDataURL(file);
+                const blobUrl = URL.createObjectURL(file);
+                const photoImg = document.getElementById('photoPreviewImg');
+                photoImg.src = blobUrl;
+                $('#photoPreviewImg').removeClass('d-none');
+                $('#cameraPreview').addClass('d-none');
+                $('#captureBtnLabel').addClass('d-none');
+                $('#retakeBtn').removeClass('d-none');
+                $('#uploadPhotoBtn').prop('disabled', false);
+                stopCamera();
             }
         });
 
@@ -861,11 +857,33 @@ $asset_version = time();
 
         $('#uploadPhotoBtn').click(function() {
             const photoImg = document.getElementById('photoPreviewImg');
-            let imageData = photoImg.src;
-            if (!imageData || !imageData.startsWith('data:image')) {
-                const canvas = document.getElementById('photoCanvas');
-                imageData = canvas.toDataURL('image/jpeg', 0.85);
+            if (!photoImg.src || photoImg.src === '') {
+                alert('Foto belum diambil.');
+                return;
             }
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            let w = photoImg.naturalWidth || photoImg.width || 640;
+            let h = photoImg.naturalHeight || photoImg.height || 480;
+            const maxDim = 640;
+
+            if (w > maxDim || h > maxDim) {
+                if (w >= h) {
+                    h = Math.round((h * maxDim) / w);
+                    w = maxDim;
+                } else {
+                    w = Math.round((w * maxDim) / h);
+                    h = maxDim;
+                }
+            }
+
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(photoImg, 0, 0, w, h);
+
+            const imageData = canvas.toDataURL('image/jpeg', 0.85);
 
             if (!imageData || imageData.length < 500) {
                 alert('Gagal mengambil data foto. Silakan foto ulang.');
