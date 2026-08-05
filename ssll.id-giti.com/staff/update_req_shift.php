@@ -23,19 +23,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if ($stmt->execute()) {
                 $stmt->close();
-                echo "<script>alert('Permintaan shifting berhasil ditambahkan!'); window.location.href = 'shift-req.php';</script>";
+                $conn->close();
+                $bulan = date('m', strtotime($tgl_mulai));
+                $tahun = date('Y', strtotime($tgl_mulai));
+                header("Location: shift-req.php?bulan=$bulan&tahun=$tahun&msg=success");
                 exit();
             } else {
-                echo "<script>alert('Error: " . addslashes($stmt->error) . "'); window.history.back();</script>";
+                $_SESSION['flash_error'] = "Error: " . $stmt->error;
+                header("Location: shift-req.php");
+                exit();
             }
         } else {
-            echo "<script>alert('Error database: " . addslashes($conn->error) . "'); window.history.back();</script>";
+            $_SESSION['flash_error'] = "Error database: " . $conn->error;
+            header("Location: shift-req.php");
+            exit();
         }
     } else {
-        echo "<script>alert('Semua field form shifting harus diisi.'); window.history.back();</script>";
+        $_SESSION['flash_error'] = "Semua field form shifting harus diisi.";
+        header("Location: shift-req.php");
+        exit();
     }
-
-    $conn->close();
 } else {
     header("Location: shift-req.php");
     exit();

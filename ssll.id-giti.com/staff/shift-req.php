@@ -14,8 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $bulan = $_POST["bulan"];
     $tahun = $_POST["tahun"];
 } else {
-    $bulan = date('m');
-    $tahun = date('Y');
+    $bulan = $_GET['bulan'] ?? date('m');
+    $tahun = $_GET['tahun'] ?? date('Y');
 }
 
 $query = "SELECT shift_req.*, karyawan.nama, karyawan.pin_absen AS pin, karyawan.nik
@@ -258,6 +258,17 @@ $asset_version = time();
 
         <div class="dashboard-content px-0">
             <div class="container-fluid px-lg-4">
+                
+                <?php if (isset($_GET['msg']) && $_GET['msg'] === 'success'): ?>
+                <div class="alert alert-success d-flex align-items-center justify-content-between mb-4 shadow-sm border-0 rounded-4" style="background: #d1fae5; border-left: 5px solid #10b981 !important; padding: 1rem 1.25rem;" role="alert">
+                    <div class="fw-bold text-emerald-900 fs-6">
+                        <i class="fa-solid fa-circle-check me-2 text-success fs-5"></i>
+                        Permintaan shifting karyawan berhasil ditambahkan!
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php endif; ?>
+
                 <div class="row g-4">
                     
                     <!-- Form Request Shifting (Kiri) -->
