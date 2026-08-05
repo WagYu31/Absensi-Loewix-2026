@@ -405,7 +405,7 @@ $asset_version = time();
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="attendanceTypeTitle"><i class="fas fa-camera me-2 text-primary"></i>Ambil Foto</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close" onclick="closeCameraModal();"></button>
                     </div>
                     <div class="modal-body p-0 position-relative">
                         <video id="cameraPreview" autoplay playsinline class="camera-video-presensi"></video>
@@ -413,7 +413,7 @@ $asset_version = time();
                         <button id="captureBtn" class="capture-btn-presensi" title="Ambil Foto"><i class="fas fa-camera"></i></button>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-dismiss="modal" onclick="closeCameraModal();">Batal</button>
                         <button type="button" class="btn btn-primary fw-bold" id="uploadPhotoBtn" disabled><i class="fas fa-cloud-arrow-up me-2"></i>Upload & Kirim</button>
                     </div>
                 </div>
@@ -433,6 +433,13 @@ $asset_version = time();
             let userLocationAddress = "Lokasi tidak diketahui";
             let stream = null;
             let attendanceType = ''; 
+
+            function closeCameraModal() {
+                stopCamera();
+                $('#cameraModal').modal('hide');
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open').css('overflow', '');
+            }
 
             function updateClockDisplay() {
                 const now = new Date();
@@ -472,7 +479,6 @@ $asset_version = time();
                     locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> ${userLocationAddress.substring(0, 35)}...${distanceText}`);
                     if (distance > 150) { $('#locationWarning').removeClass('d-none'); } else { $('#locationWarning').addClass('d-none'); }
                     
-                    // UNLOCK TOMBOL MASUK/PULANG LANGSUNG 0 MS!
                     checkAbsenConditions();
                 } else {
                     locationStatusEl.html('<i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi instan...');
@@ -488,7 +494,6 @@ $asset_version = time();
                     userLat = position.coords.latitude;
                     userLng = position.coords.longitude;
                     
-                    // Simpan ke localStorage untuk pembacaan instan berikutnya
                     localStorage.setItem('last_user_lat', userLat);
                     localStorage.setItem('last_user_lng', userLng);
                     localStorage.setItem('last_user_time', Date.now());
@@ -500,10 +505,8 @@ $asset_version = time();
                     locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> Lat: ${userLat.toFixed(4)}, Lng: ${userLng.toFixed(4)}${distanceText}`);
                     if (distance > 150) { $('#locationWarning').removeClass('d-none'); } else { $('#locationWarning').addClass('d-none'); }
                     
-                    // UNLOCK TOMBOL
                     checkAbsenConditions();
 
-                    // Teks Alamat Async Latar Belakang (Tidak memblokir tombol)
                     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLat}&lon=${userLng}`, { signal: AbortSignal.timeout(3000) })
                         .then(response => response.json())
                         .then(data => {
@@ -516,11 +519,9 @@ $asset_version = time();
                         .catch(() => { });
                 }
 
-                // ⚡ LOKASI CEPAT VIA WI-FI/CELL TOWER (enableHighAccuracy: false = Cepat ~100ms di dalam gedung!)
                 navigator.geolocation.getCurrentPosition(
                     handlePositionSuccess,
                     function(error) {
-                        // Backup satellite GPS jika belum dapat
                         navigator.geolocation.getCurrentPosition(
                             handlePositionSuccess,
                             function(err) {
@@ -648,7 +649,7 @@ $asset_version = time();
                     .then(function(s) { stream = s; video.srcObject = stream; video.play(); })
                     .catch(function(err) {
                         alert('Tidak dapat mengakses kamera. Pastikan Anda memberikan izin.');
-                        $('#cameraModal').modal('hide');
+                        closeCameraModal();
                     });
             }
 
@@ -671,7 +672,7 @@ $asset_version = time();
                 const canvas = document.getElementById('photoCanvas');
                 const imageData = canvas.toDataURL('image/jpeg', 0.75); 
                 const deviceName = getDeviceName();
-                $('#cameraModal').modal('hide');
+                closeCameraModal();
                 $('#fullScreenLoader').removeClass('d-none');
                 window.onbeforeunload = function() { return "Proses pengiriman data sedang berlangsung."; };
                 $.ajax({
