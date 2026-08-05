@@ -454,7 +454,30 @@ $asset_version = time();
 
             function getUserLocation() {
                 const locationStatusEl = $('#locationStatus');
-                locationStatusEl.html('<i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi...');
+                
+                // ⚡ 1. MEMUAT CACHE LOKASI TERAKHIR UNTUK UNLOCK TOMBOL SPONTAN (0 MS)
+                const cachedLat = localStorage.getItem('last_user_lat');
+                const cachedLng = localStorage.getItem('last_user_lng');
+                const cachedTime = localStorage.getItem('last_user_time');
+                
+                if (cachedLat && cachedLng && cachedTime && (Date.now() - parseInt(cachedTime)) < 3600000) {
+                    userLat = parseFloat(cachedLat);
+                    userLng = parseFloat(cachedLng);
+                    userLocationAddress = localStorage.getItem('last_user_addr') || `Lat: ${userLat.toFixed(4)}, Lng: ${userLng.toFixed(4)}`;
+                    
+                    const distance = getDistanceFromLatLonInM(userLat, userLng, targetLat, targetLng);
+                    let distanceText = distance !== null ? ` (Jarak: ${distance.toFixed(0)}m)` : '';
+                    let locationIconClass = distance !== null && distance <= 150 ? 'text-success' : 'text-warning';
+                    
+                    locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> ${userLocationAddress.substring(0, 35)}...${distanceText}`);
+                    if (distance > 150) { $('#locationWarning').removeClass('d-none'); } else { $('#locationWarning').addClass('d-none'); }
+                    
+                    // UNLOCK TOMBOL MASUK/PULANG LANGSUNG 0 MS!
+                    checkAbsenConditions();
+                } else {
+                    locationStatusEl.html('<i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi instan...');
+                }
+
                 if (!navigator.geolocation) {
                     locationStatusEl.html('<i class="fas fa-times-circle text-danger me-2"></i> Geolocation tidak didukung.');
                     checkAbsenConditions();
@@ -464,7 +487,11 @@ $asset_version = time();
                 function handlePositionSuccess(position) {
                     userLat = position.coords.latitude;
                     userLng = position.coords.longitude;
-                    userLocationAddress = `Lat: ${userLat.toFixed(5)}, Lng: ${userLng.toFixed(5)}`;
+                    
+                    // Simpan ke localStorage untuk pembacaan instan berikutnya
+                    localStorage.setItem('last_user_lat', userLat);
+                    localStorage.setItem('last_user_lng', userLng);
+                    localStorage.setItem('last_user_time', Date.now());
                     
                     const distance = getDistanceFromLatLonInM(userLat, userLng, targetLat, targetLng);
                     let distanceText = distance !== null ? ` (Jarak: ${distance.toFixed(0)}m)` : '';
@@ -473,39 +500,42 @@ $asset_version = time();
                     locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> Lat: ${userLat.toFixed(4)}, Lng: ${userLng.toFixed(4)}${distanceText}`);
                     if (distance > 150) { $('#locationWarning').removeClass('d-none'); } else { $('#locationWarning').addClass('d-none'); }
                     
+                    // UNLOCK TOMBOL
                     checkAbsenConditions();
 
+                    // Teks Alamat Async Latar Belakang (Tidak memblokir tombol)
                     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLat}&lon=${userLng}`, { signal: AbortSignal.timeout(3000) })
                         .then(response => response.json())
                         .then(data => {
                             if (data && data.display_name) {
                                 userLocationAddress = data.display_name;
-                                locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> ${userLocationAddress.substring(0, 40)}...${distanceText}`);
+                                localStorage.setItem('last_user_addr', userLocationAddress);
+                                locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> ${userLocationAddress.substring(0, 35)}...${distanceText}`);
                             }
                         })
                         .catch(() => { });
                 }
 
+                // ⚡ LOKASI CEPAT VIA WI-FI/CELL TOWER (enableHighAccuracy: false = Cepat ~100ms di dalam gedung!)
                 navigator.geolocation.getCurrentPosition(
                     handlePositionSuccess,
                     function(error) {
+                        // Backup satellite GPS jika belum dapat
                         navigator.geolocation.getCurrentPosition(
                             handlePositionSuccess,
                             function(err) {
-                                let errorMsg = 'Gagal mengambil lokasi: ';
-                                switch (err.code) {
-                                    case err.PERMISSION_DENIED: errorMsg += "Izin lokasi ditolak."; break;
-                                    case err.POSITION_UNAVAILABLE: errorMsg += "Informasi lokasi tidak tersedia."; break;
-                                    case err.TIMEOUT: errorMsg += "Timeout permintaan lokasi."; break;
-                                    default: errorMsg += "Error tidak diketahui."; break;
+                                if (!userLat) {
+                                    let errorMsg = 'Gagal mengambil lokasi. ';
+                                    if (err.code === err.PERMISSION_DENIED) errorMsg += "Izin lokasi ditolak di HP.";
+                                    else errorMsg += "Aktifkan GPS HP Anda.";
+                                    locationStatusEl.html(`<i class="fas fa-exclamation-triangle text-warning me-2"></i> ${errorMsg}`);
+                                    checkAbsenConditions();
                                 }
-                                locationStatusEl.html(`<i class="fas fa-times-circle text-danger me-2"></i> ${errorMsg}`);
-                                checkAbsenConditions();
                             },
-                            { enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 }
+                            { enableHighAccuracy: true, timeout: 5000, maximumAge: 300000 }
                         );
                     },
-                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 10000 }
+                    { enableHighAccuracy: false, timeout: 3000, maximumAge: 300000 }
                 );
             }
 
