@@ -345,12 +345,15 @@ $asset_version = time();
             z-index: 1070 !important;
         }
         .camera-video-presensi,
-        .photo-canvas-presensi {
+        .photo-canvas-presensi,
+        .photo-preview-img {
             width: 100% !important;
-            height: 280px !important;
+            height: 320px !important;
+            max-height: 320px !important;
             object-fit: cover !important;
+            object-position: center !important;
             display: block !important;
-            background: #000000 !important;
+            background: #0f172a !important;
         }
 
         /* 3D Circular Blue Camera Shutter Button */
@@ -869,13 +872,27 @@ $asset_version = time();
 
             function fallbackCanvasCapture() {
                 try {
-                    const canvas = document.getElementById('photoCanvas');
+                    const canvas = document.createElement('canvas');
+                    let w = video.videoWidth || 640;
+                    let h = video.videoHeight || 480;
+                    const maxDim = 640;
+
+                    if (w > maxDim || h > maxDim) {
+                        if (w >= h) {
+                            h = Math.round((h * maxDim) / w);
+                            w = maxDim;
+                        } else {
+                            w = Math.round((w * maxDim) / h);
+                            h = maxDim;
+                        }
+                    }
+
+                    canvas.width = w;
+                    canvas.height = h;
+
                     const context = canvas.getContext('2d');
-                    const vWidth = video.videoWidth || 640;
-                    const vHeight = video.videoHeight || 480;
-                    canvas.width = vWidth;
-                    canvas.height = vHeight;
-                    context.drawImage(video, 0, 0, vWidth, vHeight);
+                    context.drawImage(video, 0, 0, w, h);
+
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
                     displayCapturedPhoto(dataUrl);
                 } catch(err) {
