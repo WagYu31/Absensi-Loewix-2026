@@ -87,7 +87,6 @@ $asset_version = time();
                 radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.15) 0px, transparent 50%) !important;
             min-height: 100vh;
             min-height: 100dvh;
-            perspective: 1200px;
             overflow-x: hidden;
             touch-action: manipulation;
         }

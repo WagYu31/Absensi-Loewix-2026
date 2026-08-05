@@ -18,7 +18,6 @@
         radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%);
     min-height: 100vh;
     min-height: 100dvh;
-    perspective: 1200px;
     overflow-x: hidden;
     padding-bottom: 110px !important;
 }
