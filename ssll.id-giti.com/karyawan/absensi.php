@@ -309,19 +309,104 @@ $asset_version = time();
                 0 1px 0 #92400e !important;
         }
 
-        /* Fixed Camera Modal Z-Index Stacking */
+        /* Fixed Camera Modal Z-Index & 3D Shutter Button */
         #cameraModal {
             z-index: 1060 !important;
         }
         .modal-backdrop {
             z-index: 1050 !important;
         }
-        #cameraModal .modal-header .btn-close,
-        #cameraModal .modal-footer .btn-outline-secondary {
-            position: relative !important;
+        #cameraModal .modal-content {
+            background: #0f172a !important;
+            border-radius: 24px !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5) !important;
+        }
+        #cameraModal .modal-header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #ffffff !important;
+            padding: 1rem 1.25rem !important;
+        }
+        #cameraModal .modal-title {
+            font-weight: 800 !important;
+            font-size: 1.1rem !important;
+            color: #ffffff !important;
+        }
+        #cameraModal .modal-header .btn-close {
+            filter: invert(1);
+            opacity: 0.8;
             z-index: 1070 !important;
+        }
+        .camera-video-presensi,
+        .photo-canvas-presensi {
+            width: 100% !important;
+            height: auto !important;
+            min-height: 380px !important;
+            max-height: 65vh !important;
+            object-fit: cover !important;
+            display: block !important;
+            background: #000000 !important;
+        }
+
+        /* 3D Floating Camera Shutter Button */
+        .capture-btn-presensi {
+            position: absolute !important;
+            bottom: 24px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 72px !important;
+            height: 72px !important;
+            border-radius: 50% !important;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #b91c1c 100%) !important;
+            border: 4px solid #ffffff !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
             cursor: pointer !important;
-            pointer-events: auto !important;
+            z-index: 1070 !important;
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.5), 0 4px 0 #991b1b !important;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            padding: 0 !important;
+            outline: none !important;
+        }
+        .capture-btn-presensi i {
+            font-size: 1.6rem !important;
+            color: #ffffff !important;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)) !important;
+        }
+        .capture-btn-presensi:hover {
+            transform: translateX(-50%) scale(1.08) !important;
+            box-shadow: 0 14px 30px rgba(220, 38, 38, 0.6), 0 5px 0 #7f1d1d !important;
+        }
+        .capture-btn-presensi:active {
+            transform: translateX(-50%) scale(0.95) !important;
+        }
+
+        #cameraModal .modal-footer {
+            background: #ffffff !important;
+            border-top: 1px solid #e2e8f0 !important;
+            padding: 1rem 1.25rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 12px !important;
+        }
+        #cameraModal .modal-footer .btn-outline-secondary {
+            border-radius: 14px !important;
+            font-weight: 700 !important;
+            padding: 10px 22px !important;
+            z-index: 1070 !important;
+        }
+        #cameraModal .modal-footer .btn-primary {
+            background: var(--primary-3d) !important;
+            border: none !important;
+            border-radius: 14px !important;
+            font-weight: 800 !important;
+            padding: 10px 24px !important;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35), 0 3px 0 #1d4ed8 !important;
+            z-index: 1070 !important;
         }
 
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; backdrop-filter: blur(8px); }
