@@ -320,6 +320,7 @@ $asset_version = time();
                                             <option value="T">Shift Harco (09.10 s/d 18.00)</option>
                                             <option value="W">Sabtu (8.30 s/d 13.00)</option>
                                             <option value="TW">Harco Sabtu (9.00 s/d 13.00)</option>
+                                            <option value="TEST">Shift Testing (24 Jam Kamera Test)</option>
                                         </select>
                                     </div>
 
