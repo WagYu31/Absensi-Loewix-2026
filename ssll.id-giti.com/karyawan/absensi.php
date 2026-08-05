@@ -345,7 +345,6 @@ $asset_version = time();
             z-index: 1070 !important;
         }
         .camera-video-presensi,
-        .photo-canvas-presensi,
         .photo-preview-img {
             width: 100% !important;
             height: 320px !important;
@@ -553,7 +552,8 @@ $asset_version = time();
                 </div>
                 <div class="modal-body p-0 position-relative" style="height: 320px; max-height: 320px; overflow: hidden; background: #0f172a;">
                     <video id="cameraPreview" autoplay playsinline muted class="camera-video-presensi" style="width: 100%; height: 320px; object-fit: cover; object-position: center; display: block;"></video>
-                    <canvas id="photoCanvas" class="d-none photo-canvas-presensi" style="width: 100%; height: 320px; object-fit: cover; object-position: center;"></canvas>
+                    <img id="photoPreviewImg" class="d-none photo-preview-img" style="width: 100%; height: 320px; object-fit: cover; object-position: center; display: block;">
+                    <canvas id="photoCanvas" class="d-none" style="display: none;"></canvas>
                     <button id="captureBtn" class="capture-btn-presensi" title="Ambil Foto"><i class="fas fa-camera"></i></button>
                     <button id="retakeBtn" class="retake-btn-presensi d-none" title="Ulang Foto"><i class="fas fa-rotate-left me-1.5"></i>Foto Ulang</button>
                 </div>
@@ -784,7 +784,7 @@ $asset_version = time();
         });
 
         $('#cameraModal').on('shown.bs.modal', function() { 
-            $('#photoCanvas').addClass('d-none');
+            $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#cameraPreview').removeClass('d-none');
             $('#captureBtn').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
@@ -794,6 +794,7 @@ $asset_version = time();
         $('#cameraModal').on('hidden.bs.modal', function() {
             stopCamera();
             $('#cameraPreview').removeClass('d-none');
+            $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#photoCanvas').addClass('d-none');
             $('#captureBtn').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
@@ -803,6 +804,7 @@ $asset_version = time();
         function startCamera() {
             const video = document.getElementById('cameraPreview');
             $('#cameraPreview').removeClass('d-none');
+            $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#photoCanvas').addClass('d-none');
             $('#captureBtn').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
@@ -831,36 +833,59 @@ $asset_version = time();
                 return;
             }
 
-            const w = video.videoWidth;
-            const h = video.videoHeight;
+            let w = video.videoWidth;
+            let h = video.videoHeight;
+            const maxDim = 640;
+
+            if (w > maxDim || h > maxDim) {
+                if (w >= h) {
+                    h = Math.round((h * maxDim) / w);
+                    w = maxDim;
+                } else {
+                    w = Math.round((w * maxDim) / h);
+                    h = maxDim;
+                }
+            }
+
             canvas.width = w;
             canvas.height = h;
 
             const context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, w, h);
 
-            // Show captured canvas frame instantly!
-            $('#photoCanvas').removeClass('d-none');
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+            const photoImg = document.getElementById('photoPreviewImg');
+            photoImg.src = dataUrl;
+
+            // Show captured photo preview image instantly!
+            $('#photoPreviewImg').removeClass('d-none');
             $('#cameraPreview').addClass('d-none');
             $('#captureBtn').addClass('d-none');
             $('#retakeBtn').removeClass('d-none');
             $('#uploadPhotoBtn').prop('disabled', false);
 
-            stopCamera();
+            // DO NOT STOP CAMERA STREAM HERE to keep Android GPU HAL buffer active!
         });
 
         $('#retakeBtn').click(function() {
-            $('#photoCanvas').addClass('d-none');
+            $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#cameraPreview').removeClass('d-none');
             $('#captureBtn').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
             $('#uploadPhotoBtn').prop('disabled', true);
-            startCamera();
+            if (!stream) {
+                startCamera();
+            }
         });
 
         $('#uploadPhotoBtn').click(function() {
-            const canvas = document.getElementById('photoCanvas');
-            const imageData = canvas.toDataURL('image/jpeg', 0.85);
+            const photoImg = document.getElementById('photoPreviewImg');
+            let imageData = photoImg.src;
+            if (!imageData || !imageData.startsWith('data:image')) {
+                const canvas = document.getElementById('photoCanvas');
+                imageData = canvas.toDataURL('image/jpeg', 0.85);
+            }
 
             if (!imageData || imageData.length < 500) {
                 alert('Gagal mengambil data foto. Silakan foto ulang.');
