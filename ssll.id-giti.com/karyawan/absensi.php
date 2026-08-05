@@ -46,7 +46,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Presensi Online - Grav-Tech</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95,7 +95,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-7 col-md-9">
-                        <div class="card presensi-action-card shadow-lg">
+                        <div class="card presensi-action-card shadow-lg" id="card3d">
                             <div class="card-body p-lg-4">
                                 <div class="text-center mb-3">
                                     <h5 class="section-title-presensi-card mb-2">JADWAL ANDA HARI INI</h5>
@@ -222,10 +222,8 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                     locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> Lat: ${userLat.toFixed(4)}, Lng: ${userLng.toFixed(4)}${distanceText}`);
                     if (distance > 150) { $('#locationWarning').removeClass('d-none'); } else { $('#locationWarning').addClass('d-none'); }
                     
-                    // ⚡ AKTIFKAN TOMBOL INSTAN (TIDAK MEMBLOKIR USER!)
                     checkAbsenConditions();
 
-                    // Ambil teks alamat lengkap secara async di background
                     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLat}&lon=${userLng}`, { signal: AbortSignal.timeout(3000) })
                         .then(response => response.json())
                         .then(data => {
@@ -234,13 +232,12 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                 locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> ${userLocationAddress.substring(0, 40)}...${distanceText}`);
                             }
                         })
-                        .catch(() => { /* Alamat gagal diambil dari OpenStreetMap, koordinat & tombol tetap aktif instan */ });
+                        .catch(() => { });
                 }
 
                 navigator.geolocation.getCurrentPosition(
                     handlePositionSuccess,
                     function(error) {
-                        // Fallback cepat tanpa HighAccuracy jika HP lemah sinyal GPS
                         navigator.geolocation.getCurrentPosition(
                             handlePositionSuccess,
                             function(err) {
@@ -414,6 +411,41 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                 updateClockDisplay();
                 setInterval(updateClockDisplay, 1000);
                 getUserLocation();
+
+                // Interactive 3D Touch Drag & Mouse Parallax Tilt for Attendance Card
+                const card = document.getElementById('card3d');
+                if (card) {
+                    function apply3DTilt(clientX, clientY) {
+                        const rect = card.getBoundingClientRect();
+                        const centerX = rect.left + rect.width / 2;
+                        const centerY = rect.top + rect.height / 2;
+                        const xAxis = (centerX - clientX) / 18;
+                        const yAxis = (clientY - centerY) / 18;
+                        card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+                    }
+
+                    function reset3DTilt() {
+                        card.style.transition = 'transform 0.4s ease';
+                        card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+                        setTimeout(() => { card.style.transition = 'transform 0.15s ease-out'; }, 400);
+                    }
+
+                    document.addEventListener('mousemove', (e) => {
+                        apply3DTilt(e.clientX, e.clientY);
+                    });
+
+                    document.addEventListener('mouseleave', reset3DTilt);
+
+                    card.addEventListener('touchmove', (e) => {
+                        if (e.touches.length > 0) {
+                            const touch = e.touches[0];
+                            apply3DTilt(touch.clientX, touch.clientY);
+                        }
+                    }, { passive: true });
+
+                    card.addEventListener('touchend', reset3DTilt);
+                }
+
                 var currentPath = "<?php echo $current_page_basename; ?>";
                 $('.sidebar-menu a').each(function() {
                     var linkHref = $(this).attr('href').split("?")[0];

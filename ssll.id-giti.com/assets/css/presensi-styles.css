@@ -1,20 +1,37 @@
-/* assets/css/presensi-styles.css - Redesigned Modern UI */
+/* assets/css/presensi-styles.css - Taste Skill 3D Edition */
 
 :root {
-    --header-gradient: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%);
-    --card-radius-lg: 24px;
-    --btn-radius: 14px;
+    --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%);
+    --card-radius-lg: 28px;
+    --btn-radius: 16px;
+    --primary-3d: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
+    --success-3d: linear-gradient(135deg, #059669 0%, #10b981 50%, #047857 100%);
+    --danger-3d: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #b91c1c 100%);
+    --warning-3d: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #b45309 100%);
 }
 
-/* Header Section for Presensi Page */
+/* Background & Ambient Orbs for Presensi */
+.main-content-wrapper {
+    background: #e2e8f0;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%);
+    min-height: 100vh;
+    min-height: 100dvh;
+    perspective: 1200px;
+    overflow-x: hidden;
+}
+
+/* Presensi Header Section */
 .presensi-header-section {
     background: var(--header-gradient);
     color: #fff;
-    padding: 1.5rem 0 3.5rem 0;
-    margin-bottom: -50px;
+    padding: 1.75rem 0 4rem 0;
+    margin-bottom: -60px;
     position: relative;
     z-index: 5;
-    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 15px 35px rgba(15, 23, 42, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .presensi-header-section .container {
@@ -22,252 +39,303 @@
     z-index: 2;
 }
 
-.presensi-top-bar {
-    margin-bottom: 1rem !important;
-}
-
 .page-title-presensi {
-    font-weight: 700;
-    font-size: 1.05rem;
-    letter-spacing: 0.5px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
     color: #ffffff !important;
-}
-
-.time-date-display {
-    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 #realTimeClockDisplay {
-    font-size: 1.35rem;
+    font-size: 1.4rem;
     font-weight: 800;
     letter-spacing: 0.5px;
     background: rgba(255, 255, 255, 0.15);
-    padding: 3px 12px;
+    padding: 4px 14px;
     border-radius: 20px;
     display: inline-block;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Glass Profile Card in Header */
 .employee-info-presensi.card {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: #fff;
-    border-radius: 20px;
-    padding: 0.85rem 1.15rem;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    border-radius: 22px;
+    padding: 0.95rem 1.25rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .employee-photo-presensi {
-    width: 52px;
-    height: 52px;
+    width: 54px;
+    height: 54px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2.5px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 2.5px solid #ffffff;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .employee-name-presensi {
-    font-weight: 700;
-    font-size: 1.05rem;
+    font-weight: 800;
+    font-size: 1.1rem;
     color: #ffffff;
-    letter-spacing: -0.2px;
+    letter-spacing: -0.3px;
 }
 
 .employee-details-presensi {
     font-size: 0.825rem;
     color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
 }
 
-/* Main Presensi Action Card */
+/* Presensi Main Action Card - 3D Glassmorphism */
 .presensi-main-content {
     position: relative;
     z-index: 10;
     padding-top: 1rem;
-    padding-bottom: 80px;
+    padding-bottom: 90px;
 }
 
 .presensi-action-card.card {
-    border: 1px solid rgba(226, 232, 240, 0.8);
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-radius: var(--card-radius-lg);
-    box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.1);
-    background: #ffffff;
-    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 
+        0 30px 60px -12px rgba(15, 23, 42, 0.15),
+        0 18px 36px -18px rgba(15, 23, 42, 0.12),
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out, box-shadow 0.3s ease;
 }
 
 .presensi-action-card .card-body {
-    padding: 1.75rem 1.5rem;
+    padding: 2.1rem 1.65rem;
 }
 
 @media (min-width: 768px) {
     .presensi-action-card .card-body {
-        padding: 2.25rem 2rem;
+        padding: 2.5rem 2.25rem;
     }
 }
 
 .presensi-action-card .section-title-presensi-card {
-    color: #475569;
-    font-weight: 700;
-    font-size: 0.825rem;
+    color: #334155;
+    font-weight: 800;
+    font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
+    transform: translateZ(20px);
 }
 
 .presensi-action-card .schedule-display-presensi-card {
-    font-size: 2.5rem;
-    font-weight: 800;
+    font-size: 2.75rem;
+    font-weight: 900;
     line-height: 1.1;
-    color: #2563eb !important;
-    letter-spacing: -1px;
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1.5px;
+    margin: 0.4rem 0;
+    transform: translateZ(30px);
 }
 
 @media (max-width: 576px) {
     .presensi-action-card .schedule-display-presensi-card {
-        font-size: 2rem;
+        font-size: 2.25rem;
     }
 }
 
 .presensi-action-card .shift-name-presensi-card {
     font-size: 0.85rem;
-    color: #64748b;
-    font-weight: 600;
-    background: #f1f5f9;
-    padding: 4px 14px;
+    color: #2563eb;
+    font-weight: 700;
+    background: rgba(37, 99, 235, 0.08);
+    padding: 6px 16px;
     border-radius: 20px;
     display: inline-block;
+    border: 1px solid rgba(37, 99, 235, 0.15);
+    transform: translateZ(20px);
 }
 
 .presensi-divider {
-    border-color: #f1f5f9;
-    margin-top: 1.25rem;
-    margin-bottom: 1.25rem;
+    border-color: #e2e8f0;
+    margin-top: 1.35rem;
+    margin-bottom: 1.35rem;
 }
 
+/* Location Badge Status */
 .status-area-presensi .location-status-presensi-card {
-    font-size: 0.85rem;
-    font-weight: 500;
-    padding: 0.75rem 1rem !important;
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    min-height: 44px;
-    color: #334155;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.85rem 1.1rem !important;
+    background-color: rgba(248, 250, 252, 0.95);
+    border: 1.5px solid #cbd5e1;
+    border-radius: 16px;
+    min-height: 48px;
+    color: #1e293b;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    transform: translateZ(25px);
 }
 
 .status-area-presensi .location-status-presensi-card i {
-    font-size: 0.95rem;
+    font-size: 1.05rem;
 }
 
 .status-area-presensi .late-warning-presensi-card {
-    font-weight: 600;
-    font-size: 0.85rem;
-    padding: 0.65rem 1rem !important;
-    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.75rem 1.1rem !important;
+    border-radius: 14px;
+    transform: translateZ(25px);
 }
 
-/* Button Area Overhaul */
+/* Tactile 3D Action Buttons */
+.button-area-presensi {
+    transform-style: preserve-3d;
+}
+
 .button-area-presensi .btn {
     font-size: 0.95rem;
-    font-weight: 700;
-    height: 52px;
+    font-weight: 800;
+    height: 54px;
     border-radius: var(--btn-radius);
-    letter-spacing: 0.3px;
+    letter-spacing: 0.4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease-out;
     border: none;
+    transform: translateZ(30px);
+    cursor: pointer;
 }
 
 .btn-check-in-presensi {
-    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    background: var(--success-3d);
     color: #ffffff;
-    box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.35);
+    box-shadow: 
+        0 8px 20px rgba(16, 185, 129, 0.35),
+        0 4px 0 #047857;
 }
 
-.btn-check-in-presensi:hover:not(:disabled) {
-    background: linear-gradient(135deg, #047857 0%, #059669 100%);
+.btn-check-in-presensi:hover:not(:disabled), .btn-check-in-presensi:focus:not(:disabled) {
+    transform: translateZ(35px) translateY(-2px);
+    box-shadow: 
+        0 12px 25px rgba(16, 185, 129, 0.45),
+        0 6px 0 #065f46;
     color: #ffffff;
-    transform: translateY(-1px);
-    box-shadow: 0 12px 25px -4px rgba(16, 185, 129, 0.45);
+}
+
+.btn-check-in-presensi:active:not(:disabled) {
+    transform: translateZ(20px) translateY(2px);
+    box-shadow: 
+        0 4px 10px rgba(16, 185, 129, 0.3),
+        0 1px 0 #065f46;
 }
 
 .btn-check-in-presensi:disabled {
-    background: #e2e8f0;
+    background: #cbd5e1;
     border: none;
-    color: #94a3b8;
-    box-shadow: none;
-    opacity: 0.8;
+    color: #64748b;
+    box-shadow: 0 4px 0 #94a3b8;
+    opacity: 0.7;
+    transform: translateZ(15px);
 }
 
 .btn-check-out-presensi {
-    background: linear-gradient(135deg, #dc2626 0%, #f43f5e 100%);
+    background: var(--danger-3d);
     color: #ffffff;
-    box-shadow: 0 8px 20px -4px rgba(220, 38, 38, 0.35);
+    box-shadow: 
+        0 8px 20px rgba(239, 68, 68, 0.35),
+        0 4px 0 #b91c1c;
 }
 
-.btn-check-out-presensi:hover:not(:disabled) {
-    background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+.btn-check-out-presensi:hover:not(:disabled), .btn-check-out-presensi:focus:not(:disabled) {
+    transform: translateZ(35px) translateY(-2px);
+    box-shadow: 
+        0 12px 25px rgba(239, 68, 68, 0.45),
+        0 6px 0 #991b1b;
     color: #ffffff;
-    transform: translateY(-1px);
-    box-shadow: 0 12px 25px -4px rgba(220, 38, 38, 0.45);
+}
+
+.btn-check-out-presensi:active:not(:disabled) {
+    transform: translateZ(20px) translateY(2px);
+    box-shadow: 
+        0 4px 10px rgba(239, 68, 68, 0.3),
+        0 1px 0 #991b1b;
 }
 
 .btn-check-out-presensi:disabled {
-    background: #e2e8f0;
+    background: #cbd5e1;
     border: none;
-    color: #94a3b8;
-    box-shadow: none;
-    opacity: 0.8;
+    color: #64748b;
+    box-shadow: 0 4px 0 #94a3b8;
+    opacity: 0.7;
+    transform: translateZ(15px);
 }
 
 .btn-riwayat-absen {
-    background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+    background: var(--warning-3d);
     color: #ffffff !important;
-    box-shadow: 0 8px 20px -4px rgba(245, 158, 11, 0.35);
+    box-shadow: 
+        0 8px 20px rgba(245, 158, 11, 0.35),
+        0 4px 0 #b45309;
 }
 
-.btn-riwayat-absen:hover {
-    background: linear-gradient(135deg, #b45309 0%, #d97706 100%);
+.btn-riwayat-absen:hover, .btn-riwayat-absen:focus {
+    transform: translateZ(35px) translateY(-2px);
+    box-shadow: 
+        0 12px 25px rgba(245, 158, 11, 0.45),
+        0 6px 0 #92400e;
     color: #ffffff !important;
-    transform: translateY(-1px);
-    box-shadow: 0 12px 25px -4px rgba(245, 158, 11, 0.45);
 }
 
-/* Camera Modal Overhaul (Mobile Touch & UX) */
+.btn-riwayat-absen:active {
+    transform: translateZ(20px) translateY(2px);
+    box-shadow: 
+        0 4px 10px rgba(245, 158, 11, 0.3),
+        0 1px 0 #92400e;
+}
+
+/* Camera Modal Premium iOS/Android UI */
 .camera-modal-presensi .modal-dialog {
     max-width: 440px;
     margin: 1rem auto;
 }
 
 .camera-modal-presensi .modal-content {
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     overflow: hidden;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
+    background: #0f172a;
 }
 
 .camera-modal-presensi .modal-header {
     background: #0f172a;
     color: white;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 1rem 1.25rem;
+    padding: 1.1rem 1.35rem;
 }
 
 .camera-modal-presensi .modal-header .btn-close {
     filter: invert(1);
-    opacity: 0.8;
-}
-
-.camera-modal-presensi .modal-header .btn-close:hover {
-    opacity: 1;
+    opacity: 0.85;
 }
 
 .camera-modal-presensi .modal-title {
-    font-weight: 700;
-    font-size: 1.05rem;
+    font-weight: 800;
+    font-size: 1.1rem;
     letter-spacing: -0.2px;
 }
 
@@ -281,17 +349,13 @@
     display: block;
 }
 
-.photo-canvas-presensi {
-    border: none;
-}
-
 .capture-btn-presensi {
     position: absolute;
-    bottom: 20px;
+    bottom: 22px;
     left: 50%;
     transform: translateX(-50%);
-    width: 64px;
-    height: 64px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
     background: #ffffff;
     border: 4px solid #2563eb;
@@ -300,37 +364,53 @@
     align-items: center;
     justify-content: center;
     padding: 0;
-    box-shadow: 0 0 20px rgba(37, 99, 235, 0.5), 0 4px 10px rgba(0,0,0,0.3);
-    transition: all 0.2s ease;
+    box-shadow: 0 0 25px rgba(37, 99, 235, 0.6), 0 6px 14px rgba(0,0,0,0.4);
+    transition: all 0.15s ease-out;
     cursor: pointer;
 }
 
 .capture-btn-presensi:active {
-    transform: translateX(-50%) scale(0.92);
+    transform: translateX(-50%) scale(0.9);
 }
 
 .capture-btn-presensi i {
-    font-size: 1.6rem;
+    font-size: 1.75rem;
     color: #2563eb;
 }
 
 .camera-modal-presensi .modal-footer {
-    background: #ffffff;
-    border-top: 1px solid #e2e8f0;
-    padding: 1rem 1.25rem;
+    background: #1e293b;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.1rem 1.35rem;
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 .camera-modal-presensi .modal-footer .btn {
     flex: 1;
-    height: 48px;
-    border-radius: 12px;
-    font-weight: 700;
+    height: 50px;
+    border-radius: 14px;
+    font-weight: 800;
     font-size: 0.95rem;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.camera-modal-presensi .modal-footer .btn-outline-secondary {
+    color: #cbd5e1;
+    border-color: #475569;
+}
+
+.camera-modal-presensi .modal-footer .btn-outline-secondary:hover {
+    background: #334155;
+    color: #ffffff;
+}
+
+.camera-modal-presensi .modal-footer .btn-primary {
+    background: var(--primary-3d);
+    border: none;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
 }
 
 /* Footer Copyright */
@@ -339,5 +419,5 @@
     margin-top: 2rem;
     font-size: 0.8rem;
     color: #64748b;
-    font-weight: 500;
+    font-weight: 600;
 }
