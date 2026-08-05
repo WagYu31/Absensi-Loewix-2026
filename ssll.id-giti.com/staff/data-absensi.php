@@ -600,7 +600,7 @@ $asset_version = time();
                                                     </div>
 
                                                     <div class="d-flex gap-3 align-items-center mt-2">
-                                                        <img src="../uploads/attendance/<?php echo htmlspecialchars($item['image']); ?>" class="abs-photo" onclick="previewImage(this.src)">
+                                                        <img src="../uploads/attendance/<?php echo htmlspecialchars($item['image']); ?>" class="abs-photo" onclick="previewImage(this.src)" onerror="if(this.src.indexOf('/uploads/attendance/')!=-1){this.src=this.src.replace('/uploads/attendance/','/uploads/');}else{this.onerror=null;this.src='https://via.placeholder.com/150/0f172a/ffffff?text=Foto+Absen';}">
                                                         <div class="flex-grow-1 min-w-0" style="font-size: 0.85rem;">
                                                             <div class="fw-bold text-primary mb-1 d-flex align-items-center justify-content-between">
                                                                 <span><i class="fa-solid fa-clock me-1"></i><?php echo date('H:i:s', strtotime($item['tgl_absen'])); ?></span>
