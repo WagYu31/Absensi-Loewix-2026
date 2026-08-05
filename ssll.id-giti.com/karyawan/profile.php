@@ -260,14 +260,9 @@ $asset_version = time();
 
     <div class="main-content-wrapper p-0">
         <div class="header-banner page-specific-header no-print">
-            <div class="container-fluid px-lg-4 d-flex align-items-center justify-content-between">
-                <div>
-                    <h1><i class="fa-solid fa-id-card me-2 text-primary-light"></i>Profil Saya</h1>
-                    <p class="small mb-0 opacity-80">Lihat dan kelola informasi pribadi serta kepegawaian Anda.</p>
-                </div>
-                <a href="../logout.php" class="btn btn-3d-danger btn-sm rounded-pill px-3 py-1.5 fs-7 text-white shadow-sm" onclick="return confirm('Apakah Anda yakin ingin keluar (Log Out)?');">
-                    <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>Log Out
-                </a>
+            <div class="container-fluid px-lg-4">
+                <h1><i class="fa-solid fa-id-card me-2 text-primary-light"></i>Profil Saya</h1>
+                <p class="small mb-0 opacity-80">Lihat dan kelola informasi pribadi serta kepegawaian Anda.</p>
             </div>
         </div>
 
