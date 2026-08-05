@@ -460,7 +460,6 @@ $asset_version = time();
             $('body').removeClass('modal-open').css('overflow', '');
         }
 
-        // Direct Touch & Click Event Bindings for Close & Batal Buttons
         $(document).on('click touchstart', '#closeCameraXBtn, #closeCameraBatalBtn', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -684,9 +683,21 @@ $asset_version = time();
             const video = document.getElementById('cameraPreview');
             const canvas = document.getElementById('photoCanvas');
             const context = canvas.getContext('2d');
-            canvas.width = video.videoWidth || video.offsetWidth;
-            canvas.height = video.videoHeight || video.offsetHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // ⚡ Kompresi & Resizing Gambar Kamera ke Max 600px Lebar
+            // Menghindari HTTP 413 Payload Too Large & Error Koneksi
+            let width = video.videoWidth || 640;
+            let height = video.videoHeight || 480;
+            const maxWidth = 600;
+            if (width > maxWidth) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            context.drawImage(video, 0, 0, width, height);
+            
             $('#cameraPreview').addClass('d-none');
             $('#photoCanvas').removeClass('d-none');
             $('#uploadPhotoBtn').prop('disabled', false);
@@ -695,7 +706,8 @@ $asset_version = time();
 
         $('#uploadPhotoBtn').click(function() {
             const canvas = document.getElementById('photoCanvas');
-            const imageData = canvas.toDataURL('image/jpeg', 0.75); 
+            // Kompresi kualitas JPEG 0.7 (ringan ~50KB)
+            const imageData = canvas.toDataURL('image/jpeg', 0.70); 
             const deviceName = getDeviceName();
             closeCameraModal();
             $('#fullScreenLoader').removeClass('d-none');
@@ -705,12 +717,27 @@ $asset_version = time();
                 type: 'POST',
                 data: { tipe_absen: attendanceType, foto_absen: imageData, nip: employeeNip, pin: employeePin, nik_karyawan: employeeNik, lokasi_absen: userLocationAddress, latitude: userLat, longitude: userLng, device_name: deviceName },
                 dataType: 'json',
+                timeout: 15000,
                 success: function(response) {
                     window.onbeforeunload = null;
                     if (response.success) { alert('Absen ' + attendanceType + ' berhasil dicatat!'); location.reload(); } 
                     else { $('#fullScreenLoader').addClass('d-none'); alert('Gagal: ' + response.message); $('#cameraModal').modal('show'); }
                 },
-                error: function() { window.onbeforeunload = null; $('#fullScreenLoader').addClass('d-none'); alert('Terjadi kesalahan koneksi.'); }
+                error: function(xhr, status, error) { 
+                    window.onbeforeunload = null; 
+                    $('#fullScreenLoader').addClass('d-none'); 
+                    let errorMsg = 'Terjadi kesalahan pengiriman data.';
+                    if (xhr.status === 413) {
+                        errorMsg = 'Ukuran foto terlalu besar untuk server. Silakan foto ulang.';
+                    } else if (xhr.responseText) {
+                        try {
+                            const errObj = JSON.parse(xhr.responseText);
+                            if (errObj.message) errorMsg = errObj.message;
+                        } catch(e) {}
+                    }
+                    alert(errorMsg);
+                    $('#cameraModal').modal('show'); 
+                }
             });
         });
 
