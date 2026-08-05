@@ -425,6 +425,29 @@ $asset_version = time();
             z-index: 1070 !important;
         }
 
+        .retake-btn-presensi {
+            position: absolute !important;
+            bottom: 12px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            background: rgba(15, 23, 42, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            color: #ffffff !important;
+            border-radius: 20px !important;
+            padding: 6px 16px !important;
+            font-size: 0.8rem !important;
+            font-weight: 700 !important;
+            z-index: 1070 !important;
+            backdrop-filter: blur(8px) !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.5) !important;
+            transition: all 0.2s ease !important;
+        }
+        .retake-btn-presensi:hover {
+            background: rgba(30, 41, 59, 0.95) !important;
+            transform: translateX(-50%) scale(1.05) !important;
+        }
+
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; backdrop-filter: blur(8px); }
         .loading-spinner { width: 3.5rem; height: 3.5rem; border-width: 0.25em; color: #3b82f6; }
     </style>
@@ -527,8 +550,10 @@ $asset_version = time();
                 </div>
                 <div class="modal-body p-0 position-relative" style="height: 300px; max-height: 300px; overflow: hidden; background: #000;">
                     <video id="cameraPreview" autoplay playsinline class="camera-video-presensi" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;"></video>
-                    <canvas id="photoCanvas" class="d-none photo-canvas-presensi" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;"></canvas>
+                    <img id="photoPreviewImg" class="d-none photo-preview-img" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;">
+                    <canvas id="photoCanvas" class="d-none" style="display: none;"></canvas>
                     <button id="captureBtn" class="capture-btn-presensi" title="Ambil Foto"><i class="fas fa-camera"></i></button>
+                    <button id="retakeBtn" class="retake-btn-presensi d-none" title="Ulang Foto"><i class="fas fa-rotate-left me-1.5"></i>Foto Ulang</button>
                 </div>
                 <div class="modal-footer" style="background: #0f172a; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 10px 14px; display: flex; gap: 10px;">
                     <button type="button" class="btn btn-outline-secondary flex-fill text-white-50 border-secondary rounded-3 py-2 fw-bold small" id="closeCameraBatalBtn">Batal</button>
@@ -756,18 +781,31 @@ $asset_version = time();
             $('#cameraModal').modal('show');
         });
 
-        $('#cameraModal').on('shown.bs.modal', function() { startCamera(); });
+        $('#cameraModal').on('shown.bs.modal', function() { 
+            $('#photoPreviewImg').addClass('d-none').attr('src', '');
+            $('#cameraPreview').removeClass('d-none');
+            $('#captureBtn').removeClass('d-none');
+            $('#retakeBtn').addClass('d-none');
+            startCamera(); 
+        });
+
         $('#cameraModal').on('hidden.bs.modal', function() {
             stopCamera();
             $('#cameraPreview').removeClass('d-none');
+            $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#photoCanvas').addClass('d-none');
-            $('#uploadPhotoBtn').prop('disabled', true).html('<i class="fas fa-cloud-arrow-up me-2"></i>Upload & Kirim');
+            $('#captureBtn').removeClass('d-none');
+            $('#retakeBtn').addClass('d-none');
+            $('#uploadPhotoBtn').prop('disabled', true).html('<i class="fas fa-cloud-arrow-up me-1.5"></i>Upload & Kirim');
         });
 
         function startCamera() {
             const video = document.getElementById('cameraPreview');
             $('#cameraPreview').removeClass('d-none');
+            $('#photoPreviewImg').addClass('d-none');
             $('#photoCanvas').addClass('d-none');
+            $('#captureBtn').removeClass('d-none');
+            $('#retakeBtn').addClass('d-none');
             $('#uploadPhotoBtn').prop('disabled', true);
             navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false })
                 .then(function(s) { stream = s; video.srcObject = stream; video.play(); })
@@ -796,15 +834,31 @@ $asset_version = time();
             canvas.height = height;
             context.drawImage(video, 0, 0, width, height);
             
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            $('#photoPreviewImg').attr('src', dataUrl).removeClass('d-none');
             $('#cameraPreview').addClass('d-none');
-            $('#photoCanvas').removeClass('d-none');
+            $('#captureBtn').addClass('d-none');
+            $('#retakeBtn').removeClass('d-none');
             $('#uploadPhotoBtn').prop('disabled', false);
             stopCamera();
         });
 
+        $('#retakeBtn').click(function() {
+            $('#photoPreviewImg').addClass('d-none').attr('src', '');
+            $('#cameraPreview').removeClass('d-none');
+            $('#captureBtn').removeClass('d-none');
+            $('#retakeBtn').addClass('d-none');
+            $('#uploadPhotoBtn').prop('disabled', true);
+            startCamera();
+        });
+
         $('#uploadPhotoBtn').click(function() {
-            const canvas = document.getElementById('photoCanvas');
-            const imageData = canvas.toDataURL('image/jpeg', 0.70); 
+            const photoImg = document.getElementById('photoPreviewImg');
+            let imageData = photoImg.src;
+            if (!imageData || !imageData.startsWith('data:image')) {
+                const canvas = document.getElementById('photoCanvas');
+                imageData = canvas.toDataURL('image/jpeg', 0.70);
+            } 
             const deviceName = getDeviceName();
             closeCameraModal();
             $('#fullScreenLoader').removeClass('d-none');
