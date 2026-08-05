@@ -408,20 +408,37 @@ $asset_version = time();
     document.addEventListener('DOMContentLoaded', function() {
         <?php if (!empty($birthday_employees)): ?>
         if (typeof confetti === 'function') {
-            const count = 200;
-            const defaults = { origin: { y: 0.7 } };
+            const duration = 5 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 45, spread: 360, ticks: 120, zIndex: 9999 };
 
-            function fire(particleRatio, opts) {
-                confetti(Object.assign({}, defaults, opts, {
-                    particleCount: Math.floor(count * particleRatio)
-                }));
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
             }
 
-            fire(0.25, { spread: 26, startVelocity: 55, colors: ['#fbbf24', '#f43f5e'] });
-            fire(0.2, { spread: 60, colors: ['#a855f7', '#3b82f6'] });
-            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
-            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, colors: ['#ffffff', '#fbbf24'] });
-            fire(0.1, { spread: 120, startVelocity: 45 });
+            // Dual Cannon Blast awal
+            confetti({ particleCount: 80, angle: 60, spread: 75, origin: { x: 0, y: 0.7 }, colors: ['#fbbf24', '#f43f5e', '#a855f7', '#3b82f6', '#ffffff'] });
+            confetti({ particleCount: 80, angle: 120, spread: 75, origin: { x: 1, y: 0.7 }, colors: ['#fbbf24', '#f43f5e', '#a855f7', '#3b82f6', '#ffffff'] });
+
+            // Pertunjukan Kembang Api Berkelanjutan selama 5 Detik
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+                const particleCount = 35 * (timeLeft / duration);
+
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.1, 0.4), y: Math.random() - 0.2 },
+                    colors: ['#fbbf24', '#f43f5e', '#a855f7', '#ffffff']
+                }));
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.6, 0.9), y: Math.random() - 0.2 },
+                    colors: ['#3b82f6', '#e11d48', '#fbbf24', '#ffffff']
+                }));
+            }, 250);
         }
         <?php endif; ?>
 
