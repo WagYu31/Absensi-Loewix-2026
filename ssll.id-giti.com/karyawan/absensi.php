@@ -846,29 +846,52 @@ $asset_version = time();
                 setTimeout(function() { stopCamera(); }, 150);
             }
 
-            if ('ImageCapture' in window && stream && stream.getVideoTracks().length > 0) {
+            function isCanvasBlack(ctx, width, height) {
                 try {
-                    const track = stream.getVideoTracks()[0];
-                    const imageCapture = new ImageCapture(track);
-                    imageCapture.takePhoto()
-                        .then(function(blob) {
-                            const reader = new FileReader();
-                            reader.onloadend = function() {
-                                displayCapturedPhoto(reader.result);
-                            };
-                            reader.readAsDataURL(blob);
-                        })
-                        .catch(function(err) {
-                            console.warn('ImageCapture error, using fallback:', err);
-                            fallbackCanvasCapture();
-                        });
-                    return;
+                    const imgData = ctx.getImageData(Math.floor(width / 4), Math.floor(height / 4), Math.floor(width / 2), Math.floor(height / 2)).data;
+                    let sum = 0;
+                    for (let i = 0; i < imgData.length; i += 40) {
+                        sum += (imgData[i] + imgData[i+1] + imgData[i+2]);
+                    }
+                    return (sum / (imgData.length / 40)) < 12;
                 } catch(e) {
-                    console.warn('ImageCapture init error:', e);
+                    return false;
                 }
             }
 
-            fallbackCanvasCapture();
+            // Pause video frame momentarily to force GPU SurfaceView buffer flush
+            try { video.pause(); } catch(e) {}
+
+            // Method 1: createImageBitmap (Direct GPU Texture Capture for Mobile Chrome/Android)
+            if (window.createImageBitmap) {
+                createImageBitmap(video)
+                    .then(function(bmp) {
+                        const canvas = document.createElement('canvas');
+                        let w = bmp.width || 640;
+                        let h = bmp.height || 480;
+                        const maxDim = 640;
+                        if (w > maxDim || h > maxDim) {
+                            if (w >= h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+                            else { w = Math.round((w * maxDim) / h); h = maxDim; }
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(bmp, 0, 0, w, h);
+                        
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                        if (!isCanvasBlack(ctx, w, h)) {
+                            displayCapturedPhoto(dataUrl);
+                            return;
+                        }
+                        fallbackCanvasCapture();
+                    })
+                    .catch(function(err) {
+                        fallbackCanvasCapture();
+                    });
+            } else {
+                fallbackCanvasCapture();
+            }
 
             function fallbackCanvasCapture() {
                 try {
@@ -876,23 +899,14 @@ $asset_version = time();
                     let w = video.videoWidth || 640;
                     let h = video.videoHeight || 480;
                     const maxDim = 640;
-
                     if (w > maxDim || h > maxDim) {
-                        if (w >= h) {
-                            h = Math.round((h * maxDim) / w);
-                            w = maxDim;
-                        } else {
-                            w = Math.round((w * maxDim) / h);
-                            h = maxDim;
-                        }
+                        if (w >= h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+                        else { w = Math.round((w * maxDim) / h); h = maxDim; }
                     }
-
                     canvas.width = w;
                     canvas.height = h;
-
-                    const context = canvas.getContext('2d');
-                    context.drawImage(video, 0, 0, w, h);
-
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, w, h);
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
                     displayCapturedPhoto(dataUrl);
                 } catch(err) {
