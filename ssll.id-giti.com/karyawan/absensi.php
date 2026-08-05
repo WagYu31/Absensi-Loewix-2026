@@ -684,8 +684,6 @@ $asset_version = time();
             const canvas = document.getElementById('photoCanvas');
             const context = canvas.getContext('2d');
             
-            // ⚡ Kompresi & Resizing Gambar Kamera ke Max 600px Lebar
-            // Menghindari HTTP 413 Payload Too Large & Error Koneksi
             let width = video.videoWidth || 640;
             let height = video.videoHeight || 480;
             const maxWidth = 600;
@@ -706,7 +704,6 @@ $asset_version = time();
 
         $('#uploadPhotoBtn').click(function() {
             const canvas = document.getElementById('photoCanvas');
-            // Kompresi kualitas JPEG 0.7 (ringan ~50KB)
             const imageData = canvas.toDataURL('image/jpeg', 0.70); 
             const deviceName = getDeviceName();
             closeCameraModal();
@@ -717,11 +714,17 @@ $asset_version = time();
                 type: 'POST',
                 data: { tipe_absen: attendanceType, foto_absen: imageData, nip: employeeNip, pin: employeePin, nik_karyawan: employeeNik, lokasi_absen: userLocationAddress, latitude: userLat, longitude: userLng, device_name: deviceName },
                 dataType: 'json',
-                timeout: 15000,
+                timeout: 20000,
                 success: function(response) {
                     window.onbeforeunload = null;
-                    if (response.success) { alert('Absen ' + attendanceType + ' berhasil dicatat!'); location.reload(); } 
-                    else { $('#fullScreenLoader').addClass('d-none'); alert('Gagal: ' + response.message); $('#cameraModal').modal('show'); }
+                    if (response && response.success) { 
+                        alert('Absen ' + attendanceType + ' berhasil dicatat!'); 
+                        location.reload(); 
+                    } else { 
+                        $('#fullScreenLoader').addClass('d-none'); 
+                        alert('Gagal: ' + (response ? response.message : 'Respon tidak valid')); 
+                        $('#cameraModal').modal('show'); 
+                    }
                 },
                 error: function(xhr, status, error) { 
                     window.onbeforeunload = null; 
@@ -733,7 +736,9 @@ $asset_version = time();
                         try {
                             const errObj = JSON.parse(xhr.responseText);
                             if (errObj.message) errorMsg = errObj.message;
-                        } catch(e) {}
+                        } catch(e) {
+                            errorMsg = 'Error Server (' + xhr.status + '): ' + xhr.responseText.substring(0, 150);
+                        }
                     }
                     alert(errorMsg);
                     $('#cameraModal').modal('show'); 

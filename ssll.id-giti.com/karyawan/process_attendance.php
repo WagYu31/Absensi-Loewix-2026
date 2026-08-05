@@ -1,10 +1,20 @@
 <?php
-header('Content-Type: application/json');
+// Buffer all output to prevent PHP warnings/errors from corrupting JSON
+ob_start();
+
+header('Content-Type: application/json; charset=utf-8');
 date_default_timezone_set('Asia/Jakarta');
 session_start();
 
+// Helper to return clean JSON response
+function sendJsonResponse($success, $message) {
+    ob_clean();
+    echo json_encode(['success' => $success, 'message' => $message]);
+    exit();
+}
+
 if (!isset($_SESSION['nip']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'karyawan') {
-    die(json_encode(['success' => false, 'message' => 'Akses tidak diizinkan. Silakan login kembali.']));
+    sendJsonResponse(false, 'Akses tidak diizinkan. Silakan login kembali.');
 }
 
 include '../conn.php';
@@ -39,13 +49,13 @@ $latitude = $_POST['latitude'] ?? null;
 $longitude = $_POST['longitude'] ?? null;
 $device_name = $_POST['device_name'] ?? 'Unknown Device';
 
-$ip_address = $_SERVER['REMOTE_ADDR']; 
+$ip_address = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0'; 
 
 if (empty($type) || !in_array(strtolower($type), ['masuk', 'pulang'])) {
-    die(json_encode(['success' => false, 'message' => 'Tipe absensi tidak valid.']));
+    sendJsonResponse(false, 'Tipe absensi tidak valid.');
 }
 if (empty($imageData)) {
-    die(json_encode(['success' => false, 'message' => 'Data gambar tidak boleh kosong.']));
+    sendJsonResponse(false, 'Data gambar tidak boleh kosong.');
 }
 if (empty($lokasi_absen)) {
     $lokasi_absen = "Lokasi tidak terdeteksi"; 
@@ -61,7 +71,6 @@ if (
     $longitude >= -180 && $longitude <= 180
 ) {
     $lokasi_koordinat_str = $latitude . "," . $longitude;
-    
     $distance = getDistanceBetweenPoints($latitude, $longitude, TARGET_OFFICE_LAT, TARGET_OFFICE_LON);
     
     if ($distance <= MAX_OFFICE_RADIUS_METERS) {
@@ -76,14 +85,14 @@ if (
 
 $stmt_karyawan = $conn->prepare("SELECT nama, nik FROM karyawan WHERE nip = ?");
 if (!$stmt_karyawan) {
-    die(json_encode(['success' => false, 'message' => 'Kesalahan internal server.']));
+    sendJsonResponse(false, 'Kesalahan koneksi database: ' . $conn->error);
 }
 $stmt_karyawan->bind_param("s", $session_nip);
 $stmt_karyawan->execute();
 $result_karyawan = $stmt_karyawan->get_result();
 
 if ($result_karyawan->num_rows === 0) {
-    die(json_encode(['success' => false, 'message' => 'Data karyawan tidak ditemukan.']));
+    sendJsonResponse(false, 'Data karyawan tidak ditemukan.');
 }
 $karyawan_data = $result_karyawan->fetch_assoc();
 $nama_karyawan_db = $karyawan_data['nama'];
@@ -97,25 +106,27 @@ if (strpos($imageData, 'data:image/jpeg;base64,') === 0) {
     $imageData = str_replace('data:image/png;base64,', '', $imageData);
     $file_extension = '.png';
 } else {
-    die(json_encode(['success' => false, 'message' => 'Format gambar tidak didukung.']));
+    sendJsonResponse(false, 'Format gambar tidak didukung.');
 }
 $imageData = str_replace(' ', '+', $imageData); 
 $imageBinary = base64_decode($imageData);
 
 if ($imageBinary === false) {
-    die(json_encode(['success' => false, 'message' => 'Gagal mendekode gambar.']));
+    sendJsonResponse(false, 'Gagal mendekode gambar.');
 }
 
+// Ensure Upload Directory Exists and Has Full Write Permissions (0777)
 $upload_dir = '../uploads/attendance/';
 if (!is_dir($upload_dir)) {
-    mkdir($upload_dir, 0775, true);
+    @mkdir($upload_dir, 0777, true);
 }
+@chmod($upload_dir, 0777);
 
 $filename = 'presensi_' . $session_nip . '_' . date('Ymd_His') . $file_extension;
 $filepath = $upload_dir . $filename;
 
-if (!file_put_contents($filepath, $imageBinary)) {
-    die(json_encode(['success' => false, 'message' => 'Gagal menyimpan file gambar.']));
+if (@file_put_contents($filepath, $imageBinary) === false) {
+    sendJsonResponse(false, 'Gagal menyimpan file gambar ke folder uploads/attendance/. Periksa izin folder server.');
 }
 
 try {
@@ -127,8 +138,8 @@ try {
 
     $stmt = $conn->prepare($query);
     if (!$stmt) {
-        if (file_exists($filepath)) unlink($filepath);
-        die(json_encode(['success' => false, 'message' => 'Kesalahan database.']));
+        if (file_exists($filepath)) @unlink($filepath);
+        sendJsonResponse(false, 'Kesalahan query database: ' . $conn->error);
     }
 
     $stmt->bind_param("ssssssssss", 
@@ -165,15 +176,15 @@ try {
             }
         }
 
-        echo json_encode(['success' => true, 'message' => 'Presensi berhasil dicatat.']);
+        sendJsonResponse(true, 'Presensi ' . $type . ' berhasil dicatat.');
     } else {
-        if (file_exists($filepath)) unlink($filepath);
-        echo json_encode(['success' => false, 'message' => 'Gagal menyimpan data ke database.']);
+        if (file_exists($filepath)) @unlink($filepath);
+        sendJsonResponse(false, 'Gagal menyimpan data presensi: ' . $stmt->error);
     }
     $stmt->close();
-} catch (Exception $e) {
-    if (file_exists($filepath)) unlink($filepath);
-    echo json_encode(['success' => false, 'message' => 'Kesalahan sistem: ' . $e->getMessage()]);
+} catch (Throwable $e) {
+    if (file_exists($filepath)) @unlink($filepath);
+    sendJsonResponse(false, 'Kesalahan sistem: ' . $e->getMessage());
 }
 
 $conn->close();
