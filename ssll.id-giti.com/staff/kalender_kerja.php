@@ -76,7 +76,7 @@ $asset_version = time();
                 0 25px 50px -12px rgba(15, 23, 42, 0.12),
                 0 12px 24px -12px rgba(15, 23, 42, 0.08) !important;
             padding: 1.5rem !important;
-            margin-bottom: 2rem !important;
+            margin-bottom: 1.5rem !important;
         }
 
         /* FullCalendar Custom 3D Theme */
@@ -229,8 +229,32 @@ $asset_version = time();
 
         <div class="dashboard-content px-0">
             <div class="container-fluid px-lg-4">
+                <!-- Main Calendar Card -->
                 <div class="main-calendar-card">
+                    <!-- Legend Bar 3D -->
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 p-3 rounded-4 bg-light border border-slate-200">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <span class="fw-bold small text-secondary me-2"><i class="fa-solid fa-tags me-1 text-primary"></i>Keterangan Warna:</span>
+                            <span class="badge bg-danger rounded-pill px-3 py-2 fw-bold" style="font-size: 0.75rem;"><i class="fa-solid fa-umbrella-beach me-1"></i>Hari Libur Nasional</span>
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2 fw-bold" style="font-size: 0.75rem;"><i class="fa-solid fa-star me-1"></i>Acara Spesial</span>
+                            <span class="badge bg-primary rounded-pill px-3 py-2 fw-bold" style="font-size: 0.75rem;"><i class="fa-solid fa-cake-candles me-1"></i>Ulang Tahun Karyawan</span>
+                        </div>
+                        <small class="text-muted fst-italic"><i class="fa-solid fa-circle-info me-1 text-primary"></i>Klik tanggal untuk menambah acara baru.</small>
+                    </div>
+
                     <div id='calendar'></div>
+                </div>
+
+                <!-- Event Summary List Card -->
+                <div class="main-calendar-card mt-3 p-0" style="overflow: hidden;">
+                    <div class="bg-white p-3 border-bottom d-flex align-items-center justify-content-between">
+                        <h6 class="fw-bold text-dark mb-0 fs-6" id="event-list-title"><i class="fa-solid fa-list-check me-2 text-primary"></i>Daftar Acara & Ulang Tahun Bulan Ini</h6>
+                    </div>
+                    <div class="p-0">
+                        <ul class="list-group list-group-flush" id="event-list">
+                            <li class="list-group-item text-muted p-4 text-center">Memuat daftar acara...</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -290,11 +314,69 @@ $asset_version = time();
         const eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
         const eventForm = document.getElementById('eventForm');
 
+        function updateEventList(events, view) {
+            const eventListEl = document.getElementById('event-list');
+            const eventListTitle = document.getElementById('event-list-title');
+            
+            eventListTitle.innerHTML = `<i class="fa-solid fa-list-check me-2 text-primary"></i>Daftar Acara & Ulang Tahun: <strong>${view.title}</strong>`;
+            eventListEl.innerHTML = '';
+
+            const eventsInView = events.filter(e => {
+                if (!e.start) return false;
+                const eventTime = e.start.getTime();
+                const viewStartTime = view.activeStart.getTime();
+                const viewEndTime = view.activeEnd.getTime();
+                return eventTime >= viewStartTime && eventTime < viewEndTime;
+            });
+            
+            if (eventsInView.length === 0) {
+                eventListEl.innerHTML = `<li class="list-group-item text-muted p-4 text-center">Tidak ada acara pada bulan ${view.title}.</li>`;
+                return;
+            }
+
+            eventsInView.sort((a, b) => a.start.getTime() - b.start.getTime());
+
+            eventsInView.forEach(event => {
+                let date = new Date(event.startStr + 'T00:00:00');
+                let formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+                let badgeClass = '', badgeText = '', icon = '';
+
+                if(event.classNames.includes('event-libur-merah')) { 
+                    [badgeClass, badgeText, icon] = ['bg-danger', 'Hari Libur', 'fa-umbrella-beach']; 
+                } else if (event.classNames.includes('event-spesial-kuning')) { 
+                    [badgeClass, badgeText, icon] = ['bg-warning text-dark', 'Acara Spesial', 'fa-star']; 
+                } else if (event.classNames.includes('event-ultah-biru')) { 
+                    [badgeClass, badgeText, icon] = ['bg-primary', 'Ulang Tahun', 'fa-cake-candles']; 
+                }
+
+                eventListEl.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                    <div><span class="fw-bold text-dark me-2">${formattedDate}:</span> <span class="fw-semibold text-secondary">${event.title}</span></div>
+                    <span class="badge ${badgeClass} rounded-pill px-3 py-2 fw-bold" style="font-size: 0.75rem;"><i class="fa-solid ${icon} me-1"></i>${badgeText}</span>
+                </li>`;
+            });
+        }
+
         const calendar = new FullCalendar.Calendar(calendarEl, {
             locale: 'id',
             initialView: 'dayGridMonth',
             headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,listWeek' },
             events: 'api_get_events.php',
+            
+            eventsSet: function(info) {
+                try {
+                    updateEventList(info.events, calendar.view);
+                } catch(e) {
+                    console.error("Error saat memperbarui daftar acara:", e);
+                }
+            },
+
+            datesSet: function(info) {
+                try {
+                    updateEventList(calendar.getEvents(), info.view);
+                } catch(e) {
+                    console.error("Error saat datesSet:", e);
+                }
+            },
             
             dateClick: function(info) {
                 eventForm.reset();
