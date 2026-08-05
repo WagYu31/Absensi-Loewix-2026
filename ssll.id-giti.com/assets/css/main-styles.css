@@ -1,0 +1,531 @@
+:root {
+    --primary-color: #2979ff;
+    /* Warna biru yang lebih modern */
+    --secondary-color: #6c757d;
+    /* Abu-abu standar untuk teks sekunder */
+    --dark-color: #212529;
+    /* Warna sidebar utama, lebih gelap */
+    --light-color: #f8f9fa;
+    /* Warna terang untuk background card header, dll */
+    --success-color: #198754;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --header-bg: linear-gradient(90deg, #003c9c 0%, #0056b3 100%);
+    /* Gradient untuk header */
+    --body-bg: #eef1f5;
+    /* Background body lebih lembut */
+    --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    /* Shadow lebih halus */
+    --card-border-radius: 0.5rem;
+    /* Radius lebih besar untuk card */
+    --font-family-sans-serif: 'Roboto', sans-serif;
+    /* Font Poppins */
+    --page-lavender-bg: #E6E0F8;
+    /* Warna lavender untuk notch effect, sesuaikan jika perlu */
+}
+
+body {
+    font-family: var(--font-family-sans-serif);
+    background-color: var(--body-bg);
+    /* Default body background */
+    /* Jika ingin notch lavender, ubah ini ke var(--page-lavender-bg) atau set via JS */
+    padding-bottom: 80px;
+    /* Ruang lebih untuk bottom nav */
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Main Content Wrapper */
+.main-content-wrapper {
+    margin-left: 260px;
+    /* Sesuaikan dengan lebar sidebar */
+    padding: 0;
+    transition: all 0.3s ease-in-out;
+    background-color: var(--body-bg);
+    /* Pastikan wrapper juga menggunakan body-bg */
+}
+
+.header-banner {
+    background: var(--header-bg);
+    color: white;
+    padding: 50px 30px;
+    text-align: left;
+}
+
+.header-banner h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.header-banner p {
+    font-size: 1.05rem;
+    opacity: 0.85;
+    font-weight: 300;
+}
+
+.dashboard-content {
+    padding: 25px;
+    margin-top: -60px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-shadow);
+    margin-bottom: 25px;
+    background-color: #fff;
+}
+
+.card-header {
+    background-color: var(--light-color);
+    border-bottom: 1px solid #e0e0e0;
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-header .card-title {
+    margin-bottom: 0;
+    font-size: 1.1rem;
+    color: var(--dark-color);
+}
+
+.card-header i.title-icon {
+    color: var(--primary-color);
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Profile Card Specifics */
+.profile-card .profile-img-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 20px;
+    border: 4px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.profile-card .profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-card .profile-info h5 {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.profile-card .profile-info p {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.2rem;
+}
+
+.profile-card .btn-outline-primary {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 500;
+    padding: 0.375rem 0.85rem;
+    font-size: 0.85rem;
+}
+
+.profile-card .btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Stat Item & Card Link */
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.stat-item span {
+    color: var(--secondary-color);
+}
+
+.stat-item strong {
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+.stat-item .text-success {
+    color: var(--success-color) !important;
+}
+
+.stat-item .text-warning {
+    color: var(--warning-color) !important;
+}
+
+.stat-item .text-danger {
+    color: var(--danger-color) !important;
+}
+
+.card-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+.card-link:hover {
+    text-decoration: underline;
+}
+
+.card-link i {
+    margin-left: 5px;
+    font-size: 0.8rem;
+}
+
+/* Section Title */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 1.25rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background-color: var(--primary-color);
+}
+
+/* Quick Action Grid */
+.quick-action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 15px;
+}
+
+.quick-action-card {
+    text-align: center;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--dark-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    background-color: #fff;
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--card-shadow);
+    border: 1px solid transparent;
+    height: 100%;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(41, 121, 255, 0.2);
+    /* Menggunakan --primary-color dalam bentuk RGBA */
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.quick-action-card i {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+    color: var(--primary-color);
+    transition: color 0.2s ease;
+}
+
+.quick-action-card span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Announcement Item */
+.announcement-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.announcement-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.announcement-item:first-child {
+    padding-top: 0;
+}
+
+.announcement-item .announcement-title {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+    display: block;
+    text-decoration: none;
+}
+
+.announcement-item .announcement-title:hover {
+    text-decoration: underline;
+}
+
+.announcement-item .announcement-meta {
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+}
+
+.announcement-item .announcement-meta .badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.announcement-item .announcement-content {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Responsive Styles for Main Content */
+@media (max-width: 991.98px) {
+
+    /* Breakpoint Bootstrap lg */
+    .main-content-wrapper {
+        margin-left: 0;
+    }
+
+    .header-banner h1 {
+        font-size: 1.9rem;
+    }
+
+    .header-banner p {
+        font-size: 1rem;
+    }
+
+    .dashboard-content {
+        margin-top: -40px;
+        padding: 20px;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+
+    /* Breakpoint Bootstrap md */
+    .profile-card .d-flex {
+        flex-direction: column;
+        align-items: center !important;
+        text-align: center;
+    }
+
+    .profile-card .profile-img-container {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .header-banner {
+        padding: 40px 20px;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    .quick-action-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+    }
+
+    .quick-action-card {
+        padding: 15px 10px;
+    }
+
+    .quick-action-card i {
+        font-size: 2rem;
+    }
+
+    .quick-action-card span {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+
+    /* Breakpoint Bootstrap sm */
+    .quick-action-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 kolom di mobile kecil */
+    }
+}
+
+
+/* PROFILE PAGE */
+
+/* Styles for Profile Page (Tambahkan ke main-styles.css atau profile.css) */
+
+/* Profile Header Card (Adaptasi dari .profile-header lama) */
+.profile-header-card .card-body {
+    padding: 2rem 1.5rem;
+    /* Padding lebih besar */
+}
+
+.profile-photo-main {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+    /* Gunakan primary color untuk border */
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.profile-photo-main:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(41, 121, 255, 0.25);
+    /* Bayangan lebih menonjol */
+}
+
+.profile-name-main {
+    color: var(--dark-color);
+    font-weight: 600;
+    font-size: 1.75rem;
+    /* Ukuran nama lebih besar */
+}
+
+.profile-position-main {
+    color: var(--secondary-color);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-buttons-main .btn {
+    /* margin: 0 5px; (dihapus karena menggunakan me-2 pada button pertama) */
+    /* border-radius: 20px; (sudah diatur rounded-pill) */
+    padding: 0.5rem 1.25rem;
+    /* Padding tombol lebih nyaman */
+    font-weight: 500;
+}
+
+/* Profile Details Table (Adaptasi dari .profile-table lama) */
+.profile-table-custom {
+    font-size: 0.9rem;
+    /* Ukuran font tabel sedikit lebih kecil agar rapi */
+}
+
+.profile-table-custom th.table-section-header {
+    /* Header bagian dalam tabel */
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-top: 1px solid var(--primary-color);
+    /* Garis atas tambahan */
+    border-bottom: 1px solid var(--primary-color);
+}
+
+.profile-table-custom tr:first-child th.table-section-header {
+    border-top: none;
+    /* Hilangkan border atas untuk header pertama */
+}
+
+
+.profile-table-custom td {
+    padding: 0.75rem 1rem;
+    /* Padding sel tabel */
+    vertical-align: middle;
+}
+
+.profile-table-custom td:first-child {
+    /* Kolom label */
+    font-weight: 500;
+    color: var(--dark-color);
+    width: 30%;
+    /* Lebar kolom label */
+}
+
+.profile-table-custom tr:nth-child(even) td {
+    /* Zebra striping jika diinginkan, bisa di-disable jika Bootstrap table-hover cukup */
+    /* background-color: #f8f9faef; */
+    /* Warna striping lebih halus */
+}
+
+.profile-document-img {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: var(--card-border-radius, 0.5rem);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eee;
+    margin-top: 5px;
+    display: block;
+    /* Agar margin bisa diterapkan jika perlu */
+}
+
+/* Responsive Styles for Profile Specifics (Tambahkan ke main-styles.css) */
+@media (max-width: 767.98px) {
+    .profile-photo-main {
+        width: 100px;
+        height: 100px;
+    }
+
+    .profile-name-main {
+        font-size: 1.5rem;
+    }
+
+    .profile-buttons-main .btn {
+        margin-bottom: 10px;
+        width: calc(50% - 5px);
+        /* Tombol berdampingan di mobile jika muat */
+        display: inline-block;
+    }
+
+    .profile-buttons-main .btn:nth-child(odd) {
+        margin-right: 5px;
+    }
+
+    .profile-buttons-main .btn:nth-child(even) {
+        margin-left: 5px;
+    }
+
+    @media (max-width: 480px) {
+        .profile-buttons-main .btn {
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+
+    .profile-table-custom td,
+    .profile-table-custom th.table-section-header {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .profile-table-custom td:first-child {
+        width: 40%;
+    }
+
+    .profile-document-img {
+        max-width: 150px;
+    }
+}

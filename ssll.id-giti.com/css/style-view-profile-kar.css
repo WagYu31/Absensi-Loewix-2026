@@ -1,0 +1,210 @@
+
+body {
+  background-color: #e0e4ee;
+  font-family: 'Lato', sans-serif;
+}
+
+.content {
+  padding: 20px;
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 8%;
+  margin-left: 10%;
+  background-color: white;
+  margin-bottom: 5%;
+}
+
+h2 {
+  margin-top: 2%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  padding: 8px;
+  text-align: left;
+  padding-left: 3%;
+}
+
+table th {
+  background-color: #333;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+table td img{
+  width: 350px;
+}
+
+.header{
+  margin-left: 3%;
+  margin-top: 2%;
+  width: 15%;
+  text-align: center;
+}
+
+.header img{
+    border: 3px solid #333;
+    border-radius: 50%;
+}
+
+.edit-profile{
+    float: right;
+    margin-top: -5%;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+.profile-info {
+  margin-bottom: 20px;
+}
+.profile-info table {
+  width: 100%;
+}
+.profile-info th,
+.profile-info td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+.profile-info th {
+  background-color: #f2f2f2;
+  color: #333;
+  font-weight: bold;
+}
+.ktp-image {
+  text-align: center;
+}
+.ktp-image img {
+  max-width: 200px;
+  max-height: 200px;
+}
+.edit-profile a, .edit-profile button{
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 13px;
+  text-decoration: none;
+}
+.edit-profile a:hover{
+  background-color: #45a049;
+}
+
+.edit-profile button{
+  background-color: #0073e6;
+}
+
+.edit-profile button:hover{
+  background-color: #4da6ff;
+}
+/* Gaya tombol pas photo */
+.edit-photo-button {
+  display: inline-block;
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.edit-photo-button img {
+  width: 120px;
+  border: none;
+}
+
+/* Gaya popup */
+.popup {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popup-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+}
+
+.popup-content h2 {
+  margin-top: 0;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.upload-button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.upload-button:hover {
+  background-color: #45a049;
+}
+
+@media screen and (max-width: 768px){
+  .content{
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 18%;
+  }
+  .header{
+    width: 100%;
+  }
+  .edit-profile{
+    width: 100%;
+    text-align: center;
+    margin-top: 2%;
+    margin-bottom: 5%;
+  }
+  table th, table td{
+    font-size: 13px;
+  }
+  table td img{
+    width: 90%;
+  }
+  
+}

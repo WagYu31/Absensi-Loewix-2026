@@ -1,0 +1,233 @@
+        body{
+            background-color:#e0e4ee;
+            font-family: 'Lato', sans-serif;
+        }
+        .containt{
+            margin-top:8%;
+            margin-left:5%;
+            margin-bottom: 3%;
+            width:90%;
+        }
+        table{
+            border: 2px solid #ddd;
+            background-color:white;
+        }
+        table tr{
+            vertical-align: middle;
+        }
+        table tr th.judul{
+            font-size:18px;
+            text-transform: uppercase;
+            background-color:#032539;
+            color:white;
+            text-align:center;
+            padding: 10px;
+        }
+        table tr th{
+            text-align: center;
+            vertical-align: middle;
+        }
+        table tr th:nth-child(1){
+            width:2%;
+        }
+        table tr th:nth-child(2){
+            width:2%;
+        }
+        table tr th:nth-child(3){
+            width:10%;
+        }
+        table tr th:nth-child(4){
+            width:10%;
+        }
+        table tr th:nth-child(5){
+            width:9%;
+        }
+        table tr th:nth-child(6){
+            width:9%;
+        }
+        table tr th:nth-child(7){
+            width:9%;
+        }
+        table tr th:nth-child(8){
+            width:9%;
+        }
+        table tr th:nth-child(9){
+            width:8%;
+        }
+        table tr th:nth-child(10){
+            width:8%;
+        }
+        table tr th:nth-child(11){
+            width:8%;
+        }
+        table tr th:nth-child(12){
+            width:10%;
+        }
+        table tr th:nth-child(13){
+            width:6%;
+        }
+        table tr td{
+            font-size: 13px;
+        }
+        table tr td.total{
+            text-align:right;
+            padding-right:30px;
+            background-color:yellow;
+            font-size:15px;
+            font-weight:bold;
+        }
+        i{
+            margin-right:10px;
+        }
+
+        label.tahun{
+            margin-left: 10px;
+        }
+
+        .show-more-button{
+            margin-left: 5px;
+        }
+
+        .show-more-button i{
+            font-size: 10px;
+        }
+
+        button{
+            background:none;
+            text-decoration:none;
+            border:none;
+        }
+        i#b, i#c {
+            font-size:13px;
+            padding:5px;
+            border-radius:50%;
+            text-align:center;
+            color:#be2623;
+            margin:0;
+            text-decoration: none;
+            text-align:center;
+        }
+
+        i#b{
+            color: #1c768f;
+            font-size: 13px;
+        }
+
+        i#b:hover, i#c:hover{
+            color:#f27777;
+            cursor:pointer;
+            text-decoration: none;
+        }
+
+        i#b:hover{
+            color: 228daa;
+        }
+
+        button.gaji {
+            padding: 5px 10px;
+            width: 150px;
+            margin-left:20px;
+            background-color: #1c768f;
+            color: white;
+            border: none;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        button.gaji:hover {
+            background-color: #5bd3c7;
+            cursor: pointer;
+        }
+
+        #pr{
+            left:54%;
+        }
+
+        button#lp, button#lp2, button#lp3{
+            display:inline;
+            margin-right:5px;
+        }
+        
+        .btn{
+            display: flex;
+        }
+
+        tr.hidden-row{
+            display:none;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .container{
+                margin-left:0;
+                width:100%;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            body{
+                overflow: auto;
+            }
+            .container{
+                overflow: auto;
+                margin-left:8%;
+                width: 91%
+            }
+            .hide-m{
+                display:none;
+            }
+            i#b{
+                display:inline;
+                font-size:12px;
+                margin-right:-10px;
+            }
+            table{
+                margin-top:0;
+            }
+            table tr th:nth-child(1), table tr th:nth-child(2){
+                width:5%;
+            }
+            table tr th:nth-child(3) {
+                width:40%;
+            }
+            table tr th:nth-child(4){
+                width:40%;
+            }
+            table tr th{
+                font-size:10px;
+            }
+            table tr th, table tr td{
+                font-size:12px;
+            }
+            .pilih{
+                margin-left:2%;
+                margin-top:25%;
+                width:96%;
+            }
+            label.tahun{
+                margin-left: 0;
+            }
+            label{
+                width: 20%;
+            }
+
+            select:nth-child(2){
+                margin-right: 5%;
+            }
+            select{
+                width: 70%;
+            }
+            button.gaji{
+                margin-top: 4%;
+                margin-left: 0;
+            }
+            button#lp, button#lp2, button#lp3, button#generate, button#lock, button#unlock, #pr{
+                margin-top: 7%;
+            }
+            #pr{
+                margin-top: 0px;
+            }
+
+        }

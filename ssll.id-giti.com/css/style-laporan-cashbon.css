@@ -1,0 +1,147 @@
+        body{
+            background-color:#e0e4ee;
+            font-family: 'Lato', sans-serif;
+        }
+        .containt{
+            margin-top:8%;
+            margin-left:10%;
+            margin-bottom: 3%;
+            width:80%;
+        }
+        table{
+            border: 2px solid #ddd;
+            background-color: white;
+        }
+        table tr{
+            vertical-align: middle;
+        }
+        table tr th.judul{
+            font-size:18px;
+            text-transform: uppercase;
+            background-color:#333;
+            color:white;
+            text-align:center;
+            padding: 10px;
+        }
+        table tr th{
+            text-align: center;
+        }
+        table tr td{
+            font-size:14px;
+            text-align: center;
+        }
+        table tr td.total{
+            text-align:right;
+            padding-right:30px;
+            background-color:yellow;
+            font-size:15px;
+            font-weight:bold;
+        }
+        i{
+            margin-right:10px;
+        }
+        label.tahun{
+            margin-left: 10px;
+        }
+        button.gaji {
+            padding: 5px 10px;
+            width: 150px;
+            margin-left:20px;
+            background-color: #1c768f;
+            color: white;
+            border: none;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        button.gaji:hover {
+            background-color: #5bd3c7;
+            cursor: pointer;
+        }
+        
+        button{
+            background:none;
+            text-decoration:none;
+            border:none;
+        }
+        
+        i#c {
+            font-size:14px;
+            padding:5px;
+            border-radius:50%;
+            text-align:center;
+            color:#be2623;
+            margin:0;
+            text-decoration: none;
+            text-align:center;
+        }
+
+        i#c:hover{
+            color:#f27777;
+            cursor:pointer;
+            text-decoration: none;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .container{
+                margin-left:0;
+                width:100%;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            body{
+                overflow: auto;
+            }
+            .containt{
+                margin-top: 18%;
+                margin-left:5%;
+                width: 90%
+            }
+            .hide-m{
+                display:none;
+            }
+            .pilih{
+                margin-left:2%;
+                margin-top:15%;
+                width:96%;
+            }
+            table th{
+                font-size: 14px;
+            }
+            table td{
+                font-size: 13px;
+            }
+            label.tahun{
+                margin-left: 0;
+            }
+            label{
+                width: 20%;
+            }
+
+            select:nth-child(2){
+                margin-right: 5%;
+            }
+            select{
+                width: 70%;
+            }
+            button.gaji{
+                margin-top: 4%;
+                margin-bottom: 5%;
+                float: right;
+            }
+            button#dropdownMenu1{
+                margin-top: 42%;
+                margin-left: 190%;
+            }
+            .dropdown-menu{
+                margin-top: 80%;
+            }
+            #pr{
+                top:0;
+                left:120%;
+            }
+        }

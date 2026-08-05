@@ -1,0 +1,144 @@
+/* style-slip-gaji.css */
+body {
+  font-family: 'Lato', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #e0e4ee;
+}
+
+.containt {
+  width: 80%;
+  margin-top: 8%;
+  margin-left: 10%;
+  margin-bottom: 5%;
+}
+
+.line {
+  margin-top: 40px;
+}
+
+h3 {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+a.back,
+a.print-button {
+  padding: 7px 18px 7px 18px;
+  background-color: #4caf50;
+  color: white;
+  margin-top: 10px;
+  margin-right: 10px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+a.print-button {
+  background-color: #0073e6;
+  float: right;
+}
+
+a.back:hover {
+  background-color: #45a049;
+}
+
+a.print-button:hover {
+  background-color: #4da6ff;
+}
+
+i {
+  margin-right: 10px;
+}
+
+.slip-gaji {
+  background-color: white;
+  padding: 30px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.slip-gaji h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.slip-gaji table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.slip-gaji th,
+.slip-gaji td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.slip-gaji td {
+  font-size: 14px;
+}
+
+.slip-gaji th {
+  width: 32%;
+  background-color: #f2f2f2;
+  font-size: 14px;
+}
+
+.slip-gaji tr:last-child td {
+  font-weight: bold;
+}
+
+.slip-gaji tr:last-child td:first-child {
+  text-align: left;
+}
+
+.slip-gaji tr:last-child td:last-child {
+  text-align: right;
+}
+
+@media print {
+  .no-print {
+    display: none;
+  }
+
+  .containt {
+    max-width: none;
+  }
+
+  .container {
+    display: none;
+  }
+
+  .slip-gaji {
+    border: none;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+    
+    .containt {
+        width : 80%;
+    }
+    .pilih {
+        margin-top:30%;
+    }
+  .slip-gaji {
+    width: 100%;
+    margin-left: 0%;
+    margin-top: 5%;
+  }
+
+  .slip-gaji th {
+    font-size: 13px;
+    width: 45%;
+  }
+
+  .slip-gaji td {
+    font-size: 13px;
+  }
+
+  a.print-button {
+    margin-right: 5%;
+    margin-top: 3%;
+  }
+}

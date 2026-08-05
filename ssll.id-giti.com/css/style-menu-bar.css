@@ -1,0 +1,120 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 210px;
+    height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    background-color: #333;
+    color: #fff;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul.z{
+    padding-top: 30px;
+}
+
+.sidebar ul li {
+    position: relative;
+}
+
+.sidebar ul li a {
+    display: block;
+    padding: 15px;
+    padding-left: 20px;
+    color: #fff;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+    background-image: linear-gradient( 95.2deg, rgba(173,252,234,1) 26.8%, rgba(192,229,246,1) 64% );
+    color: #333;
+}
+
+.sidebar ul li .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 200px;
+    background-color: #333;
+    border:none;
+}
+
+.sidebar ul li:hover .dropdown-menu {
+    display: block;
+}
+
+.sidebar ul li .dropdown-menu ul li a {
+    padding-left: 20px;
+}
+
+.sidebar-toggle {
+    display: none;
+    width: 50px;
+}
+
+.hamburger-icon {
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    color: #fff;
+    background-color: #333;
+    border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 260px;
+        height: 100%;
+        background-color: #333;
+        color: #fff;
+        transition: left 0.3s ease;
+        z-index: 1000;
+    }
+
+    .row{
+        width: 100%;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .sidebar-toggle {
+        display: block;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1001;
+    }
+
+    .sidebar ul {
+        padding-top: 30px;
+        margin-top: 15%;
+    }
+
+    .sidebar ul li .dropdown-menu {
+        display: none;
+        width: 100%;
+        margin-top:-11.5%;
+        background-color: #333;
+    }
+
+    .sidebar ul li .dropdown-menu:hover{
+        display: block;
+        z-index: 1002;
+    }
+
+}

@@ -1,0 +1,95 @@
+/* assets/css/bantuan-styles.css */
+
+.bantuan-header-banner {
+    /* Jika ingin style header banner khusus */
+    /* Contoh: background-image: url(...); */
+}
+
+.kontak-card {
+    margin-bottom: 1.5rem;
+}
+
+.kontak-card .card-header {
+    background-color: var(--primary-color-subtle, #e7f0fd);
+    /* Warna background header kartu */
+    border-bottom: 1px solid var(--primary-color-border, #a9c7f5);
+}
+
+.kontak-card .card-header .card-title {
+    color: var(--primary-color-text, var(--primary-color));
+    /* Warna teks judul kartu */
+    font-weight: 600;
+}
+
+.kontak-card .card-header .title-icon {
+    /* Ikon di judul kartu */
+    color: var(--primary-color-text, var(--primary-color));
+    opacity: 0.8;
+}
+
+
+.kontak-info-item {
+    display: flex;
+    align-items: flex-start;
+    /* Align ikon ke atas jika teks panjang */
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.kontak-info-item i.kontak-icon {
+    width: 20px;
+    /* Lebar untuk ikon agar teks sejajar */
+    margin-right: 0.75rem;
+    color: var(--secondary-color);
+    font-size: 1rem;
+    /* Ukuran ikon kontak */
+    margin-top: 3px;
+    /* Penyesuaian vertikal */
+    text-align: center;
+}
+
+.kontak-info-label {
+    font-weight: 500;
+    color: var(--dark-color);
+    margin-bottom: 0.1rem;
+    display: block;
+}
+
+.kontak-info-value {
+    color: var(--secondary-color);
+}
+
+.kontak-info-value a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.kontak-info-value a:hover {
+    text-decoration: underline;
+}
+
+/* Untuk daftar tanggung jawab */
+.tanggung-jawab-list {
+    list-style: none;
+    padding-left: 0;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+.tanggung-jawab-list li {
+    padding-left: 1.5em;
+    text-indent: -1.5em;
+    margin-bottom: 0.25rem;
+}
+
+.tanggung-jawab-list li::before {
+    content: "\f058";
+    /* Font Awesome check-circle solid icon */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    /* Solid icon */
+    color: var(--success-color);
+    /* Warna ikon centang */
+    margin-right: 0.5em;
+}

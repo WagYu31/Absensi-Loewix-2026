@@ -1,0 +1,171 @@
+/* Gaya umum */
+body {
+    font-family: 'Lato', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e0e4ee;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 8%;
+    margin-left: 10%;
+    margin-bottom: 3%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow-x: auto; /* Menambahkan overflow-x untuk membuat tabel dapat digulir */
+}
+
+.content h3, .content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+table th, table td {
+    padding: 8px;
+    text-align: center;
+    height: 25px;
+    border-bottom: 1px solid #ccc;
+}
+
+table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+table td {
+    vertical-align: middle;
+}
+
+table td a{
+    color:#0066cc;
+}
+
+table td a:hover{
+    color:#0033cc;
+}
+
+table tr th, table tr td{
+    text-align:center;
+}
+/* table tr:hover{
+    background-color: #f9f9f9;
+} */
+i.fas {
+    font-size:14px;
+    padding:5px;
+    border-radius:50%;
+    text-align:center;
+    color:#032539;
+}
+i.fas:hover{
+    color:#0073e6;
+    cursor:pointer;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.header {
+  align-items: center;
+  justify-content: space-between;
+  vertical-align: middle;
+  font-stretch: expanded;
+  margin: 20px 10px 0px 10px;
+}
+
+.header p{
+    background-color: #ffff66;
+    width: 20%;
+    text-align: center;
+    padding: 3px;
+}
+
+.disini {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+        
+.disini:hover{
+    background-color: #0063cc;
+    color: white;
+    text-decoration: none;
+}
+
+.button, .button-2 {
+  padding: 10px 20px;
+  background-color: #1c768f;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.button-2{
+    margin-bottom:5%;
+}
+
+.button:hover, .button-2:hover {
+  background-color: #228daa;
+  color: white;
+  text-decoration: none;
+}
+
+
+button{
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+  }
+  
+  .button2 {
+    text-decoration: none;
+  }
+  
+  .button2:hover {
+      cursor: pointer;
+  }
+
+  #kiri{
+    text-align: left;
+  }
+
+
+@media screen and (max-width: 768px) {
+    body{
+        overflow: auto;
+    }
+    .header p{
+        width: 50%;
+        padding: 3px;
+    }
+
+    .content {
+        margin-top: 20%;
+        margin-left: 5%;
+        width: 90%;
+    }
+    .hide-m{
+        display:none;
+    }
+}
+

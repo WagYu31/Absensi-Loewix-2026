@@ -1,0 +1,123 @@
+/* style-slip-gaji.css */
+body {
+  background-color: #e0e4ee;
+  font-family: 'Lato', sans-serif;
+}
+
+.containt {
+  padding: 20px;
+  width: 60%;
+  margin: 0 auto;
+  margin-top: 5%;
+  margin-left: 20%;
+  margin-bottom: 5%;
+}
+
+.line{
+    display: inline;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 100%;
+    text-align: right;
+}
+
+h2{
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+a.back, a.print-button{
+    padding: 7px 18px 7px 18px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+a.print-button{
+    background-color: #0073e6;
+}
+
+a.back:hover{
+    background-color: #45a049;
+}
+
+a.print-button:hover{
+    background-color: #4da6ff;
+}
+
+i{
+    margin-right:10px;
+}
+
+.slip-gaji {
+  background-color: white;
+  padding: 30px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.slip-gaji h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.slip-gaji table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.slip-gaji th,
+.slip-gaji td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.slip-gaji th {
+  background-color: #f2f2f2;
+  font-size: 14px;
+  width: 35%;
+  text-align: left;
+}
+
+.slip-gaji td {
+  font-size: 14px;
+}
+
+.slip-gaji tr:last-child td {
+  font-weight: bold;
+}
+
+.slip-gaji tr:last-child td:first-child {
+  text-align: left;
+}
+
+.slip-gaji tr:last-child td:last-child {
+  text-align: right;
+}
+
+.no-print {
+  display: block;
+}
+
+@media print {
+  .no-print {
+    display: none;
+  }
+
+  .container {
+    display: none;
+  }
+
+  .slip-gaji {
+    border: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .containt{
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 8%;
+  }
+}

@@ -1,0 +1,71 @@
+/* Desktop Sidebar */
+.sidebar {
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 260px;
+    background-color: var(--dark-color);
+    color: white;
+    padding-top: 25px;
+    transition: all 0.3s ease-in-out;
+    z-index: 1030;
+}
+
+.sidebar-header {
+    padding: 0 25px 25px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sidebar-header h3 {
+    color: white;
+    margin-top: 10px;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.sidebar-header h3 .fa-g {
+    color: var(--primary-color);
+}
+
+.sidebar-menu {
+    padding: 25px 0;
+}
+
+.sidebar-menu a {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 14px 25px;
+    display: block;
+    text-decoration: none;
+    transition: all 0.25s ease-in-out;
+    border-left: 4px solid transparent;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-left: 4px solid var(--primary-color);
+    color: white;
+}
+
+.sidebar-menu i {
+    margin-right: 15px;
+    width: 22px;
+    text-align: center;
+    font-size: 1.0rem;
+}
+
+.sidebar-menu .mt-4 {
+    /* Tombol logout */
+    margin-top: 2rem !important;
+}
+
+/* Responsive Styles for Sidebar */
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+}

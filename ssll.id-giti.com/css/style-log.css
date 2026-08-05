@@ -1,0 +1,136 @@
+body {
+    background-color:#e0e4ee;
+    font-family: 'Lato', sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.form-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    animation: fadeInUp 0.5s ease-in-out;
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.form-container#sign-up-form {
+    display: none; /* Mengubah display menjadi none */
+}
+
+.show {
+    display: block !important; /* Menampilkan form dengan menggunakan !important */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 95%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.button-group {
+    align-items: center;
+}
+
+.toggle-button,
+input[type="submit"] {
+    width: 35%;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 30px;
+    padding: 10px 5px;
+    text-align:center;
+    border: none;
+    background-size: 300% 100%;
+
+    background-image: linear-gradient(to right, #667eea, #764ba2, #6B8DD6, #8E37D7);
+    box-shadow: 0 2px 5px 0 rgba(116, 79, 168, 0.75);
+
+    border-radius: 4px;
+    -moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.toggle-button{
+    background-image: linear-gradient(to left, #667eea, #764ba2, #6B8DD6, #8E37D7);
+
+}
+
+.toggle-button:hover,
+input[type="submit"]:hover {
+    background-position: 100% 0;
+    -moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.toggle-button:focus, input[type="submit"]:focus{
+    outline: none;
+}
+
+.toggle-button{
+    float: right;
+    margin-top: -11.5%;
+}
+
+.forgot{
+    text-align: center;
+    margin-top: 40px;
+}
+
+.forgot a{
+    text-transform: Capitalize;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.forgot a:hover{
+    color:red;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .form-container {
+        max-width: 80%; 
+    }
+}

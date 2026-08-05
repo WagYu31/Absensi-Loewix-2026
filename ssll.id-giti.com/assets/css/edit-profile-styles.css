@@ -1,0 +1,119 @@
+/* assets/css/edit-profile-styles.css */
+
+.edit-profile-header {
+    /* Styling untuk header banner halaman ini */
+    /* padding: 40px 30px; */
+    /* Bisa gunakan default dari main-styles.css atau override */
+}
+
+.edit-profile-header h1 {
+    /* font-size: 2rem; */
+}
+
+.edit-profile-form-card .card-header {
+    /* background-color: var(--light-color); (sudah ada di main-styles.css) */
+}
+
+.edit-profile-form-card .card-header .card-title {
+    /* font-size: 1.1rem; (sudah ada di main-styles.css) */
+}
+
+.edit-profile-form-card .card-body {
+    padding: 1.5rem;
+    /* Default padding */
+}
+
+@media (min-width: 992px) {
+    .edit-profile-form-card .card-body {
+        padding: 2rem;
+        /* Padding lebih besar di desktop */
+    }
+}
+
+
+.form-section-title {
+    font-size: 1.05rem;
+    /* Ukuran sub-judul form */
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid #e0e0e0;
+    /* Garis pemisah sub-judul */
+    display: flex;
+    align-items: center;
+}
+
+.form-section-title i {
+    color: var(--primary-color);
+    margin-right: 0.6rem;
+    font-size: 1em;
+    /* Relatif terhadap font-size parent */
+}
+
+/* KTP Preview */
+.ktp-preview {
+    max-width: 250px;
+    /* Lebar preview KTP disesuaikan */
+    max-height: 180px;
+    border: 1px solid #ced4da;
+    /* Border lebih jelas */
+    border-radius: var(--card-border-radius-sm, 0.25rem);
+    margin-top: 0.75rem;
+    display: block;
+    object-fit: contain;
+    /* Agar gambar tidak terpotong aneh */
+    background-color: #f8f9fa;
+    /* Background jika gambar transparan atau belum load */
+}
+
+/* Tombol Aksi Form */
+.form-actions {
+    margin-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+    /* Garis pemisah sebelum tombol */
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    /* Tombol rata kanan */
+    gap: 0.5rem;
+    /* Jarak antar tombol */
+}
+
+.form-actions .btn {
+    padding: 0.5rem 1.25rem;
+    /* Padding tombol */
+    font-weight: 500;
+}
+
+/* Penyesuaian untuk form control jika diperlukan, 
+   Bootstrap 5 sudah cukup baik. 
+   Style fokus sudah ada di main-styles.css */
+.form-control-sm {
+    /* Pastikan form-control-sm Bootstrap sesuai keinginan */
+    /* font-size: 0.875rem; */
+    /* padding: 0.25rem 0.5rem; */
+}
+
+
+/* Responsive untuk tombol aksi */
+@media (max-width: 576px) {
+    .form-actions {
+        flex-direction: column;
+        /* Tombol stack di mobile */
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+
+    .form-actions .btn:not(:last-child) {
+        margin-bottom: 0.5rem;
+        /* Jarak antar tombol saat stack */
+    }
+
+    .form-actions .btn.me-2 {
+        /* Hilangkan margin jika ada */
+        margin-right: 0 !important;
+    }
+}

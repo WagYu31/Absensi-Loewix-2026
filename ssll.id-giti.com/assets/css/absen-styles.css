@@ -1,0 +1,413 @@
+/* absen-styles.css */
+
+/* Header Halaman Absen (jika perlu styling khusus berbeda dari banner utama) */
+.absen-page-header {
+    /* background: linear-gradient(90deg, #1e5799 0%, #2989d8 50%, #207cca 100%); */
+    /* Contoh gradient lain */
+    padding: 40px 30px;
+    /* Sedikit lebih pendek dari banner utama dashboard */
+}
+
+.absen-page-header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.absen-page-header p {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+
+/* Filter Form Card */
+.filter-form-card .card-body {
+    padding: 1.5rem;
+}
+
+.filter-form-card .form-label {
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+}
+
+.filter-form-card .btn {
+    padding: 0.5rem 0.75rem;
+    /* Padding tombol filter */
+    font-size: 0.9rem;
+}
+
+
+/* Attendance Table Styles */
+.attendance-table-card .card-body {
+    padding: 0;
+    /* Hapus padding default card-body agar tabel rapat */
+}
+
+.attendance-table-custom {
+    font-size: 0.9rem;
+    /* Ukuran font tabel */
+}
+
+.attendance-table-custom thead th {
+    background-color: var(--primary-color);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    /* Agar header tabel tetap di atas saat scroll dalam table-responsive */
+    padding: 0.9rem 0.75rem;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.attendance-table-custom tbody td {
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+.attendance-table-custom tbody tr:nth-child(even) {
+    /* background-color: #f8f9faef; */
+    /* Dihandle oleh table-striped Bootstrap */
+}
+
+.attendance-table-custom .text-danger {
+    /* Lebih spesifik */
+    color: var(--danger-color) !important;
+}
+
+.attendance-table-custom .text-warning {
+    color: var(--warning-color) !important;
+}
+
+
+/* Shift Badges */
+.shift-badge {
+    font-size: 0.8em;
+    padding: 0.3em 0.6em;
+    border-radius: var(--card-border-radius, 0.25rem);
+    font-weight: 500;
+    display: inline-block;
+    min-width: 35px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.shift-P {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* S1 - Pagi */
+.shift-M {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* S2 - Middle */
+.shift-S {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+/* S3 - Sore */
+.shift-T {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* HC - Head Office */
+.shift-W {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+/* Sbt - Sabtu */
+.shift-TW {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+/* HS - Hari Shift (Sabtu) */
+
+
+/* Summary Cards - Absen Page */
+.summary-cards-container .summary-card-item {
+    border: none;
+    box-shadow: var(--card-shadow);
+}
+
+.summary-cards-container .summary-card-item .card-body {
+    padding: 1.25rem;
+}
+
+.summary-cards-container .summary-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.summary-cards-container .summary-icon.bg-warning {
+    background-color: var(--warning-color) !important;
+}
+
+.summary-cards-container .summary-icon.bg-danger {
+    background-color: var(--danger-color) !important;
+}
+
+.summary-cards-container .summary-title {
+    font-size: 0.9rem;
+}
+
+.summary-cards-container .summary-value {
+    font-weight: 600;
+    font-size: 1.75rem;
+}
+
+.summary-cards-container .summary-value small {
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+.summary-cards-container .text-sm {
+    font-size: 0.85rem;
+}
+
+.summary-total-fine {
+    /* Card khusus untuk total akumulasi denda */
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.summary-total-fine .summary-icon {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.summary-total-fine .summary-title,
+.summary-total-fine .summary-value {
+    color: white;
+}
+
+/* Styling untuk Tabel Informasi Denda yang Lebih Rapi */
+.fine-info-table {
+    margin-top: 1rem;
+    /* Jarak dari judul card */
+    font-size: 0.9rem;
+    /* Ukuran font dasar untuk info denda */
+}
+
+.fine-info-row {
+    display: flex;
+    justify-content: space-between;
+    /* Kondisi di kiri, jumlah denda di kanan */
+    align-items: center;
+    /* Sejajarkan item secara vertikal di tengah baris */
+    padding: 0.75rem 0;
+    /* Padding atas-bawah untuk setiap baris */
+    border-bottom: 1px solid #f0f0f0;
+    /* Garis pemisah tipis antar baris */
+}
+
+.fine-info-row:last-child {
+    border-bottom: none;
+    /* Hilangkan border untuk item terakhir */
+}
+
+.fine-info-condition {
+    display: flex;
+    /* Untuk mensejajarkan ikon dengan teks kondisi */
+    align-items: center;
+    color: var(--secondary-color, #6c757d);
+    /* Warna teks kondisi */
+    flex-basis: 65%;
+    /* Beri ruang lebih banyak untuk teks kondisi */
+    padding-right: 1rem;
+    /* Jarak antara kondisi dan jumlah denda */
+}
+
+.fine-info-icon {
+    color: var(--primary-color, #2979ff);
+    /* Warna ikon sesuai tema */
+    font-size: 0.7rem;
+    /* Ukuran ikon sedikit lebih kecil */
+    margin-right: 0.75rem;
+    /* Jarak ikon dari teks */
+    flex-shrink: 0;
+    /* Agar ikon tidak mengecil */
+}
+
+.fine-info-amount {
+    font-weight: 600;
+    /* Buat jumlah denda tebal */
+    color: var(--dark-color, #212529);
+    /* Warna teks jumlah denda */
+    text-align: right;
+    /* Sejajarkan jumlah denda ke kanan */
+    white-space: nowrap;
+    /* Pastikan jumlah denda tidak terpotong ke baris baru */
+    background-color: var(--body-bg, #eef1f5);
+    /* Warna latar belakang lembut untuk jumlah denda */
+    padding: 0.3rem 0.6rem;
+    /* Padding di dalam "badge" jumlah denda */
+    border-radius: 0.25rem;
+    /* Sudut membulat untuk "badge" */
+    flex-basis: 35%;
+    /* Ruang untuk jumlah denda */
+}
+
+.fine-info-amount .per-unit {
+    font-size: 0.8em;
+    /* Ukuran font lebih kecil untuk unit */
+    font-weight: 400;
+    /* Berat font normal */
+    color: var(--secondary-color, #6c757d);
+    margin-left: 0.25rem;
+}
+
+/* Penyesuaian untuk layar kecil */
+@media (max-width: 576px) {
+    .fine-info-row {
+        flex-direction: column;
+        /* Susun kondisi dan jumlah denda secara vertikal */
+        align-items: flex-start;
+        /* Sejajarkan ke kiri */
+        padding: 0.6rem 0;
+    }
+
+    .fine-info-condition {
+        margin-bottom: 0.4rem;
+        /* Jarak antara kondisi dan jumlah denda saat vertikal */
+        padding-right: 0;
+        /* Tidak perlu padding kanan saat vertikal */
+        flex-basis: auto;
+        /* Biarkan lebar otomatis */
+    }
+
+    .fine-info-amount {
+        text-align: left;
+        /* Sejajarkan jumlah denda ke kiri saat vertikal */
+        width: 100%;
+        /* Gunakan lebar penuh saat vertikal */
+        flex-basis: auto;
+        /* background-color: transparent; */
+        /* Opsional: hilangkan background saat vertikal */
+        /* padding-left: 0; */
+        /* Opsional: sesuaikan padding saat vertikal */
+    }
+}
+
+/* Print Styles (Pindahkan juga ke main-styles.css jika lebih general) */
+@media print {
+
+    .no-print,
+    .sidebar,
+    /* Sidebar juga disembunyikan saat cetak */
+    .custom-mobile-nav-wrapper,
+    /* Navigasi bawah mobile juga disembunyikan */
+    .header-banner.absen-page-header {
+        /* Header banner halaman absen disembunyikan */
+        display: none !important;
+    }
+
+    body {
+        padding-bottom: 0 !important;
+        /* Hapus padding bawah dari body */
+        background-color: #fff !important;
+        /* Pastikan background putih saat cetak */
+    }
+
+    .main-content-wrapper {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+
+    .dashboard-content {
+        margin-top: 0 !important;
+        padding: 1cm !important;
+        /* Margin cetak */
+    }
+
+    .card {
+        /* Hilangkan shadow dan border pada card saat cetak */
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        /* Beri border tipis agar terlihat */
+    }
+
+    .attendance-table-card .card-body {
+        padding: 0;
+    }
+
+    .attendance-table-custom thead th {
+        background-color: #eee !important;
+        /* Warna header tabel lebih ringan untuk cetak */
+        color: #333 !important;
+        -webkit-print-color-adjust: exact;
+        /* Paksa browser cetak background color */
+        color-adjust: exact;
+    }
+
+    .table-striped tbody tr:nth-child(odd) {
+        /* Pastikan striping tercetak */
+        background-color: #f9f9f9 !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    .table-responsive {
+        overflow-x: visible !important;
+        /* Tampilkan semua kolom saat cetak */
+    }
+
+    .d-none.d-md-table-cell {
+        /* Tampilkan kolom yang disembunyikan di mobile */
+        display: table-cell !important;
+    }
+}
+
+/* Responsive styles for Absen Page (Tambahan jika perlu) */
+@media (max-width: 767.98px) {
+    .attendance-table-custom {
+        font-size: 0.85rem;
+        /* Font lebih kecil di mobile */
+    }
+
+    .attendance-table-custom th,
+    .attendance-table-custom td {
+        padding: 0.5rem 0.4rem;
+        /* Padding sel lebih kecil */
+    }
+
+    .shift-badge {
+        font-size: 0.7em;
+        padding: 0.2em 0.4em;
+    }
+
+    .summary-cards-container .summary-value {
+        font-size: 1.3rem;
+    }
+
+    /* Sembunyikan kolom yang kurang penting di mobile */
+    .attendance-table-custom th:nth-child(1),
+    /* No */
+    .attendance-table-custom td:nth-child(1),
+    .attendance-table-custom th:nth-child(6),
+    /* Terlambat */
+    .attendance-table-custom td:nth-child(6),
+    .attendance-table-custom th:nth-child(7),
+    /* Jam Kerja */
+    .attendance-table-custom td:nth-child(7),
+    .attendance-table-custom th:nth-child(8)
+
+    /* Keterangan */
+    /* .attendance-table-custom td:nth-child(8) */
+        {
+        /* display: none; */
+        /* Dihapus karena sudah ada d-none d-md-table-cell di HTML */
+    }
+}

@@ -1,0 +1,10 @@
+# Large zip archives and database backups
+*.zip
+*.sql
+*.tar.gz
+*.rar
+
+# OS / Editor junk
+.DS_Store
+.vscode/
+*.log

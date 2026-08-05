@@ -1,0 +1,9 @@
+.btn{
+    display: flex;
+}
+
+ .container .btn a.gaji{
+    padding: 5px;
+    width: 100px;
+    background-color: aquamarine;
+ }

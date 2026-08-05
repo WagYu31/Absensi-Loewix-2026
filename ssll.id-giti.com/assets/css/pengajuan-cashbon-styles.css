@@ -1,0 +1,189 @@
+/* assets/css/pengajuan-cashbon-styles.css */
+
+.page-specific-header h1 {
+    /* Gaya spesifik jika header halaman ini beda */
+}
+
+/* Form Pengajuan Cashbon */
+.form-pengajuan-cashbon-card .card-header .card-title {
+    /* Gaya judul card form */
+}
+
+.form-pengajuan-cashbon-card .form-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form-pengajuan-cashbon-card .form-control-sm,
+.form-pengajuan-cashbon-card .form-select-sm {
+    font-size: 0.9rem;
+}
+
+.form-pengajuan-cashbon-card .form-text {
+    font-size: 0.8rem;
+}
+
+.form-pengajuan-cashbon-card .btn-primary {
+    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+}
+
+/* Kartu Informasi/Syarat Ketentuan Cashbon */
+.info-cashbon-card .card-body {
+    /* Jika menggunakan modal, ini untuk modal-body */
+    padding: 1.25rem;
+}
+
+.info-cashbon-intro {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.syarat-cashbon-section {
+    margin-top: 1rem;
+}
+
+.syarat-item {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+.syarat-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.syarat-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+}
+
+.syarat-title i {
+    font-size: 0.9em;
+    margin-right: 0.6rem;
+    width: 20px;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.syarat-deskripsi {
+    font-size: 0.875rem;
+    color: #555;
+    line-height: 1.6;
+    padding-left: calc(20px + 0.6rem);
+    /* Indentasi */
+    text-align: justify;
+}
+
+.footer-info-cashbon {
+    font-size: 0.85rem !important;
+    color: var(--secondary-color) !important;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+}
+
+.footer-info-cashbon i {
+    margin-right: 0.5rem;
+    font-size: 0.9em;
+    margin-top: 3px;
+}
+
+/* Riwayat Cashbon (untuk halaman riwayat-cashbon.php) */
+.riwayat-cashbon-table {
+    font-size: 0.875rem;
+}
+
+.riwayat-cashbon-table thead th {
+    white-space: nowrap;
+    font-weight: 600;
+    background-color: var(--bs-light-bg-subtle, #fcfcfd) !important;
+    padding: 0.6rem 0.75rem;
+}
+
+.riwayat-cashbon-table tbody td {
+    padding: 0.6rem 0.75rem;
+    vertical-align: middle;
+}
+
+.riwayat-cashbon-table .keterangan-cashbon {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.riwayat-cashbon-table .badge {
+    font-size: 0.75rem;
+    padding: 0.3em 0.5em;
+}
+
+/* Kartu Riwayat Cashbon Mobile (untuk halaman riwayat-cashbon.php) */
+.riwayat-cashbon-list-mobile .card.riwayat-cashbon-item-mobile {
+    border-left: 4px solid var(--primary-color);
+}
+
+.riwayat-cashbon-list-mobile .card-body {
+    padding: 0.9rem 1rem;
+    font-size: 0.875rem;
+}
+
+.riwayat-cashbon-list-mobile .card-title-mobile {
+    font-weight: 600;
+    color: var(--dark-color);
+    font-size: 1rem;
+}
+
+.riwayat-cashbon-list-mobile .status-mobile .badge {
+    font-size: 0.7rem;
+    padding: 0.3em 0.55em;
+    white-space: nowrap;
+}
+
+.riwayat-cashbon-list-mobile .card-text-mobile-meta {
+    margin-bottom: 0.75rem !important;
+    border-bottom: 1px dashed #eee;
+    padding-bottom: 0.5rem;
+}
+
+.riwayat-cashbon-list-mobile .label-mobile {
+    color: var(--secondary-color);
+    font-weight: 500;
+    display: block;
+    font-size: 0.75rem;
+    margin-bottom: 0.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.riwayat-cashbon-list-mobile .value-mobile {
+    color: var(--dark-color);
+    font-weight: 500;
+}
+
+.riwayat-cashbon-list-mobile .keterangan-mobile-container {
+    margin-top: 0.5rem !important;
+    padding-top: 0.5rem;
+    border-top: 1px dashed #eee;
+}
+
+.riwayat-cashbon-list-mobile .keterangan-mobile {
+    font-size: 0.82rem;
+    color: #444;
+    line-height: 1.5;
+}
+
+@media print {
+    .filter-cashbon-card {
+        display: none !important;
+    }
+}

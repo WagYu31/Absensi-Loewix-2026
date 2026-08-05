@@ -1,0 +1,508 @@
+/* assets/css/slip-gaji-styles.css */
+
+/* Header Halaman Slip Gaji (jika perlu styling khusus berbeda dari banner utama) */
+.slip-gaji-header {
+    padding: 40px 30px;
+    /* Padding disesuaikan */
+}
+
+.slip-gaji-header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.slip-gaji-content {
+    /* padding-top: 1rem; */
+    /* Jika header lebih pendek */
+}
+
+.filter-slip-card .form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+}
+
+.filter-slip-card .btn {
+    font-size: 0.9rem;
+}
+
+/* Main Salary Slip Container */
+.salary-slip-container {
+    max-width: 800px;
+    /* Lebar maksimal slip gaji agar mudah dibaca */
+    margin-bottom: 2rem;
+}
+
+.salary-slip {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: var(--card-border-radius, 0.375rem);
+    padding: 2rem;
+    box-shadow: var(--card-shadow, 0 4px 15px rgba(0, 0, 0, 0.07));
+    font-family: 'Poppins', sans-serif;
+    /* Konsisten dengan font utama */
+}
+
+.slip-header {
+    display: flex;
+    flex-wrap: wrap;
+    /* Agar bisa wrap di mobile */
+    justify-content: space-between;
+    align-items: flex-start;
+    /* Align items to the top */
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--primary-color, #2979ff);
+}
+
+.company-logo {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.company-logo i.fa-building-columns {
+    /* Contoh: jika Anda ingin mengatur ukuran ikon secara eksplisit di sini
+       font-size: 2rem; 
+    */
+}
+
+.company-logo img {
+    max-width: 100%;
+    height: auto;
+}
+
+.company-logo .fa-building-columns {
+    color: var(--primary-color);
+}
+
+
+.company-details {
+    flex: 1;
+    min-width: 200px;
+    /* Agar tidak terlalu sempit saat wrap */
+}
+
+.company-details .company-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--dark-color, #212529);
+    margin-bottom: 0.25rem;
+}
+
+.company-details .company-address {
+    font-size: 0.85rem;
+    color: var(--secondary-color, #6c757d);
+    line-height: 1.4;
+    margin-bottom: 0;
+}
+
+.slip-title-section {
+    text-align: right;
+    flex: 1;
+    min-width: 250px;
+}
+
+.slip-title-section .slip-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color, #2979ff);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.slip-title-section .slip-period,
+.slip-title-section .slip-paydate {
+    font-size: 0.8rem;
+    color: var(--secondary-color, #6c757d);
+    margin-bottom: 0.1rem;
+    font-weight: 400;
+}
+
+.slip-divider {
+    border-color: #e0e0e0;
+    margin-top: 0;
+    /* Dihapus karena sudah ada padding-bottom di slip-header */
+}
+
+.employee-details-slip {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: var(--bs-light-bg-subtle, #fcfcfd);
+    border-radius: var(--card-border-radius-sm, 0.25rem);
+    border: 1px solid var(--bs-light-border-subtle, #eff исполняемый);
+}
+
+.employee-details-slip p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.employee-details-slip strong {
+    color: var(--dark-color, #212529);
+    min-width: 130px;
+    /* Agar label sejajar */
+    display: inline-block;
+}
+
+.salary-details {
+    margin-bottom: 1.5rem;
+}
+
+.section-title-slip {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-color, #212529);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.details-table td,
+.details-table th {
+    padding: 0.4rem 0;
+    /* Kurangi padding vertikal */
+    font-size: 0.9rem;
+    border-top: 1px solid #f0f0f0;
+    /* Garis antar item lebih halus */
+}
+
+.details-table tbody tr:first-child td {
+    border-top: none;
+}
+
+.details-table tfoot tr.total-row th {
+    padding-top: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--dark-color, #212529);
+    border-top: 2px solid var(--dark-color, #212529);
+}
+
+.details-table td:last-child,
+.details-table th:last-child {
+    font-family: 'Roboto Mono', monospace;
+    /* Font monospace untuk angka */
+    font-weight: 500;
+}
+
+
+.net-salary-section {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px dashed #ccc;
+}
+
+.net-salary-table td,
+.net-salary-table th {
+    padding: 0.3rem 0;
+    font-size: 0.95rem;
+}
+
+.net-salary-table .net-pay-row th {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--success-color, #198754);
+    /* Warna hijau untuk gaji bersih */
+    padding-top: 0.75rem;
+}
+
+.net-salary-table .net-pay-row th:last-child {
+    font-family: 'Roboto Mono', monospace;
+}
+
+
+.bank-details-slip {
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+.bank-details-slip strong {
+    color: var(--dark-color);
+}
+
+.slip-footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #888;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+.slip-footer p {
+    margin-bottom: 0.25rem;
+}
+
+.slip-header-for-print {
+    display: none;
+    /* Sembunyikan header ini saat tidak dalam mode cetak */
+}
+
+/* Responsive Slip Gaji */
+@media (max-width: 767.98px) {
+    .salary-slip {
+        padding: 1.25rem;
+    }
+
+    .slip-header {
+        flex-direction: column;
+        align-items: center;
+        /* Tengahkan item header di mobile */
+        text-align: center;
+        padding-bottom: 1rem;
+    }
+
+    .company-logo {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .company-details,
+    .slip-title-section {
+        text-align: center;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .slip-title-section .slip-title {
+        font-size: 1.5rem;
+    }
+
+    .employee-details-slip .row>div {
+        margin-bottom: 0.5rem;
+        /* Beri jarak antar kolom employee detail jika wrap */
+    }
+
+    .employee-details-slip p strong {
+        min-width: 100px;
+        /* Kurangi min-width label di mobile */
+    }
+
+    .salary-details .row>div {
+        margin-bottom: 1.5rem;
+        /* Jarak antar bagian pendapatan & potongan */
+    }
+
+    .salary-details .row>div:last-child {
+        margin-bottom: 0;
+    }
+
+    .section-title-slip {
+        font-size: 1rem;
+    }
+
+    .details-table td,
+    .details-table th,
+    .net-salary-table td,
+    .net-salary-table th {
+        font-size: 0.85rem;
+    }
+
+    .net-salary-table .net-pay-row th {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .salary-slip {
+        padding: 1rem;
+    }
+
+    .slip-title-section .slip-title {
+        font-size: 1.3rem;
+    }
+
+    .employee-details-slip p,
+    .details-table td,
+    .details-table th,
+    .net-salary-table td,
+    .net-salary-table th {
+        font-size: 0.8rem;
+        /* Font lebih kecil lagi untuk layar sangat kecil */
+    }
+
+    .net-salary-table .net-pay-row th {
+        font-size: 1rem;
+    }
+}
+
+/* Print Styles for Salary Slip */
+@media print {
+
+    .no-print,
+    .sidebar,
+    .custom-mobile-nav-wrapper,
+    .slip-gaji-header,
+    .filter-slip-card {
+        display: none !important;
+    }
+
+    body {
+        background-color: #fff !important;
+        padding-bottom: 0 !important;
+        font-size: 10pt;
+        /* Ukuran font dasar untuk cetak */
+    }
+
+    .main-content-wrapper {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+
+    .dashboard-content.slip-gaji-content {
+        margin-top: 0 !important;
+        padding: 0cm !important;
+        /* Margin halaman cetak */
+    }
+
+    .salary-slip-container {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .salary-slip {
+        /* border: 1px solid #999 !important; */
+        /* Border lebih jelas untuk cetak */
+        box-shadow: none !important;
+        padding: 1.5cm 1cm;
+        /* Padding slip untuk cetak */
+        border-radius: 0 !important;
+    }
+
+    .slip-header-for-print {
+        display: flex !important;
+        flex-direction: row !important;
+        /* Paksa layout baris untuk print */
+        justify-content: flex-start !important;
+        /* Mulai dari kiri, jangan space-between */
+        align-items: flex-start !important;
+        flex-wrap: nowrap !important;
+        /* Mencegah wrapping */
+        width: 100% !important;
+        padding-bottom: 0.2rem !important;
+        border-bottom: 2px solid #333 !important;
+        /* Warna border untuk print */
+        text-align: left !important;
+        /* Reset alignment dari mobile screen view */
+    }
+
+    /* Logo Perusahaan (yang versi desktop) */
+    .slip-header-for-print .company-logo.d-md-flex {
+        display: flex !important;
+        /* Pastikan logo desktop tampil */
+        width: 50px !important;
+        /* Ukuran logo saat print */
+        height: 50px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-right: 15px !important;
+        /* Jarak antara logo dan detail perusahaan */
+        flex-shrink: 0;
+        /* Jangan biarkan logo mengecil */
+    }
+
+    .slip-header-for-print .company-logo.d-md-flex i.text-primary {
+        /* color: #000000 !important; */
+        /* Ubah warna ikon logo menjadi hitam */
+    }
+
+    /* Detail Perusahaan */
+    .slip-header-for-print .company-details {
+        flex-grow: 1;
+        /* Biarkan detail perusahaan mengambil sisa ruang di kiri */
+        text-align: left !important;
+        /* Pastikan rata kiri */
+        padding: 0 !important;
+        /* Hapus padding jika ada dari screen style */
+        margin-bottom: 0 !important;
+        /* Hapus margin jika ada */
+        min-width: unset !important;
+        /* Hapus min-width dari screen style */
+    }
+
+    /* Sembunyikan logo mobile di dalam .company-details saat print */
+    .slip-header-for-print .company-details>i.fa-building-columns.d-md-none {
+        display: none !important;
+    }
+
+    .slip-header-for-print .company-details .company-name {
+        font-size: 14pt !important;
+        font-weight: 600 !important;
+        margin-bottom: 3pt !important;
+    }
+
+    .slip-header-for-print .company-details .company-address {
+        font-size: 9pt !important;
+        line-height: 1.3 !important;
+    }
+
+    /* Judul Slip (SLIP GAJI KARYAWAN, Periode, Tanggal) */
+    .slip-header-for-print .slip-title-section {
+        margin-left: auto !important;
+        /* Ini akan mendorong blok ini ke paling kanan */
+        text-align: right !important;
+        /* Teks di dalamnya rata kanan */
+        flex-shrink: 0;
+        /* Jangan biarkan mengecil */
+        padding-left: 20px;
+        /* Beri sedikit jarak dari konten kiri */
+        min-width: unset !important;
+        /* Hapus min-width */
+    }
+
+    .slip-header-for-print .slip-title-section .slip-title {
+        font-size: 14pt !important;
+        font-weight: bold !important;
+        margin-bottom: 5pt !important;
+    }
+
+    .slip-header-for-print .slip-title-section .slip-period,
+    .slip-header-for-print .slip-title-section .slip-paydate {
+        font-size: 10pt !important;
+        margin-bottom: 2pt !important;
+    }
+
+    .employee-details-slip {
+        background-color: #f9f9f9 !important;
+        border: 1px solid #ddd !important;
+        -webkit-print-color-adjust: exact;
+        /* Paksa cetak background */
+        color-adjust: exact;
+        margin-bottom: 1.5rem !important;
+        padding-top: 0.7rem !important;
+        padding-bottom: 0.5rem !important;
+        line-height: 1.2 !important;
+    }
+
+    .details-table td,
+    .details-table th {
+        font-size: 9pt;
+        border-top: 1px solid #ccc !important;
+    }
+
+    .details-table tfoot tr.total-row th {
+        border-top: 2px solid #333 !important;
+    }
+
+    .net-salary-table .net-pay-row th {
+        /* Warna net pay di cetak bisa hitam saja */
+        padding-bottom: 0rem !important;
+    }
+
+    .table-sm> :not(caption)>*>* {
+        /* Override Bootstrap padding untuk print */
+        padding: 0.2rem 0.2rem;
+    }
+
+    .slip-footer {
+        color: #555 !important;
+        font-size: 8pt;
+    }
+
+}

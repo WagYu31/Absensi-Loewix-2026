@@ -1,0 +1,60 @@
+/* assets/css/semua-pengumuman-styles.css */
+/* Gaya khusus untuk halaman daftar semua pengumuman */
+
+.announcement-list-item {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.announcement-list-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+    /* Override shadow-sm jika ada */
+}
+
+.announcement-item-title a {
+    text-decoration: none;
+    color: var(--dark-color);
+    font-weight: 600;
+    font-size: 1.15rem;
+}
+
+.announcement-item-title a:hover {
+    color: var(--primary-color);
+}
+
+.announcement-item-meta {
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.75rem !important;
+    /* Bootstrap class mb-2 override */
+}
+
+.announcement-item-meta .badge {
+    font-size: 0.7rem;
+}
+
+.announcement-item-snippet {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.6;
+    /* Batasi tinggi dan tambahkan overflow jika snippet panjang */
+    max-height: 4.8em;
+    /* Sekitar 3 baris teks (1.6 * 3) */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Untuk multiline ellipsis (memerlukan browser modern / sedikit trik)
+       display: -webkit-box;
+       -webkit-line-clamp: 3;
+       -webkit-box-orient: vertical;
+    */
+}
+
+.read-more-btn {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.pagination .page-link {
+    font-size: 0.9rem;
+    /* Sedikit lebih besar dari pagination-sm biasa */
+}
