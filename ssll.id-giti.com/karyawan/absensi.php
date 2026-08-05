@@ -300,7 +300,7 @@ $asset_version = time();
             box-shadow: 
                 0 12px 25px rgba(245, 158, 11, 0.45),
                 0 6px 0 #92400e !important;
-            color: #ffffff !important;
+                color: #ffffff !important;
         }
 
         .btn-riwayat-absen:active {
@@ -308,6 +308,21 @@ $asset_version = time();
             box-shadow: 
                 0 4px 10px rgba(245, 158, 11, 0.3),
                 0 1px 0 #92400e !important;
+        }
+
+        /* Fixed Camera Modal Z-Index Stacking */
+        #cameraModal {
+            z-index: 1060 !important;
+        }
+        .modal-backdrop {
+            z-index: 1050 !important;
+        }
+        #cameraModal .modal-header .btn-close,
+        #cameraModal .modal-footer .btn-outline-secondary {
+            position: relative !important;
+            z-index: 1070 !important;
+            cursor: pointer !important;
+            pointer-events: auto !important;
         }
 
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; backdrop-filter: blur(8px); }
@@ -400,343 +415,353 @@ $asset_version = time();
             </div>
         </div>
         <?php include 'nav/bottom-nav.php'; ?>
-        <div class="modal fade camera-modal-presensi" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="attendanceTypeTitle"><i class="fas fa-camera me-2 text-primary"></i>Ambil Foto</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close" onclick="closeCameraModal();"></button>
-                    </div>
-                    <div class="modal-body p-0 position-relative">
-                        <video id="cameraPreview" autoplay playsinline class="camera-video-presensi"></video>
-                        <canvas id="photoCanvas" class="d-none photo-canvas-presensi"></canvas>
-                        <button id="captureBtn" class="capture-btn-presensi" title="Ambil Foto"><i class="fas fa-camera"></i></button>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-dismiss="modal" onclick="closeCameraModal();">Batal</button>
-                        <button type="button" class="btn btn-primary fw-bold" id="uploadPhotoBtn" disabled><i class="fas fa-cloud-arrow-up me-2"></i>Upload & Kirim</button>
-                    </div>
+    </div><!-- /main-content-wrapper -->
+
+    <!-- Modal Camera Placed Outside Main Wrapper for Proper Body Level Stacking Context -->
+    <div class="modal fade camera-modal-presensi" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attendanceTypeTitle"><i class="fas fa-camera me-2 text-primary"></i>Ambil Foto</h5>
+                    <button type="button" class="btn-close btn-close-white" id="closeCameraXBtn" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0 position-relative">
+                    <video id="cameraPreview" autoplay playsinline class="camera-video-presensi"></video>
+                    <canvas id="photoCanvas" class="d-none photo-canvas-presensi"></canvas>
+                    <button id="captureBtn" class="capture-btn-presensi" title="Ambil Foto"><i class="fas fa-camera"></i></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" id="closeCameraBatalBtn">Batal</button>
+                    <button type="button" class="btn btn-primary fw-bold" id="uploadPhotoBtn" disabled><i class="fas fa-cloud-arrow-up me-2"></i>Upload & Kirim</button>
                 </div>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            const targetLat = <?php echo TARGET_OFFICE_LAT; ?>;
-            const targetLng = <?php echo TARGET_OFFICE_LON; ?>;
-            const employeeNip = '<?php echo htmlspecialchars($nip); ?>';
-            const employeeName = '<?php echo htmlspecialchars($nama); ?>';
-            const employeePin = '<?php echo htmlspecialchars($pinAbsen); ?>';
-            const employeeNik = '<?php echo htmlspecialchars($nik); ?>';
-            let userLat = null;
-            let userLng = null;
-            let userLocationAddress = "Lokasi tidak diketahui";
-            let stream = null;
-            let attendanceType = ''; 
+    </div>
 
-            function closeCameraModal() {
-                stopCamera();
-                $('#cameraModal').modal('hide');
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open').css('overflow', '');
-            }
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const targetLat = <?php echo TARGET_OFFICE_LAT; ?>;
+        const targetLng = <?php echo TARGET_OFFICE_LON; ?>;
+        const employeeNip = '<?php echo htmlspecialchars($nip); ?>';
+        const employeeName = '<?php echo htmlspecialchars($nama); ?>';
+        const employeePin = '<?php echo htmlspecialchars($pinAbsen); ?>';
+        const employeeNik = '<?php echo htmlspecialchars($nik); ?>';
+        let userLat = null;
+        let userLng = null;
+        let userLocationAddress = "Lokasi tidak diketahui";
+        let stream = null;
+        let attendanceType = ''; 
 
-            function updateClockDisplay() {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                $('#realTimeClockDisplay').text(timeString);
-                checkLateStatus(); 
-                checkAbsenConditions(); 
-            }
+        function closeCameraModal() {
+            stopCamera();
+            $('#cameraModal').modal('hide');
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open').css('overflow', '');
+        }
 
-            function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
-                function deg2rad(deg) { return deg * (Math.PI / 180); }
-                const R = 6371000;
-                const dLat = deg2rad(lat2 - lat1);
-                const dLon = deg2rad(lon2 - lon1);
-                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                return R * c;
-            }
+        // Direct Touch & Click Event Bindings for Close & Batal Buttons
+        $(document).on('click touchstart', '#closeCameraXBtn, #closeCameraBatalBtn', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeCameraModal();
+        });
 
-            function getUserLocation() {
-                const locationStatusEl = $('#locationStatus');
+        function updateClockDisplay() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            $('#realTimeClockDisplay').text(timeString);
+            checkLateStatus(); 
+            checkAbsenConditions(); 
+        }
+
+        function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
+            function deg2rad(deg) { return deg * (Math.PI / 180); }
+            const R = 6371000;
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function getUserLocation() {
+            const locationStatusEl = $('#locationStatus');
+            
+            const cachedLat = localStorage.getItem('last_user_lat');
+            const cachedLng = localStorage.getItem('last_user_lng');
+            const cachedTime = localStorage.getItem('last_user_time');
+            
+            if (cachedLat && cachedLng && cachedTime && (Date.now() - parseInt(cachedTime)) < 3600000) {
+                userLat = parseFloat(cachedLat);
+                userLng = parseFloat(cachedLng);
+                userLocationAddress = localStorage.getItem('last_user_addr') || `Lat: ${userLat.toFixed(4)}, Lng: ${userLng.toFixed(4)}`;
                 
-                // ⚡ 1. MEMUAT CACHE LOKASI TERAKHIR UNTUK UNLOCK TOMBOL SPONTAN (0 MS)
-                const cachedLat = localStorage.getItem('last_user_lat');
-                const cachedLng = localStorage.getItem('last_user_lng');
-                const cachedTime = localStorage.getItem('last_user_time');
+                const distance = getDistanceFromLatLonInM(userLat, userLng, targetLat, targetLng);
+                let distanceText = distance !== null ? ` (Jarak: ${distance.toFixed(0)}m)` : '';
+                let locationIconClass = distance !== null && distance <= 150 ? 'text-success' : 'text-warning';
                 
-                if (cachedLat && cachedLng && cachedTime && (Date.now() - parseInt(cachedTime)) < 3600000) {
-                    userLat = parseFloat(cachedLat);
-                    userLng = parseFloat(cachedLng);
-                    userLocationAddress = localStorage.getItem('last_user_addr') || `Lat: ${userLat.toFixed(4)}, Lng: ${userLng.toFixed(4)}`;
-                    
-                    const distance = getDistanceFromLatLonInM(userLat, userLng, targetLat, targetLng);
-                    let distanceText = distance !== null ? ` (Jarak: ${distance.toFixed(0)}m)` : '';
-                    let locationIconClass = distance !== null && distance <= 150 ? 'text-success' : 'text-warning';
-                    
-                    locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> ${userLocationAddress.substring(0, 35)}...${distanceText}`);
-                    if (distance > 150) { $('#locationWarning').removeClass('d-none'); } else { $('#locationWarning').addClass('d-none'); }
-                    
-                    checkAbsenConditions();
-                } else {
-                    locationStatusEl.html('<i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi instan...');
-                }
-
-                if (!navigator.geolocation) {
-                    locationStatusEl.html('<i class="fas fa-times-circle text-danger me-2"></i> Geolocation tidak didukung.');
-                    checkAbsenConditions();
-                    return;
-                }
-
-                function handlePositionSuccess(position) {
-                    userLat = position.coords.latitude;
-                    userLng = position.coords.longitude;
-                    
-                    localStorage.setItem('last_user_lat', userLat);
-                    localStorage.setItem('last_user_lng', userLng);
-                    localStorage.setItem('last_user_time', Date.now());
-                    
-                    const distance = getDistanceFromLatLonInM(userLat, userLng, targetLat, targetLng);
-                    let distanceText = distance !== null ? ` (Jarak: ${distance.toFixed(0)}m)` : '';
-                    let locationIconClass = distance !== null && distance <= 150 ? 'text-success' : 'text-warning';
-                    
-                    locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> Lat: ${userLat.toFixed(4)}, Lng: ${userLng.toFixed(4)}${distanceText}`);
-                    if (distance > 150) { $('#locationWarning').removeClass('d-none'); } else { $('#locationWarning').addClass('d-none'); }
-                    
-                    checkAbsenConditions();
-
-                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLat}&lon=${userLng}`, { signal: AbortSignal.timeout(3000) })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data && data.display_name) {
-                                userLocationAddress = data.display_name;
-                                localStorage.setItem('last_user_addr', userLocationAddress);
-                                locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> ${userLocationAddress.substring(0, 35)}...${distanceText}`);
-                            }
-                        })
-                        .catch(() => { });
-                }
-
-                navigator.geolocation.getCurrentPosition(
-                    handlePositionSuccess,
-                    function(error) {
-                        navigator.geolocation.getCurrentPosition(
-                            handlePositionSuccess,
-                            function(err) {
-                                if (!userLat) {
-                                    let errorMsg = 'Gagal mengambil lokasi. ';
-                                    if (err.code === err.PERMISSION_DENIED) errorMsg += "Izin lokasi ditolak di HP.";
-                                    else errorMsg += "Aktifkan GPS HP Anda.";
-                                    locationStatusEl.html(`<i class="fas fa-exclamation-triangle text-warning me-2"></i> ${errorMsg}`);
-                                    checkAbsenConditions();
-                                }
-                            },
-                            { enableHighAccuracy: true, timeout: 5000, maximumAge: 300000 }
-                        );
-                    },
-                    { enableHighAccuracy: false, timeout: 3000, maximumAge: 300000 }
-                );
-            }
-
-            function checkLateStatus() {
-                const now = new Date();
-                const currentHour = now.getHours();
-                const currentMinute = now.getMinutes();
-                <?php
-                $lateThresholdPHP = '';
-                if ($isSaturday) {
-                    $lateThresholdPHP = '08:30';
-                } else {
-                    switch ($final_shifting) {
-                        case 'P': $lateThresholdPHP = '07:00'; break;
-                        case 'M': $lateThresholdPHP = '08:30'; break;
-                        case 'N': $lateThresholdPHP = '09:00'; break;
-                        case 'S': $lateThresholdPHP = '09:30'; break;
-                        case 'T': $lateThresholdPHP = '09:10'; break;
-                        default: $lateThresholdPHP = '23:59';
-                    }
-                }
-                echo "const lateThresholdJS = '$lateThresholdPHP';";
-                ?>
-                if (lateThresholdJS === '23:59') { $('#lateWarning').addClass('d-none'); return; }
-                const [thresholdHour, thresholdMinute] = lateThresholdJS.split(':').map(Number);
-                let isLate = false;
-                if (currentHour > thresholdHour || (currentHour === thresholdHour && currentMinute > thresholdMinute)) { isLate = true; }
-                const hasAlreadyCheckedIn = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='masuk' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
-                if (isLate && !hasAlreadyCheckedIn) {
-                    $('#lateWarning').removeClass('d-none');
-                    $('#lateMessage').text('Anda terlambat!');
-                } else { $('#lateWarning').addClass('d-none'); }
-            }
-
-            function checkAbsenConditions() {
-                const now = new Date();
-                const currentHour = now.getHours();
-                const currentMinute = now.getMinutes();
-                <?php
-                $lH = 11; $lM = 0;
-                if ($isSaturday) {
-                    $lH = 10; $lM = 30;
-                } else {
-                    switch ($final_shifting) {
-                        case 'P': $lH = 9; $lM = 0; break;
-                        case 'M': $lH = 10; $lM = 30; break;
-                        case 'N': $lH = 11; $lM = 0; break;
-                        case 'S': $lH = 11; $lM = 30; break;
-                        case 'T': $lH = 11; $lM = 10; break;
-                        default: $lH = 11; $lM = 0; break;
-                    }
-                }
-                echo "const limitHour = $lH;\n";
-                echo "                const limitMinute = $lM;\n";
-                ?>
+                locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> ${userLocationAddress.substring(0, 35)}...${distanceText}`);
+                if (distance > 150) { $('#locationWarning').removeClass('d-none'); } else { $('#locationWarning').addClass('d-none'); }
                 
-                let isCheckInTime = false;
-                if (currentHour < limitHour || (currentHour === limitHour && currentMinute < limitMinute)) {
-                    isCheckInTime = true;
-                }
+                checkAbsenConditions();
+            } else {
+                locationStatusEl.html('<i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi instan...');
+            }
+
+            if (!navigator.geolocation) {
+                locationStatusEl.html('<i class="fas fa-times-circle text-danger me-2"></i> Geolocation tidak didukung.');
+                checkAbsenConditions();
+                return;
+            }
+
+            function handlePositionSuccess(position) {
+                userLat = position.coords.latitude;
+                userLng = position.coords.longitude;
                 
-                const isCheckOutTime = !isCheckInTime;
-                const isLocationActive = (userLat !== null && userLng !== null);
+                localStorage.setItem('last_user_lat', userLat);
+                localStorage.setItem('last_user_lng', userLng);
+                localStorage.setItem('last_user_time', Date.now());
+                
+                const distance = getDistanceFromLatLonInM(userLat, userLng, targetLat, targetLng);
+                let distanceText = distance !== null ? ` (Jarak: ${distance.toFixed(0)}m)` : '';
+                let locationIconClass = distance !== null && distance <= 150 ? 'text-success' : 'text-warning';
+                
+                locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> Lat: ${userLat.toFixed(4)}, Lng: ${userLng.toFixed(4)}${distanceText}`);
+                if (distance > 150) { $('#locationWarning').removeClass('d-none'); } else { $('#locationWarning').addClass('d-none'); }
+                
+                checkAbsenConditions();
 
-                const hasCheckedInToday = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='masuk' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
-                const hasCheckedOutToday = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='pulang' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
-
-                if (!hasCheckedInToday && isCheckInTime && isLocationActive) { $('#btnCheckIn').prop('disabled', false); } 
-                else { $('#btnCheckIn').prop('disabled', true); }
-
-                if (isCheckOutTime && !hasCheckedOutToday && isLocationActive) { $('#btnCheckOut').prop('disabled', false); } 
-                else { $('#btnCheckOut').prop('disabled', true); }
-            }
-
-            function getDeviceName() {
-                const ua = navigator.userAgent;
-                if (/android/i.test(ua)) {
-                    const match = ua.match(/\(([^)]+)\)/);
-                    if (match && match[1]) {
-                        let parts = match[1].split(';');
-                        return parts[parts.length - 1].trim().split(' Build')[0];
-                    }
-                    return "Android Device";
-                }
-                if (/iPhone|iPad|iPod/i.test(ua)) return "iPhone/iPad";
-                return "PC/Browser";
-            }
-
-            $('#btnCheckIn, #btnCheckOut').click(function() {
-                if ($(this).prop('disabled')) return;
-                attendanceType = $(this).attr('id') === 'btnCheckIn' ? 'masuk' : 'pulang';
-                $('#attendanceTypeTitle').html('<i class="fas fa-camera me-2 text-primary"></i>Ambil Foto Absen ' + (attendanceType === 'masuk' ? 'Masuk' : 'Pulang'));
-                $('#cameraModal').modal('show');
-            });
-
-            $('#cameraModal').on('shown.bs.modal', function() { startCamera(); });
-            $('#cameraModal').on('hidden.bs.modal', function() {
-                stopCamera();
-                $('#cameraPreview').removeClass('d-none');
-                $('#photoCanvas').addClass('d-none');
-                $('#uploadPhotoBtn').prop('disabled', true).html('<i class="fas fa-cloud-arrow-up me-2"></i>Upload & Kirim');
-            });
-
-            function startCamera() {
-                const video = document.getElementById('cameraPreview');
-                $('#cameraPreview').removeClass('d-none');
-                $('#photoCanvas').addClass('d-none');
-                $('#uploadPhotoBtn').prop('disabled', true);
-                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false })
-                    .then(function(s) { stream = s; video.srcObject = stream; video.play(); })
-                    .catch(function(err) {
-                        alert('Tidak dapat mengakses kamera. Pastikan Anda memberikan izin.');
-                        closeCameraModal();
-                    });
-            }
-
-            function stopCamera() { if (stream) { stream.getTracks().forEach(track => track.stop()); stream = null; } }
-
-            $('#captureBtn').click(function() {
-                const video = document.getElementById('cameraPreview');
-                const canvas = document.getElementById('photoCanvas');
-                const context = canvas.getContext('2d');
-                canvas.width = video.videoWidth || video.offsetWidth;
-                canvas.height = video.videoHeight || video.offsetHeight;
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                $('#cameraPreview').addClass('d-none');
-                $('#photoCanvas').removeClass('d-none');
-                $('#uploadPhotoBtn').prop('disabled', false);
-                stopCamera();
-            });
-
-            $('#uploadPhotoBtn').click(function() {
-                const canvas = document.getElementById('photoCanvas');
-                const imageData = canvas.toDataURL('image/jpeg', 0.75); 
-                const deviceName = getDeviceName();
-                closeCameraModal();
-                $('#fullScreenLoader').removeClass('d-none');
-                window.onbeforeunload = function() { return "Proses pengiriman data sedang berlangsung."; };
-                $.ajax({
-                    url: 'process_attendance.php',
-                    type: 'POST',
-                    data: { tipe_absen: attendanceType, foto_absen: imageData, nip: employeeNip, pin: employeePin, nik_karyawan: employeeNik, lokasi_absen: userLocationAddress, latitude: userLat, longitude: userLng, device_name: deviceName },
-                    dataType: 'json',
-                    success: function(response) {
-                        window.onbeforeunload = null;
-                        if (response.success) { alert('Absen ' + attendanceType + ' berhasil dicatat!'); location.reload(); } 
-                        else { $('#fullScreenLoader').addClass('d-none'); alert('Gagal: ' + response.message); $('#cameraModal').modal('show'); }
-                    },
-                    error: function() { window.onbeforeunload = null; $('#fullScreenLoader').addClass('d-none'); alert('Terjadi kesalahan koneksi.'); }
-                });
-            });
-
-            $(document).ready(function() {
-                updateClockDisplay();
-                setInterval(updateClockDisplay, 1000);
-                getUserLocation();
-
-                const card = document.getElementById('card3d');
-                if (card) {
-                    function apply3DTilt(clientX, clientY) {
-                        const rect = card.getBoundingClientRect();
-                        const centerX = rect.left + rect.width / 2;
-                        const centerY = rect.top + rect.height / 2;
-                        const xAxis = (centerX - clientX) / 18;
-                        const yAxis = (clientY - centerY) / 18;
-                        card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-                    }
-
-                    function reset3DTilt() {
-                        card.style.transition = 'transform 0.4s ease';
-                        card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-                        setTimeout(() => { card.style.transition = 'transform 0.15s ease-out'; }, 400);
-                    }
-
-                    document.addEventListener('mousemove', (e) => {
-                        apply3DTilt(e.clientX, e.clientY);
-                    });
-
-                    document.addEventListener('mouseleave', reset3DTilt);
-
-                    card.addEventListener('touchmove', (e) => {
-                        if (e.touches.length > 0) {
-                            const touch = e.touches[0];
-                            apply3DTilt(touch.clientX, touch.clientY);
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLat}&lon=${userLng}`, { signal: AbortSignal.timeout(3000) })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.display_name) {
+                            userLocationAddress = data.display_name;
+                            localStorage.setItem('last_user_addr', userLocationAddress);
+                            locationStatusEl.html(`<i class="fas fa-map-marker-alt ${locationIconClass} me-2"></i> ${userLocationAddress.substring(0, 35)}...${distanceText}`);
                         }
-                    }, { passive: true });
+                    })
+                    .catch(() => { });
+            }
 
-                    card.addEventListener('touchend', reset3DTilt);
+            navigator.geolocation.getCurrentPosition(
+                handlePositionSuccess,
+                function(error) {
+                    navigator.geolocation.getCurrentPosition(
+                        handlePositionSuccess,
+                        function(err) {
+                            if (!userLat) {
+                                let errorMsg = 'Gagal mengambil lokasi. ';
+                                if (err.code === err.PERMISSION_DENIED) errorMsg += "Izin lokasi ditolak di HP.";
+                                else errorMsg += "Aktifkan GPS HP Anda.";
+                                locationStatusEl.html(`<i class="fas fa-exclamation-triangle text-warning me-2"></i> ${errorMsg}`);
+                                checkAbsenConditions();
+                            }
+                        },
+                        { enableHighAccuracy: true, timeout: 5000, maximumAge: 300000 }
+                    );
+                },
+                { enableHighAccuracy: false, timeout: 3000, maximumAge: 300000 }
+            );
+        }
+
+        function checkLateStatus() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            <?php
+            $lateThresholdPHP = '';
+            if ($isSaturday) {
+                $lateThresholdPHP = '08:30';
+            } else {
+                switch ($final_shifting) {
+                    case 'P': $lateThresholdPHP = '07:00'; break;
+                    case 'M': $lateThresholdPHP = '08:30'; break;
+                    case 'N': $lateThresholdPHP = '09:00'; break;
+                    case 'S': $lateThresholdPHP = '09:30'; break;
+                    case 'T': $lateThresholdPHP = '09:10'; break;
+                    default: $lateThresholdPHP = '23:59';
+                }
+            }
+            echo "const lateThresholdJS = '$lateThresholdPHP';";
+            ?>
+            if (lateThresholdJS === '23:59') { $('#lateWarning').addClass('d-none'); return; }
+            const [thresholdHour, thresholdMinute] = lateThresholdJS.split(':').map(Number);
+            let isLate = false;
+            if (currentHour > thresholdHour || (currentHour === thresholdHour && currentMinute > thresholdMinute)) { isLate = true; }
+            const hasAlreadyCheckedIn = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='masuk' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
+            if (isLate && !hasAlreadyCheckedIn) {
+                $('#lateWarning').removeClass('d-none');
+                $('#lateMessage').text('Anda terlambat!');
+            } else { $('#lateWarning').addClass('d-none'); }
+        }
+
+        function checkAbsenConditions() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            <?php
+            $lH = 11; $lM = 0;
+            if ($isSaturday) {
+                $lH = 10; $lM = 30;
+            } else {
+                switch ($final_shifting) {
+                    case 'P': $lH = 9; $lM = 0; break;
+                    case 'M': $lH = 10; $lM = 30; break;
+                    case 'N': $lH = 11; $lM = 0; break;
+                    case 'S': $lH = 11; $lM = 30; break;
+                    case 'T': $lH = 11; $lM = 10; break;
+                    default: $lH = 11; $lM = 0; break;
+                }
+            }
+            echo "const limitHour = $lH;\n";
+            echo "                const limitMinute = $lM;\n";
+            ?>
+            
+            let isCheckInTime = false;
+            if (currentHour < limitHour || (currentHour === limitHour && currentMinute < limitMinute)) {
+                isCheckInTime = true;
+            }
+            
+            const isCheckOutTime = !isCheckInTime;
+            const isLocationActive = (userLat !== null && userLng !== null);
+
+            const hasCheckedInToday = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='masuk' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
+            const hasCheckedOutToday = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='pulang' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
+
+            if (!hasCheckedInToday && isCheckInTime && isLocationActive) { $('#btnCheckIn').prop('disabled', false); } 
+            else { $('#btnCheckIn').prop('disabled', true); }
+
+            if (isCheckOutTime && !hasCheckedOutToday && isLocationActive) { $('#btnCheckOut').prop('disabled', false); } 
+            else { $('#btnCheckOut').prop('disabled', true); }
+        }
+
+        function getDeviceName() {
+            const ua = navigator.userAgent;
+            if (/android/i.test(ua)) {
+                const match = ua.match(/\(([^)]+)\)/);
+                if (match && match[1]) {
+                    let parts = match[1].split(';');
+                    return parts[parts.length - 1].trim().split(' Build')[0];
+                }
+                return "Android Device";
+            }
+            if (/iPhone|iPad|iPod/i.test(ua)) return "iPhone/iPad";
+            return "PC/Browser";
+        }
+
+        $('#btnCheckIn, #btnCheckOut').click(function() {
+            if ($(this).prop('disabled')) return;
+            attendanceType = $(this).attr('id') === 'btnCheckIn' ? 'masuk' : 'pulang';
+            $('#attendanceTypeTitle').html('<i class="fas fa-camera me-2 text-primary"></i>Ambil Foto Absen ' + (attendanceType === 'masuk' ? 'Masuk' : 'Pulang'));
+            $('#cameraModal').modal('show');
+        });
+
+        $('#cameraModal').on('shown.bs.modal', function() { startCamera(); });
+        $('#cameraModal').on('hidden.bs.modal', function() {
+            stopCamera();
+            $('#cameraPreview').removeClass('d-none');
+            $('#photoCanvas').addClass('d-none');
+            $('#uploadPhotoBtn').prop('disabled', true).html('<i class="fas fa-cloud-arrow-up me-2"></i>Upload & Kirim');
+        });
+
+        function startCamera() {
+            const video = document.getElementById('cameraPreview');
+            $('#cameraPreview').removeClass('d-none');
+            $('#photoCanvas').addClass('d-none');
+            $('#uploadPhotoBtn').prop('disabled', true);
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false })
+                .then(function(s) { stream = s; video.srcObject = stream; video.play(); })
+                .catch(function(err) {
+                    alert('Tidak dapat mengakses kamera. Pastikan Anda memberikan izin.');
+                    closeCameraModal();
+                });
+        }
+
+        function stopCamera() { if (stream) { stream.getTracks().forEach(track => track.stop()); stream = null; } }
+
+        $('#captureBtn').click(function() {
+            const video = document.getElementById('cameraPreview');
+            const canvas = document.getElementById('photoCanvas');
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth || video.offsetWidth;
+            canvas.height = video.videoHeight || video.offsetHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            $('#cameraPreview').addClass('d-none');
+            $('#photoCanvas').removeClass('d-none');
+            $('#uploadPhotoBtn').prop('disabled', false);
+            stopCamera();
+        });
+
+        $('#uploadPhotoBtn').click(function() {
+            const canvas = document.getElementById('photoCanvas');
+            const imageData = canvas.toDataURL('image/jpeg', 0.75); 
+            const deviceName = getDeviceName();
+            closeCameraModal();
+            $('#fullScreenLoader').removeClass('d-none');
+            window.onbeforeunload = function() { return "Proses pengiriman data sedang berlangsung."; };
+            $.ajax({
+                url: 'process_attendance.php',
+                type: 'POST',
+                data: { tipe_absen: attendanceType, foto_absen: imageData, nip: employeeNip, pin: employeePin, nik_karyawan: employeeNik, lokasi_absen: userLocationAddress, latitude: userLat, longitude: userLng, device_name: deviceName },
+                dataType: 'json',
+                success: function(response) {
+                    window.onbeforeunload = null;
+                    if (response.success) { alert('Absen ' + attendanceType + ' berhasil dicatat!'); location.reload(); } 
+                    else { $('#fullScreenLoader').addClass('d-none'); alert('Gagal: ' + response.message); $('#cameraModal').modal('show'); }
+                },
+                error: function() { window.onbeforeunload = null; $('#fullScreenLoader').addClass('d-none'); alert('Terjadi kesalahan koneksi.'); }
+            });
+        });
+
+        $(document).ready(function() {
+            updateClockDisplay();
+            setInterval(updateClockDisplay, 1000);
+            getUserLocation();
+
+            const card = document.getElementById('card3d');
+            if (card) {
+                function apply3DTilt(clientX, clientY) {
+                    const rect = card.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const xAxis = (centerX - clientX) / 18;
+                    const yAxis = (clientY - centerY) / 18;
+                    card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
                 }
 
-                var currentPath = "<?php echo $current_page_basename; ?>";
-                $('.sidebar-menu a').each(function() {
-                    var linkHref = $(this).attr('href').split("?")[0];
-                    if (linkHref === currentPath) { $(this).addClass('active'); }
+                function reset3DTilt() {
+                    card.style.transition = 'transform 0.4s ease';
+                    card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+                    setTimeout(() => { card.style.transition = 'transform 0.15s ease-out'; }, 400);
+                }
+
+                document.addEventListener('mousemove', (e) => {
+                    apply3DTilt(e.clientX, e.clientY);
                 });
-                $('.custom-nav__link').each(function() {
-                    var linkHref = $(this).attr('href').split("?")[0];
-                    if (linkHref === currentPath) { $(this).addClass('active'); }
-                });
+
+                document.addEventListener('mouseleave', reset3DTilt);
+
+                card.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 0) {
+                        const touch = e.touches[0];
+                        apply3DTilt(touch.clientX, touch.clientY);
+                    }
+                }, { passive: true });
+
+                card.addEventListener('touchend', reset3DTilt);
+            }
+
+            var currentPath = "<?php echo $current_page_basename; ?>";
+            $('.sidebar-menu a').each(function() {
+                var linkHref = $(this).attr('href').split("?")[0];
+                if (linkHref === currentPath) { $(this).addClass('active'); }
             });
-        </script>
+            $('.custom-nav__link').each(function() {
+                var linkHref = $(this).attr('href').split("?")[0];
+                if (linkHref === currentPath) { $(this).addClass('active'); }
+            });
+        });
+    </script>
 </body>
 </html>
