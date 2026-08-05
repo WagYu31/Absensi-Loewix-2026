@@ -432,15 +432,26 @@ $asset_version = time();
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td><span class="badge bg-light text-dark fw-bold border px-2 py-1"><?php echo htmlspecialchars($karyawan['jabatan']); ?></span></td>
-                                            <td class="text-secondary"><?php echo date('d M Y', strtotime($karyawan['tanggal_masuk'])); ?></td>
                                             <td>
-                                                <?php
-                                                $nomorHandphone = $karyawan['nomor_handphone'];
-                                                $waLink = 'https://api.whatsapp.com/send?phone=' . (substr($nomorHandphone, 0, 1) === '0' ? '62' . substr($nomorHandphone, 1) : $nomorHandphone);
-                                                ?>
-                                                <a href="<?php echo $waLink; ?>" target="_blank" class="text-decoration-none fw-semibold text-success"><i class="fa-brands fa-whatsapp me-1 fs-6"></i><?php echo htmlspecialchars($karyawan['nomor_handphone']); ?></a>
-                                            </td>
+                                                 <?php if (!empty($karyawan['jabatan'])): ?>
+                                                     <span class="badge bg-light text-dark fw-bold border px-2 py-1"><?php echo htmlspecialchars($karyawan['jabatan']); ?></span>
+                                                 <?php else: ?>
+                                                     <span class="text-muted small">-</span>
+                                                 <?php endif; ?>
+                                             </td>
+                                             <td class="text-secondary">
+                                                 <?php echo (!empty($karyawan['tanggal_masuk']) && $karyawan['tanggal_masuk'] !== '0000-00-00') ? date('d M Y', strtotime($karyawan['tanggal_masuk'])) : '-'; ?>
+                                             </td>
+                                             <td>
+                                                 <?php if (!empty($karyawan['nomor_handphone'])): 
+                                                     $nomorHandphone = $karyawan['nomor_handphone'];
+                                                     $waLink = 'https://api.whatsapp.com/send?phone=' . (substr($nomorHandphone, 0, 1) === '0' ? '62' . substr($nomorHandphone, 1) : $nomorHandphone);
+                                                 ?>
+                                                     <a href="<?php echo $waLink; ?>" target="_blank" class="text-decoration-none fw-semibold text-success"><i class="fa-brands fa-whatsapp me-1 fs-6"></i><?php echo htmlspecialchars($nomorHandphone); ?></a>
+                                                 <?php else: ?>
+                                                     <span class="text-muted small">-</span>
+                                                 <?php endif; ?>
+                                             </td>
                                             <td class="text-center">
                                                 <div class="form-check form-switch d-inline-flex align-items-center gap-2">
                                                     <input class="form-check-input my-0" type="checkbox" role="switch" 

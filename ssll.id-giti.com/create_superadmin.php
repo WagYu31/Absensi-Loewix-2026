@@ -11,7 +11,7 @@ $role = 'superadmin';
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
 // 1. Insert/Update Karyawan
-$stmtK = $conn->prepare("INSERT INTO karyawan (nip, nik, nama, status_karyawan, pin_absen) VALUES (?, ?, ?, 'aktif', ?) ON DUPLICATE KEY UPDATE nama = VALUES(nama), status_karyawan = 'aktif'");
+$stmtK = $conn->prepare("INSERT INTO karyawan (nip, nik, nama, status_karyawan, pin_absen, jabatan, tanggal_masuk) VALUES (?, ?, ?, 'aktif', ?, 'Super Admin', CURDATE()) ON DUPLICATE KEY UPDATE nama = VALUES(nama), status_karyawan = 'aktif', jabatan = 'Super Admin', tanggal_masuk = IFNULL(tanggal_masuk, CURDATE())");
 $stmtK->bind_param("ssss", $nip, $nik, $nama, $nip);
 $stmtK->execute();
 $stmtK->close();

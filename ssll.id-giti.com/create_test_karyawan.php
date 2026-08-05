@@ -13,7 +13,7 @@ $role = 'karyawan';
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
 // 1. Insert/Update Karyawan
-$stmtK = $conn->prepare("INSERT INTO karyawan (nip, nik, nama, status_karyawan, pin_absen, jabatan, shifting) VALUES (?, ?, ?, 'aktif', ?, ?, 'TEST') ON DUPLICATE KEY UPDATE nama = VALUES(nama), status_karyawan = 'aktif', shifting = 'TEST'");
+$stmtK = $conn->prepare("INSERT INTO karyawan (nip, nik, nama, status_karyawan, pin_absen, jabatan, shifting, tanggal_masuk) VALUES (?, ?, ?, 'aktif', ?, ?, 'TEST', CURDATE()) ON DUPLICATE KEY UPDATE nama = VALUES(nama), status_karyawan = 'aktif', jabatan = VALUES(jabatan), shifting = 'TEST', tanggal_masuk = IFNULL(tanggal_masuk, CURDATE())");
 $stmtK->bind_param("sssss", $nip, $nik, $nama, $pin_absen, $jabatan);
 $stmtK->execute();
 $stmtK->close();
