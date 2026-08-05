@@ -10,7 +10,7 @@ $queryTMK = "SELECT karyawan.*
 $resultTMK = $conn->query($queryTMK);
 $dataTMK = $resultTMK->fetch_assoc();
 
-$masuk = $dataTMK["tanggal_masuk"];
+$masuk = !empty($dataTMK["tanggal_masuk"]) && $dataTMK["tanggal_masuk"] !== '0000-00-00' ? $dataTMK["tanggal_masuk"] : date("Y-m-d");
 $tanggalSekarang = date("Y-m-d");
 $selisih = date_diff(date_create($masuk), date_create($tanggalSekarang));
 
