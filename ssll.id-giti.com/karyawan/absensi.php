@@ -519,20 +519,20 @@ $asset_version = time();
 
     <!-- Modal Camera Placed Outside Main Wrapper for Proper Body Level Stacking Context -->
     <div class="modal fade camera-modal-presensi" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="attendanceTypeTitle"><i class="fas fa-camera me-2 text-primary"></i>Ambil Foto</h5>
-                    <button type="button" class="btn-close btn-close-white" id="closeCameraXBtn" aria-label="Close"></button>
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 360px; width: 92%; margin: 0.5rem auto;">
+            <div class="modal-content" style="background: #0f172a; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.15); overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
+                <div class="modal-header" style="background: #0f172a; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 10px 14px; color: #fff;">
+                    <h5 class="modal-title fs-6 fw-bold mb-0 text-white" id="attendanceTypeTitle"><i class="fas fa-camera me-2 text-primary"></i>Ambil Foto</h5>
+                    <button type="button" class="btn-close btn-close-white opacity-75" id="closeCameraXBtn" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-0 position-relative">
-                    <video id="cameraPreview" autoplay playsinline class="camera-video-presensi"></video>
-                    <canvas id="photoCanvas" class="d-none photo-canvas-presensi"></canvas>
+                <div class="modal-body p-0 position-relative" style="height: 300px; max-height: 300px; overflow: hidden; background: #000;">
+                    <video id="cameraPreview" autoplay playsinline class="camera-video-presensi" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;"></video>
+                    <canvas id="photoCanvas" class="d-none photo-canvas-presensi" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;"></canvas>
                     <button id="captureBtn" class="capture-btn-presensi" title="Ambil Foto"><i class="fas fa-camera"></i></button>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" id="closeCameraBatalBtn">Batal</button>
-                    <button type="button" class="btn btn-primary fw-bold" id="uploadPhotoBtn" disabled><i class="fas fa-cloud-arrow-up me-2"></i>Upload & Kirim</button>
+                <div class="modal-footer" style="background: #0f172a; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 10px 14px; display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-outline-secondary flex-fill text-white-50 border-secondary rounded-3 py-2 fw-bold small" id="closeCameraBatalBtn">Batal</button>
+                    <button type="button" class="btn btn-primary flex-fill rounded-3 py-2 fw-bold small text-white shadow" id="uploadPhotoBtn" disabled><i class="fas fa-cloud-arrow-up me-1.5"></i>Upload & Kirim</button>
                 </div>
             </div>
         </div>
