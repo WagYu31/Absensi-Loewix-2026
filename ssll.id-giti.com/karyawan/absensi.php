@@ -803,18 +803,18 @@ $asset_version = time();
         });
 
         $('#cameraModal').on('shown.bs.modal', function() { 
-            $('#photoPreviewImg').addClass('d-none').attr('src', '');
-            $('#cameraPlaceholder').removeClass('d-none');
-            $('#captureBtnLabel').removeClass('d-none');
-            $('#retakeBtn').addClass('d-none');
+            $('#photoPreviewImg').css('display', 'none').attr('src', '');
+            $('#cameraPlaceholder').css('display', 'flex');
+            $('#captureBtnLabel').css('display', 'flex');
+            $('#retakeBtn').css('display', 'none');
             $('#uploadPhotoBtn').prop('disabled', true);
         });
 
         $('#cameraModal').on('hidden.bs.modal', function() {
-            $('#photoPreviewImg').addClass('d-none').attr('src', '');
-            $('#cameraPlaceholder').removeClass('d-none');
-            $('#captureBtnLabel').removeClass('d-none');
-            $('#retakeBtn').addClass('d-none');
+            $('#photoPreviewImg').css('display', 'none').attr('src', '');
+            $('#cameraPlaceholder').css('display', 'flex');
+            $('#captureBtnLabel').css('display', 'flex');
+            $('#retakeBtn').css('display', 'none');
             $('#uploadPhotoBtn').prop('disabled', true).html('<i class="fas fa-cloud-arrow-up me-1.5"></i>Upload & Kirim');
         });
 
@@ -825,10 +825,10 @@ $asset_version = time();
                 const photoImg = document.getElementById('photoPreviewImg');
                 photoImg.src = objectUrl;
                 
-                $('#photoPreviewImg').removeClass('d-none');
-                $('#cameraPlaceholder').addClass('d-none');
-                $('#captureBtnLabel').addClass('d-none');
-                $('#retakeBtn').removeClass('d-none');
+                $('#photoPreviewImg').css('display', 'block');
+                $('#cameraPlaceholder').css('display', 'none');
+                $('#captureBtnLabel').css('display', 'none');
+                $('#retakeBtn').css('display', 'block');
                 $('#uploadPhotoBtn').prop('disabled', false);
             }
         });
@@ -839,10 +839,10 @@ $asset_version = time();
                 URL.revokeObjectURL(photoImg.src);
             }
             $('#nativeCameraInput').val('');
-            $('#photoPreviewImg').addClass('d-none').attr('src', '');
-            $('#cameraPlaceholder').removeClass('d-none');
-            $('#captureBtnLabel').removeClass('d-none');
-            $('#retakeBtn').addClass('d-none');
+            $('#photoPreviewImg').css('display', 'none').attr('src', '');
+            $('#cameraPlaceholder').css('display', 'flex');
+            $('#captureBtnLabel').css('display', 'flex');
+            $('#retakeBtn').css('display', 'none');
             $('#uploadPhotoBtn').prop('disabled', true);
         });
 
