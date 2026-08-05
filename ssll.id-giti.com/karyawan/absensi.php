@@ -549,7 +549,7 @@ $asset_version = time();
                     <button type="button" class="btn-close btn-close-white opacity-75" id="closeCameraXBtn" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0 position-relative" style="height: 300px; max-height: 300px; overflow: hidden; background: #000;">
-                    <video id="cameraPreview" autoplay playsinline class="camera-video-presensi" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;"></video>
+                    <video id="cameraPreview" autoplay playsinline muted class="camera-video-presensi" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;"></video>
                     <img id="photoPreviewImg" class="d-none photo-preview-img" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;">
                     <canvas id="photoCanvas" class="d-none" style="display: none;"></canvas>
                     <button id="captureBtn" class="capture-btn-presensi" title="Ambil Foto"><i class="fas fa-camera"></i></button>
@@ -808,7 +808,12 @@ $asset_version = time();
             $('#retakeBtn').addClass('d-none');
             $('#uploadPhotoBtn').prop('disabled', true);
             navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false })
-                .then(function(s) { stream = s; video.srcObject = stream; video.play(); })
+                .then(function(s) { 
+                    stream = s; 
+                    video.srcObject = stream; 
+                    video.muted = true;
+                    video.play().catch(function(e) { console.log(e); }); 
+                })
                 .catch(function(err) {
                     alert('Tidak dapat mengakses kamera. Pastikan Anda memberikan izin.');
                     closeCameraModal();
@@ -820,27 +825,33 @@ $asset_version = time();
         $('#captureBtn').click(function() {
             const video = document.getElementById('cameraPreview');
             const canvas = document.getElementById('photoCanvas');
-            const context = canvas.getContext('2d');
             
-            let width = video.videoWidth || 640;
-            let height = video.videoHeight || 480;
-            const maxWidth = 600;
-            if (width > maxWidth) {
-                height = Math.round((height * maxWidth) / width);
-                width = maxWidth;
+            if (!video || !video.videoWidth || video.videoWidth === 0) {
+                alert('Kamera sedang diproses, mohon tekan tombol sekali lagi.');
+                return;
             }
+
+            const context = canvas.getContext('2d');
+            const vWidth = video.videoWidth;
+            const vHeight = video.videoHeight;
             
-            canvas.width = width;
-            canvas.height = height;
-            context.drawImage(video, 0, 0, width, height);
+            canvas.width = vWidth;
+            canvas.height = vHeight;
+            context.drawImage(video, 0, 0, vWidth, vHeight);
             
             const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-            $('#photoPreviewImg').attr('src', dataUrl).removeClass('d-none');
+            const photoImg = document.getElementById('photoPreviewImg');
+            photoImg.src = dataUrl;
+            
+            $('#photoPreviewImg').removeClass('d-none');
             $('#cameraPreview').addClass('d-none');
             $('#captureBtn').addClass('d-none');
             $('#retakeBtn').removeClass('d-none');
             $('#uploadPhotoBtn').prop('disabled', false);
-            stopCamera();
+
+            setTimeout(function() {
+                stopCamera();
+            }, 150);
         });
 
         $('#retakeBtn').click(function() {
