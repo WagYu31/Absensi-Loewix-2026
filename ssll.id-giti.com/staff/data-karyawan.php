@@ -43,12 +43,12 @@ if (isset($_GET['deleteNIP'])) {
     exit();
 }
 
-// Fetch list of distinct positions for position filter dropdown
-$positions = [];
-$res_pos = $conn->query("SELECT DISTINCT jabatan FROM karyawan WHERE deleted_at IS NULL AND jabatan IS NOT NULL AND jabatan != '' ORDER BY jabatan ASC");
-if ($res_pos) {
-    while($rp = $res_pos->fetch_assoc()) {
-        $positions[] = $rp['jabatan'];
+// Fetch all active positions/jabatan for filter dropdown
+$jabatanList = [];
+$res_jabatan = $conn->query("SELECT DISTINCT jabatan FROM karyawan WHERE deleted_at IS NULL AND jabatan IS NOT NULL AND jabatan != '' ORDER BY jabatan ASC");
+if ($res_jabatan) {
+    while ($rj = $res_jabatan->fetch_assoc()) {
+        $jabatanList[] = $rj['jabatan'];
     }
 }
 
@@ -88,10 +88,13 @@ if ($result_check_zero_gaji) {
             width: 2.75em !important;
             height: 1.4em !important;
         }
-        .filter-bar-container {
-            background: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 0.85rem 1.25rem;
+        .filter-box-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
         }
     </style>
 </head>
@@ -110,7 +113,7 @@ if ($result_check_zero_gaji) {
             <div class="container-fluid px-lg-4">
                 
                 <?php if ($zero_gaji_count > 0): ?>
-                <div class="alert alert-warning d-flex align-items-center justify-content-between" role="alert">
+                <div class="alert alert-warning d-flex align-items-center justify-content-between mb-3" role="alert">
                     <div>
                         <i class="fa-solid fa-triangle-exclamation me-2"></i>
                         Terdapat <strong><?php echo $zero_gaji_count; ?> karyawan</strong> yang belum memiliki gaji pokok.
@@ -119,45 +122,48 @@ if ($result_check_zero_gaji) {
                 </div>
                 <?php endif; ?>
 
+                <!-- Multi-Filter Card -->
+                <div class="filter-box-card">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-12 col-md-4">
+                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-magnifying-glass me-1"></i>Pencarian Cepat</label>
+                            <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Cari nama, NIK, Jabatan, atau No. HP..." onkeyup="applyFilter()">
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-toggle-on me-1"></i>Status Karyawan</label>
+                            <select id="filterStatus" class="form-select form-select-sm" onchange="applyFilter()">
+                                <option value="all">Semua Status (Aktif & Non-Aktif)</option>
+                                <option value="aktif">Hanya Aktif</option>
+                                <option value="tidak aktif">Hanya Tidak Aktif</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-md-3">
+                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-briefcase me-1"></i>Jabatan</label>
+                            <select id="filterJabatan" class="form-select form-select-sm" onchange="applyFilter()">
+                                <option value="all">Semua Jabatan</option>
+                                <?php foreach ($jabatanList as $j): ?>
+                                    <option value="<?php echo htmlspecialchars(strtolower($j)); ?>"><?php echo htmlspecialchars($j); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-2">
+                            <label class="small fw-bold text-secondary mb-1">&nbsp;</label>
+                            <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="resetFilter()"><i class="fa-solid fa-rotate-left me-1"></i>Reset Filter</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card shadow-sm">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0"><i class="fa-solid fa-users title-icon"></i>Daftar Karyawan Aktif & Non-Aktif</h5>
                         <a href="data-karyawan-baru.php" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus me-2"></i>Tambah Karyawan</a>
                     </div>
-                    
-                    <!-- Multi-Filter Bar -->
-                    <div class="filter-bar-container">
-                        <div class="row g-2 align-items-center">
-                            <div class="col-12 col-md-5">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
-                                    <input type="text" id="searchKaryawanInput" class="form-control" placeholder="Cari nama karyawan atau NIK..." onkeyup="filterKaryawanTable()">
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <select id="filterJabatanSelect" class="form-select form-select-sm" onchange="filterKaryawanTable()">
-                                    <option value="">-- Semua Jabatan --</option>
-                                    <?php foreach ($positions as $pos): ?>
-                                        <option value="<?php echo htmlspecialchars(strtolower($pos)); ?>"><?php echo htmlspecialchars($pos); ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <select id="filterStatusSelect" class="form-select form-select-sm" onchange="filterKaryawanTable()">
-                                    <option value="">-- Semua Status --</option>
-                                    <option value="aktif">Aktif</option>
-                                    <option value="tidak aktif">Tidak Aktif</option>
-                                </select>
-                            </div>
-                            <div class="col-12 col-md-1">
-                                <button class="btn btn-outline-secondary btn-sm w-100" title="Reset Filter" onclick="resetKaryawanFilters()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-hover table-striped mb-0 align-middle" style="font-size: 0.9rem;">
+                            <table class="table table-hover table-striped mb-0 align-middle" id="karyawanTable" style="font-size: 0.9rem;">
                                 <thead class="table-light">
                                     <tr>
                                         <th>NIK</th>
@@ -169,9 +175,9 @@ if ($result_check_zero_gaji) {
                                         <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tableKaryawanBody">
+                                <tbody>
                                     <?php if (empty($karyawanData)): ?>
-                                        <tr id="emptyInitialRow">
+                                        <tr>
                                             <td colspan="7" class="text-center text-muted p-4">Belum ada data karyawan.</td>
                                         </tr>
                                     <?php endif; ?>
@@ -180,9 +186,10 @@ if ($result_check_zero_gaji) {
                                             $highlightClass = ($karyawan['gaji_pokok'] == '0.00' || $karyawan['gaji_pokok'] == 0) ? 'highlight-gaji-nol' : '';
                                     ?>
                                         <tr class="<?php echo $highlightClass; ?> karyawan-row" 
-                                            data-nama="<?php echo htmlspecialchars(strtolower($karyawan['nama'])); ?>" 
-                                            data-nik="<?php echo htmlspecialchars(strtolower($karyawan['nik'])); ?>" 
-                                            data-jabatan="<?php echo htmlspecialchars(strtolower($karyawan['jabatan'])); ?>" 
+                                            data-name="<?php echo htmlspecialchars(strtolower($karyawan['nama'])); ?>"
+                                            data-nik="<?php echo htmlspecialchars(strtolower($karyawan['nik'])); ?>"
+                                            data-jabatan="<?php echo htmlspecialchars(strtolower($karyawan['jabatan'])); ?>"
+                                            data-phone="<?php echo htmlspecialchars(strtolower($karyawan['nomor_handphone'])); ?>"
                                             data-status="<?php echo htmlspecialchars(strtolower($karyawan['status_karyawan'])); ?>">
                                             <td><?php echo htmlspecialchars($karyawan['nik']); ?></td>
                                             <td style="text-transform:capitalize; font-weight: 600;"><?php echo htmlspecialchars($karyawan['nama']); ?></td>
@@ -201,7 +208,7 @@ if ($result_check_zero_gaji) {
                                                            id="switch-status-<?php echo $karyawan['nip']; ?>"
                                                            onchange="updateStatus('<?php echo $karyawan['nip']; ?>', this)" 
                                                            <?php if ($karyawan['status_karyawan'] === 'aktif') echo 'checked'; ?>>
-                                                    <label class="form-check-label fw-bold small mb-0" id="label-status-<?php echo $karyawan['nip']; ?>" style="text-transform:capitalize; cursor:pointer;" for="switch-status-<?php echo $karyawan['nip']; ?>">
+                                                    <label class="form-check-label fw-bold small mb-0 status-label-text" id="label-status-<?php echo $karyawan['nip']; ?>" style="text-transform:capitalize; cursor:pointer;" for="switch-status-<?php echo $karyawan['nip']; ?>">
                                                         <?php echo htmlspecialchars($karyawan['status_karyawan']); ?>
                                                     </label>
                                                 </div>
@@ -218,9 +225,6 @@ if ($result_check_zero_gaji) {
                                     <?php 
                                         endif;
                                     endforeach; ?>
-                                    <tr id="noDataFilteredRow" class="d-none">
-                                        <td colspan="7" class="text-center text-muted p-4"><i class="fa-solid fa-user-slash me-2"></i>Tidak ada karyawan yang cocok dengan filter.</td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -234,43 +238,35 @@ if ($result_check_zero_gaji) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-    function filterKaryawanTable() {
-        const searchVal = $('#searchKaryawanInput').val().toLowerCase().trim();
-        const jabatanVal = $('#filterJabatanSelect').val().toLowerCase().trim();
-        const statusVal = $('#filterStatusSelect').val().toLowerCase().trim();
-        
-        let visibleCount = 0;
+    function applyFilter() {
+        const query = $('#searchInput').val().toLowerCase().trim();
+        const selectedStatus = $('#filterStatus').val();
+        const selectedJabatan = $('#filterJabatan').val();
 
-        $('#tableKaryawanBody tr.karyawan-row').each(function() {
-            const name = $(this).attr('data-nama') || '';
+        $('.karyawan-row').each(function() {
+            const name = $(this).attr('data-name') || '';
             const nik = $(this).attr('data-nik') || '';
             const jabatan = $(this).attr('data-jabatan') || '';
+            const phone = $(this).attr('data-phone') || '';
             const status = $(this).attr('data-status') || '';
 
-            const matchSearch = !searchVal || name.includes(searchVal) || nik.includes(searchVal);
-            const matchJabatan = !jabatanVal || jabatan === jabatanVal;
-            const matchStatus = !statusVal || status === statusVal;
+            const matchSearch = query === '' || name.includes(query) || nik.includes(query) || jabatan.includes(query) || phone.includes(query);
+            const matchStatus = selectedStatus === 'all' || status === selectedStatus;
+            const matchJabatan = selectedJabatan === 'all' || jabatan === selectedJabatan;
 
-            if (matchSearch && matchJabatan && matchStatus) {
+            if (matchSearch && matchStatus && matchJabatan) {
                 $(this).removeClass('d-none');
-                visibleCount++;
             } else {
                 $(this).addClass('d-none');
             }
         });
-
-        if (visibleCount === 0) {
-            $('#noDataFilteredRow').removeClass('d-none');
-        } else {
-            $('#noDataFilteredRow').addClass('d-none');
-        }
     }
 
-    function resetKaryawanFilters() {
-        $('#searchKaryawanInput').val('');
-        $('#filterJabatanSelect').val('');
-        $('#filterStatusSelect').val('');
-        filterKaryawanTable();
+    function resetFilter() {
+        $('#searchInput').val('');
+        $('#filterStatus').val('all');
+        $('#filterJabatan').val('all');
+        $('.karyawan-row').removeClass('d-none');
     }
 
     function deleteKaryawan(nip) {
@@ -283,7 +279,7 @@ if ($result_check_zero_gaji) {
         const isChecked = checkbox.checked;
         const newStatus = isChecked ? 'aktif' : 'tidak aktif';
         const labelEl = $('#label-status-' + nip);
-        const rowEl = $(checkbox).closest('tr.karyawan-row');
+        const rowEl = $(checkbox).closest('.karyawan-row');
         
         $(checkbox).prop('disabled', true);
         
@@ -297,6 +293,7 @@ if ($result_check_zero_gaji) {
                 if (res.success) {
                     labelEl.text(res.status);
                     rowEl.attr('data-status', res.status);
+                    applyFilter();
                 } else {
                     alert('Gagal mengubah status: ' + res.message);
                     checkbox.checked = !isChecked;
