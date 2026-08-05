@@ -8,19 +8,10 @@ if (!isset($_SESSION['nip']) || $_SESSION['role'] !== 'karyawan') {
 }
 
 include '../conn.php';
-include 'get-kar-login-data.php'; // Pastikan file ini menyediakan variabel sesi dengan benar
+include 'get-kar-login-data.php';
 
-// Data dummy untuk pengembangan tampilan (gantilah dengan query database jika memungkinkan)
-$absensi_bulan_ini = ['total_hari_kerja' => 22, 'hadir' => 20, 'izin' => 1, 'sakit' => 1, 'terlambat' => 2];
-$slip_gaji_terbaru = ['periode' => date('F Y', strtotime('-1 month')), 'gaji_bersih' => 'Rp 10.000.000', 'tanggal_bayar' => date('25 F Y', strtotime('-1 month'))];
-$pengumuman = [
-    ['id' => 1, 'judul' => 'Pembaruan Kebijakan Cuti Tahunan', 'isi' => 'Harap perhatikan pembaruan terkait kebijakan cuti tahunan efektif per tanggal 1 Juni 2025. Detail dapat dilihat pada portal internal.', 'tanggal' => '20 Mei 2025', 'kategori' => 'Kebijakan'],
-    ['id' => 2, 'judul' => 'Jadwal Pelatihan Keterampilan Komunikasi', 'isi' => 'Pelatihan keterampilan komunikasi akan diadakan pada tanggal 10-12 Juni 2025. Pendaftaran dibuka hingga 5 Juni.', 'tanggal' => '18 Mei 2025', 'kategori' => 'Pelatihan'],
-    ['id' => 3, 'judul' => 'Pengingat: Pengisian Laporan Kinerja Mingguan', 'isi' => 'Mohon untuk segera melengkapi laporan kinerja mingguan Anda sebelum batas waktu hari Jumat ini pukul 17:00 WIB.', 'tanggal' => '15 Mei 2025', 'kategori' => 'Operasional'],
-];
-
-// Nama file halaman saat ini untuk active state menu
 $current_page_basename = basename($_SERVER['PHP_SELF']);
+$asset_version = time();
 ?>
 
 <!DOCTYPE html>
@@ -30,70 +21,213 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Karyawan - Grav-Tech Salary</title>
-    <meta name="description" content="Dashboard profesional untuk karyawan Grav-Tech Salary" />
-    <meta name="keywords" content="salary, gaji, gravitti technology, dashboard, karyawan" />
-    <meta name="author" content="Irviani" />
+    <title>Dashboard Karyawan 3D - Gravitti Tech</title>
+    <meta name="description" content="Dashboard profesional untuk karyawan Gravitti Tech" />
 
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <script src="https://kit.fontawesome.com/a97d5963a4.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="../assets/css/main-styles.css">
-    <link rel="stylesheet" href="../assets/css/sidebar.css">
-    <link rel="stylesheet" href="../assets/css/bottom-nav.css">
-    <link rel="stylesheet" href="../assets/css/footer.css">
+    <link rel="stylesheet" href="../assets/css/main-styles.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/sidebar.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/bottom-nav.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/footer.css?v=<?php echo $asset_version; ?>">
 
-    <script>
-        // Set page background color for notch effect (if different from default CSS body)
-        // document.body.style.backgroundColor = '#E6E0F8'; // Warna lavender muda (sesuaikan jika perlu)
-    </script>
+    <style>
+        :root {
+            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%);
+            --card-radius-lg: 24px;
+            --primary-3d: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+            background: #f1f5f9 !important;
+        }
+
+        .main-content-wrapper {
+            background: #f1f5f9;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%) !important;
+            min-height: 100vh;
+        }
+
+        /* 3D Header Banner */
+        .page-specific-header {
+            background: var(--header-gradient) !important;
+            color: #ffffff;
+            padding: 2.25rem 0 4.5rem 0 !important;
+            margin-bottom: -50px !important;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.25) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .page-specific-header h1 {
+            font-weight: 800 !important;
+            font-size: 1.65rem !important;
+            letter-spacing: -0.5px;
+            color: #ffffff !important;
+        }
+
+        /* 3D Glassmorphic Cards */
+        .card-3d-modern {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border-radius: var(--card-radius-lg) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 
+                0 25px 50px -12px rgba(15, 23, 42, 0.12),
+                0 12px 24px -12px rgba(15, 23, 42, 0.08) !important;
+            transition: all 0.25s ease !important;
+        }
+
+        .profile-img-3d {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3.5px solid #ffffff;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+        }
+
+        /* 3D Quick Action Menu Cards */
+        .quick-action-grid-3d {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 14px;
+        }
+
+        .quick-action-card-3d {
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 1.2rem 0.8rem;
+            text-align: center;
+            text-decoration: none !important;
+            color: #334155 !important;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.03), 0 3px 0 #cbd5e1;
+            transition: all 0.2s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quick-action-card-3d:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 28px rgba(37, 99, 235, 0.15), 0 4px 0 #3b82f6;
+            border-color: #3b82f6;
+            color: #2563eb !important;
+        }
+
+        .quick-action-icon-3d {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-card-3d:hover .quick-action-icon-3d {
+            transform: scale(1.1) rotate(4deg);
+        }
+
+        .qa-icon-profile { background: linear-gradient(135deg, #dbeafe, #eff6ff); color: #2563eb; }
+        .qa-icon-absen { background: linear-gradient(135deg, #dcfce7, #f0fdf4); color: #16a34a; }
+        .qa-icon-gaji { background: linear-gradient(135deg, #fef3c7, #fffbeb); color: #d97706; }
+        .qa-icon-cuti { background: linear-gradient(135deg, #f3e8ff, #faf5ff); color: #9333ea; }
+        .qa-icon-kalender { background: linear-gradient(135deg, #ffe4e6, #fff1f2); color: #e11d48; }
+        .qa-icon-kinerja { background: linear-gradient(135deg, #ccfbf1, #f0fdfa); color: #0d9488; }
+        .qa-icon-help { background: linear-gradient(135deg, #e0f2fe, #f0f9ff); color: #0284c7; }
+
+        /* 3D Button */
+        .btn-3d-sm {
+            background: var(--primary-3d) !important;
+            color: #ffffff !important;
+            border: none !important;
+            font-weight: 700 !important;
+            font-size: 0.8rem !important;
+            border-radius: 12px !important;
+            padding: 6px 16px !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3), 0 2px 0 #1d4ed8 !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .btn-3d-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4), 0 3px 0 #1e40af !important;
+            color: #ffffff !important;
+        }
+
+        .stat-row-3d {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.88rem;
+        }
+
+        .stat-row-3d:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 
 <body>
 
     <?php include 'nav/sidebar.php'; ?>
 
-    <div class="main-content-wrapper">
-        <div class="header-banner">
+    <div class="main-content-wrapper p-0">
+        <div class="header-banner page-specific-header no-print">
             <div class="container-fluid px-lg-4">
-                <h1>Selamat Datang Kembali, <?php echo htmlspecialchars(explode(' ', $nama)[0]); ?>!</h1>
-                <p>Semoga harimu produktif dan menyenangkan di Gravitti Technology.</p>
+                <h1><i class="fa-solid fa-hand me-2 text-warning"></i>Selamat Datang, <?php echo htmlspecialchars(explode(' ', $nama)[0]); ?>!</h1>
+                <p class="small mb-0 opacity-80">Semoga harimu produktif dan menyenangkan di Gravitti Technology.</p>
             </div>
         </div>
 
-        <div class="dashboard-content">
-            <div class="container-fluid px-lg-4 px-1">
+        <div class="dashboard-content px-0">
+            <div class="container-fluid px-lg-4">
                 <div class="row">
+                    <!-- Profile Card 3D -->
                     <div class="col-xl-5 mb-4">
-                        <div class="card profile-card h-100">
-                            <div class="card-body d-flex align-items-center">
-                                <div class="profile-img-container">
-                                    <?php
-                                    $base_upload_path = '../uploads/';
-                                    $universal_default_image = $base_upload_path . 'default_avatar.png'; // PASTIKAN GAMBAR INI ADA
-                                    $image_source_for_profile = '';
+                        <div class="card card-3d-modern h-100 p-3">
+                            <div class="card-body d-flex align-items-center gap-3">
+                                <?php
+                                $base_upload_path = '../uploads/';
+                                $universal_default_image = $base_upload_path . 'default_avatar.png';
+                                $image_source_for_profile = '';
 
-                                    if (!empty($photo)) {
-                                        $image_source_for_profile = htmlspecialchars($base_upload_path . $photo);
-                                    } else {
-                                        $initial = !empty($nama) ? strtoupper(substr($nama, 0, 1)) : 'U';
-                                        $image_source_for_profile = 'https://via.placeholder.com/80/2979ff/ffffff?Text=' . $initial;
-                                    }
-                                    ?>
+                                if (!empty($photo)) {
+                                    $image_source_for_profile = htmlspecialchars($base_upload_path . $photo);
+                                } else {
+                                    $initial = !empty($nama) ? strtoupper(substr($nama, 0, 1)) : 'U';
+                                    $image_source_for_profile = 'https://via.placeholder.com/85/2563eb/ffffff?Text=' . $initial;
+                                }
+                                ?>
+                                <div>
                                     <img src="<?php echo $image_source_for_profile; ?>"
-                                        alt="Foto Profil" class="profile-img"
+                                        alt="Foto Profil" class="profile-img-3d"
                                         onerror="this.onerror=null; this.src='<?php echo htmlspecialchars($universal_default_image); ?>';">
                                 </div>
                                 <div class="profile-info">
-                                    <h5 class="mb-1"><?php echo htmlspecialchars($nama); ?></h5>
-                                    <p class="text-muted mb-1">NIK: <?php echo htmlspecialchars($nik); ?></p>
-                                    <p class="text-muted"><?php echo htmlspecialchars($jabatan); ?></p>
-                                    <a href="profile.php" class="btn btn-sm btn-outline-primary mt-2 rounded-pill">
+                                    <h5 class="fw-extrabold text-dark mb-1" style="letter-spacing: -0.5px;"><?php echo htmlspecialchars($nama); ?></h5>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="badge bg-light text-dark border font-mono small">NIK: <?php echo htmlspecialchars($nik); ?></span>
+                                        <span class="badge bg-primary-subtle text-primary small fw-bold"><?php echo htmlspecialchars($jabatan); ?></span>
+                                    </div>
+                                    <a href="profile.php" class="btn btn-3d-sm text-decoration-none">
                                         <i class="fa-solid fa-user-pen me-1"></i> Edit Profil
                                     </a>
                                 </div>
@@ -103,35 +237,38 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
 
                     <?php include "data.php"; ?>
 
+                    <!-- Stat Cards 3D -->
                     <div class="col-xl-7 mb-4">
-                        <div class="row">
-                            <div class="col-md-6 mb-4 mb-md-0">
-                                <div class="card h-100 shadow-sm">
-                                    <div class="card-header">
-                                        <h6 class="card-title mb-0">
-                                            <i class="fa-solid fa-calendar-days title-icon"></i>Ringkasan Absensi
-                                            <small>(<?php echo htmlspecialchars($periode_absensi_display_dash); ?>)</small>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card card-3d-modern h-100 p-0" style="overflow: hidden;">
+                                    <div class="bg-white p-3 border-bottom d-flex align-items-center justify-content-between">
+                                        <h6 class="fw-bold text-dark mb-0 fs-6">
+                                            <i class="fa-solid fa-calendar-days text-primary me-2"></i>Ringkasan Absensi
                                         </h6>
+                                        <span class="badge bg-light text-muted border small"><?php echo htmlspecialchars($periode_absensi_display_dash); ?></span>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="stat-item"><span>Total Hari Kerja Efektif:</span> <strong><?php echo $total_hari_kerja_dash; ?></strong></div>
-                                        <div class="stat-item"><span>Hadir:</span> <strong class="text-success"><?php echo $jumlah_hadir_dash; ?></strong></div>
-                                        <div class="stat-item"><span>Cuti (Disetujui):</span> <strong class="text-warning"><?php echo $jumlah_izin_sakit_dash; ?></strong></div>
-                                        <div class="stat-item"><span>Total Terlambat:</span> <strong class="text-danger"><?php echo $total_menit_terlambat_dash; ?> <small>menit</small></strong></div>
-                                        <a href="<?php echo $link_ke_detail_absen_dash; ?>" class="card-link mt-3 d-inline-block">Lihat Detail Absensi <i class="fa-solid fa-arrow-right-long"></i></a>
+                                    <div class="p-3">
+                                        <div class="stat-row-3d"><span class="text-secondary">Hari Kerja Efektif:</span> <strong class="text-dark fs-6"><?php echo $total_hari_kerja_dash; ?></strong></div>
+                                        <div class="stat-row-3d"><span class="text-secondary">Hadir:</span> <strong class="text-success fs-6"><?php echo $jumlah_hadir_dash; ?></strong></div>
+                                        <div class="stat-row-3d"><span class="text-secondary">Cuti (Disetujui):</span> <strong class="text-warning fs-6"><?php echo $jumlah_izin_sakit_dash; ?></strong></div>
+                                        <div class="stat-row-3d"><span class="text-secondary">Total Terlambat:</span> <strong class="text-danger fs-6"><?php echo $total_menit_terlambat_dash; ?> <small>menit</small></strong></div>
+                                        <a href="<?php echo $link_ke_detail_absen_dash; ?>" class="fw-bold text-primary text-decoration-none small mt-3 d-inline-block">Detail Absensi <i class="fa-solid fa-arrow-right-long ms-1"></i></a>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="card h-100 shadow-sm">
-                                    <div class="card-header">
-                                        <h6 class="card-title mb-0"><i class="fa-solid fa-money-check-dollar title-icon text-success"></i>Info Gaji Bulan Ini</h6>
+                                <div class="card card-3d-modern h-100 p-0" style="overflow: hidden;">
+                                    <div class="bg-white p-3 border-bottom d-flex align-items-center justify-content-between">
+                                        <h6 class="fw-bold text-dark mb-0 fs-6">
+                                            <i class="fa-solid fa-money-check-dollar text-success me-2"></i>Info Gaji Bulan Ini
+                                        </h6>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="stat-item"><span>Periode:</span> <strong><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['periode']); ?></strong></div>
-                                        <div class="stat-item"><span>Perkiraan Gaji Bersih:</span> <strong class="text-success"><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['gaji_bersih_rp']); ?></strong></div>
-                                        <div class="stat-item"><span>Estimasi Tgl. Bayar:</span> <strong><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['tanggal_bayar']); ?></strong></div>
-                                        <a href="<?php echo $link_ke_riwayat_gaji_dash; ?>" class="card-link mt-3 d-inline-block">Lihat Riwayat Gaji <i class="fa-solid fa-arrow-right-long"></i></a>
+                                    <div class="p-3">
+                                        <div class="stat-row-3d"><span class="text-secondary">Periode:</span> <strong class="text-dark"><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['periode']); ?></strong></div>
+                                        <div class="stat-row-3d"><span class="text-secondary">Perkiraan Gaji Bersih:</span> <strong class="text-success fs-6"><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['gaji_bersih_rp']); ?></strong></div>
+                                        <div class="stat-row-3d"><span class="text-secondary">Estimasi Tgl. Bayar:</span> <strong class="text-dark"><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['tanggal_bayar']); ?></strong></div>
+                                        <a href="<?php echo $link_ke_riwayat_gaji_dash; ?>" class="fw-bold text-success text-decoration-none small mt-3 d-inline-block">Riwayat Gaji <i class="fa-solid fa-arrow-right-long ms-1"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -139,107 +276,105 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                     </div>
                 </div>
 
+                <!-- 3D Quick Action Menu Grid -->
                 <div class="mb-4">
-                    <h5 class="section-title">Akses Cepat</h5>
-                    <div class="quick-action-grid">
-                        <a href="profile.php" class="quick-action-card">
-                            <i class="fa-solid fa-address-card"></i>
-                            <span>Profil Saya</span>
+                    <h6 class="fw-extrabold text-dark mb-3"><i class="fa-solid fa-bolt me-2 text-warning"></i>Akses Cepat Menu Karyawan</h6>
+                    <div class="quick-action-grid-3d">
+                        <a href="profile.php" class="quick-action-card-3d">
+                            <div class="quick-action-icon-3d qa-icon-profile">
+                                <i class="fa-solid fa-address-card"></i>
+                            </div>
+                            <span class="fw-bold small">Profil Saya</span>
                         </a>
-                        <a href="absen.php?nik=<?php echo htmlspecialchars($nik); ?>#form-absen" class="quick-action-card">
-                            <i class="fa-solid fa-user-check"></i>
-                            <span>Absen</span>
+                        <a href="absen.php?nik=<?php echo htmlspecialchars($nik); ?>#form-absen" class="quick-action-card-3d">
+                            <div class="quick-action-icon-3d qa-icon-absen">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                            <span class="fw-bold small">Absen Masuk</span>
                         </a>
-                        <a href="riwayat-gaji.php" class="quick-action-card">
-                            <i class="fa-solid fa-receipt"></i>
-                            <span>Lihat Gaji</span>
+                        <a href="riwayat-gaji.php" class="quick-action-card-3d">
+                            <div class="quick-action-icon-3d qa-icon-gaji">
+                                <i class="fa-solid fa-receipt"></i>
+                            </div>
+                            <span class="fw-bold small">Lihat Gaji</span>
                         </a>
-                        <!-- <a href="cuti.php" class="quick-action-card" data-bs-toggle="modal" data-bs-target="#pengajuanCutiModal"> -->
-                        <a href="cuti.php" class="quick-action-card">
-                            <i class="fa-solid fa-person-walking-luggage"></i>
-                            <span>Ajukan Cuti</span>
+                        <a href="cuti.php" class="quick-action-card-3d">
+                            <div class="quick-action-icon-3d qa-icon-cuti">
+                                <i class="fa-solid fa-person-walking-luggage"></i>
+                            </div>
+                            <span class="fw-bold small">Ajukan Cuti</span>
                         </a>
-                        <!--<a href="pengumuman.php" class="quick-action-card"> <i class="fa-solid fa-bell"></i>-->
-                        <!--    <span>Pengumuman</span>-->
-                        <!--</a>-->
-                        <a href="kalender_kerja.php" class="quick-action-card"> <i class="fa-solid fa-calendar-check"></i>
-                            <span>Kalender Kerja</span>
+                        <a href="kalender_kerja.php" class="quick-action-card-3d">
+                            <div class="quick-action-icon-3d qa-icon-kalender">
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+                            <span class="fw-bold small">Kalender Kerja</span>
                         </a>
-                        <a href="peringkat-kinerja.php" class="quick-action-card"> <i class="fa-solid fa-bar-chart"></i>
-                            <span>Statistik & Kinerja</span>
+                        <a href="peringkat-kinerja.php" class="quick-action-card-3d">
+                            <div class="quick-action-icon-3d qa-icon-kinerja">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <span class="fw-bold small">Kinerja Saya</span>
                         </a>
-                        <a href="help.php" class="quick-action-card">
-                            <!-- <a href="help.php" class="quick-action-card" data-bs-toggle="modal" data-bs-target="#bantuanModal"> -->
-                            <i class="fa-solid fa-circle-question"></i>
-                            <span>Bantuan</span>
+                        <a href="help.php" class="quick-action-card-3d">
+                            <div class="quick-action-icon-3d qa-icon-help">
+                                <i class="fa-solid fa-circle-question"></i>
+                            </div>
+                            <span class="fw-bold small">Bantuan</span>
                         </a>
                     </div>
                 </div>
 
                 <?php
-
                 // --- AMBIL DATA PENGUMUMAN DARI DATABASE ---
-                $pengumuman_list_db = []; // Inisialisasi array untuk menyimpan hasil query
+                $pengumuman_list_db = [];
                 $sql_pengumuman = "SELECT id, judul, isi, jenis, created_at, gambar, media 
                    FROM pengumuman 
                    WHERE deleted_at IS NULL 
                    ORDER BY created_at DESC 
-                   LIMIT 3"; // Ambil 3 pengumuman terbaru
+                   LIMIT 3";
 
                 $result_pengumuman = $conn->query($sql_pengumuman);
                 if ($result_pengumuman && $result_pengumuman->num_rows > 0) {
                     while ($row_pengumuman = $result_pengumuman->fetch_assoc()) {
                         $pengumuman_list_db[] = $row_pengumuman;
                     }
-                } else {
-                    // Tidak ada error query, tapi mungkin memang tidak ada pengumuman
-                    // error_log("Dashboard - Tidak ada pengumuman ditemukan atau query error: " . $conn->error);
                 }
-
-                // --- AKHIR BLOK PENGAMBILAN PENGUMUMAN ---
                 ?>
 
-                <div class="row">
+                <!-- Pengumuman 3D Card -->
+                <div class="row mb-4">
                     <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h6 class="card-title"><i class="fa-solid fa-bullhorn title-icon"></i>Pengumuman Terbaru</h6>
-                                <a href="pengumuman.php" class="card-link small">Lihat Semua <i class="fa-solid fa-angle-right"></i></a>
+                        <div class="card card-3d-modern p-0" style="overflow: hidden;">
+                            <div class="p-3 bg-white border-bottom d-flex align-items-center justify-content-between">
+                                <h6 class="fw-bold text-dark mb-0 fs-6"><i class="fa-solid fa-bullhorn text-danger me-2"></i>Pengumuman Terbaru</h6>
+                                <a href="pengumuman.php" class="fw-bold text-primary text-decoration-none small">Lihat Semua <i class="fa-solid fa-angle-right ms-1"></i></a>
                             </div>
-                            <div class="card-body pt-2 pb-3">
+                            <div class="p-3">
                                 <?php if (!empty($pengumuman_list_db)): ?>
                                     <?php foreach ($pengumuman_list_db as $item_db): ?>
-                                        <div class="announcement-item">
-                                            <a href="#" class="announcement-title" data-bs-toggle="modal" data-bs-target="#announcementDetailModal_<?php echo htmlspecialchars($item_db['id']); ?>">
-                                                <?php echo htmlspecialchars($item_db['judul']); ?>
-                                            </a>
-                                            <div class="announcement-meta">
-                                                <span class="me-2">
+                                        <div class="p-3 mb-2 rounded-4 bg-light border d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                            <div>
+                                                <a href="#" class="fw-bold text-dark text-decoration-none" data-bs-toggle="modal" data-bs-target="#announcementDetailModal_<?php echo htmlspecialchars($item_db['id']); ?>">
+                                                    <?php echo htmlspecialchars($item_db['judul']); ?>
+                                                </a>
+                                                <div class="small text-muted mt-1">
                                                     <i class="fa-regular fa-calendar-alt me-1"></i>
                                                     <?php
-                                                    // Format tanggal dari created_at
                                                     try {
                                                         $tanggal_pengumuman = new DateTime($item_db['created_at']);
                                                         echo htmlspecialchars($tanggal_pengumuman->format('d M Y, H:i'));
                                                     } catch (Exception $e) {
-                                                        echo htmlspecialchars($item_db['created_at']); // Fallback jika format tidak standar
+                                                        echo htmlspecialchars($item_db['created_at']);
                                                     }
                                                     ?>
-                                                </span>
-                                                <?php if (!empty($item_db['jenis'])): ?>
-                                                    <span class="badge bg-light text-dark border">
-                                                        <?php echo htmlspecialchars($item_db['jenis']); // Menggunakan kolom 'jenis' sebagai kategori 
-                                                        ?>
-                                                    </span>
-                                                <?php endif; ?>
+                                                </div>
                                             </div>
-                                            <p class="announcement-content d-none d-md-block">
-                                                <?php
-                                                // Menampilkan ringkasan isi
-                                                $isi_ringkas = strip_tags($item_db['isi']); // Hapus tag HTML untuk ringkasan
-                                                echo htmlspecialchars(substr($isi_ringkas, 0, 120)) . (strlen($isi_ringkas) > 120 ? '...' : '');
-                                                ?>
-                                            </p>
+                                            <?php if (!empty($item_db['jenis'])): ?>
+                                                <span class="badge bg-primary-subtle text-primary fw-bold rounded-pill px-3 py-2">
+                                                    <?php echo htmlspecialchars($item_db['jenis']); ?>
+                                                </span>
+                                            <?php endif; ?>
                                         </div>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -250,132 +385,19 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                     </div>
                 </div>
 
-                <div class="footer">
+                <div class="footer text-center my-4 text-muted small">
                     Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>. All Rights Reserved.
                     <br><small>Version 1.1.0</small>
                 </div>
+
             </div>
         </div>
     </div>
 
     <?php include 'nav/bottom-nav.php'; ?>
 
-    <div class="modal fade" id="pengajuanCutiModal" tabindex="-1" aria-labelledby="pengajuanCutiModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="pengajuanCutiModalLabel"><i class="fa-solid fa-person-walking-luggage me-2"></i>Pengajuan Cuti</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Fitur pengajuan cuti online saat ini sedang dalam tahap finalisasi. Untuk sementara, silakan ajukan cuti melalui formulir manual ke HRD.</p>
-                    <p>Terima kasih atas pengertiannya.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="bantuanModal" tabindex="-1" aria-labelledby="bantuanModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="bantuanModalLabel"><i class="fa-solid fa-circle-question me-2"></i>Pusat Bantuan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Mengalami kendala atau butuh bantuan terkait penggunaan sistem? Hubungi tim support kami:</p>
-                    <ul>
-                        <li>Email: <a href="mailto:support@gravtech.com">support@gravtech.com</a></li>
-                        <li>Telepon: (021) 123-4567 ext. 101</li>
-                        <li>Jam Operasional: Senin - Jumat, 08:00 - 17:00 WIB</li>
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <?php if (!empty($pengumuman)): ?>
-        <?php foreach ($pengumuman as $item): ?>
-            <div class="modal fade" id="announcementDetailModal_<?php echo $item['id']; ?>" tabindex="-1" aria-labelledby="announcementDetailModalLabel_<?php echo $item['id']; ?>" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="announcementDetailModalLabel_<?php echo $item['id']; ?>"><?php echo htmlspecialchars($item['judul']); ?></h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <small class="text-muted">
-                                    <i class="fa-regular fa-calendar-alt me-1"></i> Diposting: <?php echo htmlspecialchars($item['tanggal']); ?> |
-                                    <span class="badge bg-primary-subtle text-primary-emphasis border border-primary-subtle"><?php echo htmlspecialchars($item['kategori']); ?></span>
-                                </small>
-                            </div>
-                            <hr>
-                            <p><?php echo nl2br(htmlspecialchars($item['isi'])); ?></p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            var currentPath = window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1);
-            if (currentPath === "") { // Jika path kosong (biasanya root atau index)
-                currentPath = "<?php echo $current_page_basename; ?>"; // Gunakan nama file PHP saat ini
-            }
-
-            // Active state untuk Sidebar Desktop
-            $('.sidebar-menu a').each(function() {
-                var linkHref = $(this).attr('href').split("?")[0];
-                if (linkHref === currentPath) {
-                    $('.sidebar-menu a.active').removeClass('active'); // Hapus active dari semua
-                    $(this).addClass('active'); // Tambah active ke yang cocok
-                    return false;
-                }
-            });
-            // Jika tidak ada yang cocok di sidebar (misal halaman dengan parameter), dan currentPath adalah halaman dashboard
-            if ($('.sidebar-menu a.active').length === 0 && currentPath === "<?php echo $current_page_basename; ?>") {
-                $('.sidebar-menu a[href="<?php echo $current_page_basename; ?>"]').addClass('active');
-            }
-
-
-            // Active state untuk Custom Mobile Bottom Navigation
-            $('.custom-nav__link').each(function() {
-                var linkHref = $(this).attr('href').split("?")[0];
-                if (linkHref === currentPath) {
-                    $('.custom-nav__link.active').removeClass('active'); // Hapus active dari semua
-                    $(this).addClass('active'); // Tambah active ke yang cocok
-                    // Jika yang aktif adalah FAB, pastikan FAB button juga dapat style active jika perlu
-                    // (Saat ini FAB button tidak memiliki class 'active' terpisah, hanya link parent)
-                    return false;
-                }
-            });
-            // Jika tidak ada yang cocok di bottom nav (misal halaman dengan parameter), dan currentPath adalah halaman dashboard
-            if ($('.custom-nav__link.active').length === 0 && currentPath === "<?php echo $current_page_basename; ?>") {
-                $('.custom-nav__link[href="<?php echo $current_page_basename; ?>"]').addClass('active');
-            }
-
-
-            // Inisialisasi Tooltip Bootstrap jika ada
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-        });
-    </script>
 </body>
 
 </html>

@@ -1,22 +1,24 @@
-/* Custom Mobile Bottom Navigation */
+/* Custom Mobile Bottom Navigation 3D Glassmorphism */
 .custom-mobile-nav-wrapper {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
-    /* Wrapper ini tidak memiliki background, agar background body/page terlihat melalui notch */
-    /* Pastikan body atau elemen di belakangnya memiliki var(--page-lavender-bg) jika efek notch diinginkan */
 }
 
 .custom-mobile-nav {
     display: flex;
     justify-content: space-around;
     align-items: stretch;
-    height: 65px;
-    background-color: #fff;
+    height: 68px;
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     position: relative;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.12) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.8) !important;
+    border-radius: 24px 24px 0 0;
 }
 
 .custom-nav__link {
@@ -25,38 +27,48 @@
     align-items: center;
     justify-content: center;
     flex: 1;
-    color: #A0A0A0;
-    /* Warna ikon dan teks non-aktif */
+    color: #94a3b8;
     text-decoration: none;
-    transition: color 0.3s ease;
-    padding: 5px 0;
+    transition: all 0.2s ease;
+    padding: 6px 0;
     position: relative;
 }
 
-.custom-nav__link:hover {
-    color: var(--primary-color);
-    /* Warna dari :root (biru) */
+.custom-nav__link:hover, .custom-nav__link.active {
+    color: #2563eb !important;
+    font-weight: 700;
 }
 
-.custom-nav__link.active {
-    color: var(--primary-color);
-    /* Warna dari :root (biru) */
+.custom-nav__link.active i {
+    transform: translateY(-2px);
+    color: #2563eb !important;
+}
+
+.custom-nav__link.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 24px;
+    height: 3.5px;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.5);
 }
 
 .custom-nav__link i {
     font-size: 22px;
     margin-bottom: 4px;
+    transition: transform 0.2s ease;
 }
 
 .custom-nav__text {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
-/* FAB Container & Button */
+/* FAB Container & 3D Tactile Button */
 .custom-nav__fab-container {
     flex: 0 0 70px;
-    /* Lebar tetap untuk area FAB */
     position: relative;
     display: flex;
     flex-direction: column;
@@ -64,34 +76,28 @@
 }
 
 .custom-nav__fab-button {
-    width: 60px;
-    height: 60px;
-    background-color: var(--primary-color);
-    /* Warna dari :root (biru) */
+    width: 62px;
+    height: 62px;
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%) !important;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
-    font-size: 28px;
+    color: #ffffff !important;
+    font-size: 26px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    bottom: 25px;
-    /* Mengangkat FAB */
-    border: 4px solid #fff;
-    /* Bayangan FAB menggunakan warna ungu dari contoh gambar, bisa disesuaikan dengan var(--primary-color) jika ingin konsisten biru */
-    box-shadow: 0px 0px 15px rgba(41, 121, 255, 0.4);
-    /* Bayangan disesuaikan dengan primary-color */
-    /* box-shadow: 0px 0px 15px rgba(138, 43, 226, 0.4); /* Bayangan ungu asli dari contoh gambar */
+    bottom: 24px;
+    border: 4px solid #ffffff !important;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.45), 0 4px 0 #1d4ed8 !important;
     z-index: 2;
-    transition: background-color 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .custom-nav__fab-button:hover {
-    /* background-color: #7A1FCE; /* Ungu lebih gelap (jika FAB ungu) */
-    filter: brightness(90%);
-    /* Sedikit lebih gelap saat hover (jika FAB biru) */
+    transform: translateX(-50%) translateY(-4px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(37, 99, 235, 0.55), 0 5px 0 #1e40af !important;
 }
 
 .custom-nav__fab-button i {
@@ -99,47 +105,11 @@
 }
 
 .custom-nav__fab-text {
+    font-size: 11px;
+    font-weight: 700;
+    color: #2563eb;
     position: absolute;
     bottom: 6px;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--primary-color);
-    /* Warna dari :root (biru) */
-    /* color: #8A2BE2; /* Ungu asli dari contoh gambar */
-    z-index: 1;
-}
-
-/* Notch Effect Pseudo-elements */
-.custom-nav__fab-container::before,
-.custom-nav__fab-container::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    width: 35px;
-    height: 35px;
-    background-color: transparent;
-    /* Akan diisi oleh box-shadow */
-    z-index: 1;
-}
-
-/* Kurva kiri dari notch */
-.custom-nav__fab-container::before {
-    left: -35px;
-    border-bottom-right-radius: 30px;
-    /* Warna notch harus sesuai dengan background body/page */
-    /* Jika body memakai var(--body-bg) = #eef1f5 */
-    box-shadow: 0px 35px 0 0 var(--body-bg);
-    /* Jika body memakai var(--page-lavender-bg) = #E6E0F8 */
-    /* box-shadow: 0px 35px 0 0 var(--page-lavender-bg); */
-}
-
-/* Kurva kanan dari notch */
-.custom-nav__fab-container::after {
-    right: -35px;
-    border-bottom-left-radius: 30px;
-    /* Warna notch harus sesuai dengan background body/page */
-    /* Jika body memakai var(--body-bg) = #eef1f5 */
-    box-shadow: 0px 35px 0 0 var(--body-bg);
-    /* Jika body memakai var(--page-lavender-bg) = #E6E0F8 */
-    /* box-shadow: 0px 35px 0 0 var(--page-lavender-bg); */
+    width: 100%;
+    text-align: center;
 }
