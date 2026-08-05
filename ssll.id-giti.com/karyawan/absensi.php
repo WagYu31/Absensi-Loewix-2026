@@ -833,15 +833,45 @@ $asset_version = time();
         $('#nativeCameraInput').change(function(e) {
             if (e.target.files && e.target.files[0]) {
                 const file = e.target.files[0];
-                const blobUrl = URL.createObjectURL(file);
-                const photoImg = document.getElementById('photoPreviewImg');
-                photoImg.src = blobUrl;
-                $('#photoPreviewImg').removeClass('d-none');
-                $('#cameraPreview').addClass('d-none');
-                $('#captureBtnLabel').addClass('d-none');
-                $('#retakeBtn').removeClass('d-none');
-                $('#uploadPhotoBtn').prop('disabled', false);
-                stopCamera();
+                const reader = new FileReader();
+                
+                reader.onload = function(evt) {
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let w = tempImg.naturalWidth || tempImg.width || 640;
+                        let h = tempImg.naturalHeight || tempImg.height || 480;
+                        const maxDim = 640;
+
+                        if (w > maxDim || h > maxDim) {
+                            if (w >= h) {
+                                h = Math.round((h * maxDim) / w);
+                                w = maxDim;
+                            } else {
+                                w = Math.round((w * maxDim) / h);
+                                h = maxDim;
+                            }
+                        }
+
+                        canvas.width = w;
+                        canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(tempImg, 0, 0, w, h);
+
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.80);
+                        const photoImg = document.getElementById('photoPreviewImg');
+                        photoImg.src = compressedDataUrl;
+                        
+                        $('#photoPreviewImg').removeClass('d-none');
+                        $('#cameraPreview').addClass('d-none');
+                        $('#captureBtnLabel').addClass('d-none');
+                        $('#retakeBtn').removeClass('d-none');
+                        $('#uploadPhotoBtn').prop('disabled', false);
+                        stopCamera();
+                    };
+                    tempImg.src = evt.target.result;
+                };
+                reader.readAsDataURL(file);
             }
         });
 
@@ -857,35 +887,9 @@ $asset_version = time();
 
         $('#uploadPhotoBtn').click(function() {
             const photoImg = document.getElementById('photoPreviewImg');
-            if (!photoImg.src || photoImg.src === '') {
-                alert('Foto belum diambil.');
-                return;
-            }
+            const imageData = photoImg.src;
 
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            let w = photoImg.naturalWidth || photoImg.width || 640;
-            let h = photoImg.naturalHeight || photoImg.height || 480;
-            const maxDim = 640;
-
-            if (w > maxDim || h > maxDim) {
-                if (w >= h) {
-                    h = Math.round((h * maxDim) / w);
-                    w = maxDim;
-                } else {
-                    w = Math.round((w * maxDim) / h);
-                    h = maxDim;
-                }
-            }
-
-            canvas.width = w;
-            canvas.height = h;
-            ctx.drawImage(photoImg, 0, 0, w, h);
-
-            const imageData = canvas.toDataURL('image/jpeg', 0.85);
-
-            if (!imageData || imageData.length < 500) {
+            if (!imageData || !imageData.startsWith('data:image')) {
                 alert('Gagal mengambil data foto. Silakan foto ulang.');
                 return;
             }
