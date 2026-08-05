@@ -23,7 +23,7 @@ $conn->close();
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>Gravitti Tech - Login 3D</title>
+    <title>Gravitti Tech - Login 3D Mobile</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
@@ -71,9 +71,10 @@ $conn->close();
             align-items: center;
             justify-content: center;
             margin: 0;
-            padding: 20px;
-            perspective: 1200px;
+            padding: 16px;
+            perspective: 1000px;
             overflow-x: hidden;
+            touch-action: manipulation;
         }
 
         /* Ambient 3D Floating Orbs */
@@ -120,11 +121,11 @@ $conn->close();
 
         /* 3D Glassmorphic Card */
         .card-3d {
-            background: rgba(255, 255, 255, 0.82);
+            background: rgba(255, 255, 255, 0.84);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: var(--card-radius);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.85);
             box-shadow: 
                 0 30px 60px -12px rgba(15, 23, 42, 0.15),
                 0 18px 36px -18px rgba(15, 23, 42, 0.12),
@@ -132,14 +133,8 @@ $conn->close();
                 inset 0 -2px 4px rgba(0, 0, 0, 0.03);
             padding: 2.25rem 1.85rem;
             transform-style: preserve-3d;
+            will-change: transform;
             transition: transform 0.15s ease-out, box-shadow 0.3s ease;
-        }
-
-        .card-3d:hover {
-            box-shadow: 
-                0 40px 70px -15px rgba(15, 23, 42, 0.2),
-                0 22px 45px -15px rgba(37, 99, 235, 0.15),
-                inset 0 1px 2px rgba(255, 255, 255, 1);
         }
 
         /* 3D Layer Elevation */
@@ -169,10 +164,6 @@ $conn->close();
             margin-bottom: 0.85rem;
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             transform: translateZ(35px);
-        }
-
-        .logo-3d-frame:hover {
-            transform: translateZ(48px) scale(1.03);
         }
 
         .brand-logo-img {
@@ -320,7 +311,7 @@ $conn->close();
             cursor: pointer;
         }
 
-        .btn-3d-primary:hover {
+        .btn-3d-primary:hover, .btn-3d-primary:focus {
             transform: translateZ(35px) translateY(-2px);
             box-shadow: 
                 0 12px 25px rgba(37, 99, 235, 0.45),
@@ -354,7 +345,7 @@ $conn->close();
             cursor: pointer;
         }
 
-        .btn-3d-success:hover {
+        .btn-3d-success:hover, .btn-3d-success:focus {
             transform: translateZ(35px) translateY(-2px);
             box-shadow: 
                 0 12px 25px rgba(16, 185, 129, 0.45),
@@ -559,18 +550,51 @@ $conn->close();
                 dropdownParent: $('#signup-form-box')
             });
 
-            // 3D Parallax Tilt Effect on Mouse Move
+            // Universal 3D Tilt for both Mobile Touch and Desktop Mouse
             const card = document.getElementById('card3d');
-            document.addEventListener('mousemove', (e) => {
-                if (window.innerWidth < 768) return; // Disable tilt on touch screens for stability
-                const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-                const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+
+            function apply3DTilt(clientX, clientY) {
+                const rect = card.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const xAxis = (centerX - clientX) / 16;
+                const yAxis = (clientY - centerY) / 16;
                 card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            }
+
+            function reset3DTilt() {
+                card.style.transition = 'transform 0.4s ease';
+                card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+                setTimeout(() => { card.style.transition = 'transform 0.15s ease-out'; }, 400);
+            }
+
+            // Mouse Desktop Event
+            document.addEventListener('mousemove', (e) => {
+                apply3DTilt(e.clientX, e.clientY);
             });
 
-            document.addEventListener('mouseleave', () => {
-                card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-            });
+            document.addEventListener('mouseleave', reset3DTilt);
+
+            // Mobile Touch Events (Swipe / Drag on card tilts card in 3D)
+            card.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) {
+                    const touch = e.touches[0];
+                    apply3DTilt(touch.clientX, touch.clientY);
+                }
+            }, { passive: true });
+
+            card.addEventListener('touchend', reset3DTilt);
+
+            // Device Gyroscope Orientation Tilt for Mobile HP
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', (e) => {
+                    if (e.gamma !== null && e.beta !== null) {
+                        const tiltX = Math.min(Math.max(e.gamma, -25), 25) / 1.5;
+                        const tiltY = Math.min(Math.max(e.beta - 45, -25), 25) / 1.5;
+                        card.style.transform = `rotateY(${tiltX}deg) rotateX(${tiltY}deg)`;
+                    }
+                }, true);
+            }
         });
     </script>
 </body>

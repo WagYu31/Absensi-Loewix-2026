@@ -45,8 +45,9 @@
             justify-content: center;
             margin: 0;
             padding: 20px;
-            perspective: 1200px;
+            perspective: 1000px;
             overflow-x: hidden;
+            touch-action: manipulation;
         }
 
         .orb-3d {
@@ -91,17 +92,18 @@
         }
 
         .card-3d {
-            background: rgba(255, 255, 255, 0.82);
+            background: rgba(255, 255, 255, 0.84);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: var(--card-radius);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.85);
             box-shadow: 
                 0 30px 60px -12px rgba(15, 23, 42, 0.15),
                 0 18px 36px -18px rgba(15, 23, 42, 0.12),
                 inset 0 1px 1px rgba(255, 255, 255, 0.9);
             padding: 2.25rem 1.85rem;
             transform-style: preserve-3d;
+            will-change: transform;
             transition: transform 0.15s ease-out, box-shadow 0.3s ease;
         }
 
@@ -213,11 +215,12 @@
             cursor: pointer;
         }
 
-        .btn-3d-primary:hover {
+        .btn-3d-primary:hover, .btn-3d-primary:focus {
             transform: translateZ(35px) translateY(-2px);
             box-shadow: 
                 0 12px 25px rgba(37, 99, 235, 0.45),
                 0 6px 0 #1e40af;
+            color: #ffffff;
         }
 
         .btn-3d-primary:active {
@@ -300,16 +303,46 @@
     <script>
         $(document).ready(function() {
             const card = document.getElementById('card3d');
-            document.addEventListener('mousemove', (e) => {
-                if (window.innerWidth < 768) return;
-                const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-                const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+
+            function apply3DTilt(clientX, clientY) {
+                const rect = card.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const xAxis = (centerX - clientX) / 16;
+                const yAxis = (clientY - centerY) / 16;
                 card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            }
+
+            function reset3DTilt() {
+                card.style.transition = 'transform 0.4s ease';
+                card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+                setTimeout(() => { card.style.transition = 'transform 0.15s ease-out'; }, 400);
+            }
+
+            document.addEventListener('mousemove', (e) => {
+                apply3DTilt(e.clientX, e.clientY);
             });
 
-            document.addEventListener('mouseleave', () => {
-                card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-            });
+            document.addEventListener('mouseleave', reset3DTilt);
+
+            card.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) {
+                    const touch = e.touches[0];
+                    apply3DTilt(touch.clientX, touch.clientY);
+                }
+            }, { passive: true });
+
+            card.addEventListener('touchend', reset3DTilt);
+
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', (e) => {
+                    if (e.gamma !== null && e.beta !== null) {
+                        const tiltX = Math.min(Math.max(e.gamma, -25), 25) / 1.5;
+                        const tiltY = Math.min(Math.max(e.beta - 45, -25), 25) / 1.5;
+                        card.style.transform = `rotateY(${tiltX}deg) rotateX(${tiltY}deg)`;
+                    }
+                }, true);
+            }
         });
     </script>
 </body>
