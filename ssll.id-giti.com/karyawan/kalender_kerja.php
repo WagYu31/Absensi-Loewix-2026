@@ -59,6 +59,7 @@ $asset_version = time();
                 radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
                 radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%) !important;
             min-height: 100vh;
+            padding-bottom: 100px !important;
         }
 
         /* 3D Header Banner */
@@ -314,6 +315,75 @@ $asset_version = time();
             background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
             box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3), 0 2px 0 #1d4ed8 !important;
         }
+
+        /* Ultra Responsive Mobile Overrides */
+        @media (max-width: 768px) {
+            .birthday-banner-3d {
+                padding: 1.25rem 1rem !important;
+                border-radius: 20px !important;
+            }
+
+            .birthday-banner-3d .d-flex.justify-content-between {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+
+            .bday-icon-wrapper {
+                width: 48px !important;
+                height: 48px !important;
+                border-radius: 16px !important;
+            }
+
+            .bday-card-item {
+                width: 100% !important;
+                padding: 8px 12px !important;
+            }
+
+            .bday-card-item .fw-bold {
+                max-width: 180px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .main-calendar-card {
+                padding: 1rem 0.75rem !important;
+                border-radius: 20px !important;
+            }
+
+            .fc .fc-toolbar.fc-header-toolbar {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 8px !important;
+            }
+
+            .fc .fc-toolbar-title {
+                font-size: 1.2rem !important;
+            }
+
+            .fc .fc-button {
+                font-size: 0.75rem !important;
+                padding: 4px 10px !important;
+            }
+
+            .fc .fc-daygrid-day-frame {
+                min-height: 70px !important;
+                padding: 2px !important;
+            }
+
+            .fc .fc-daygrid-day-number {
+                padding: 0.2rem 0.4rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            .fc-event {
+                font-size: 0.68rem !important;
+                padding: 2px 4px !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
     </style>
 </head>
 <body>
@@ -337,26 +407,26 @@ $asset_version = time();
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 position-relative z-1">
                         <div class="d-flex align-items-center gap-3">
                             <div class="bday-icon-wrapper">
-                                <span class="fs-2">🎂</span>
+                                <span class="fs-3">🎂</span>
                             </div>
                             <div>
                                 <div class="d-flex align-items-center gap-2">
                                     <span class="bday-badge-ribbon"><i class="fa-solid fa-crown me-1"></i>HARI INI BERULANG TAHUN!</span>
                                 </div>
-                                <h4 class="fw-extrabold text-white mb-0 mt-1" style="letter-spacing: -0.5px;">
+                                <h4 class="fw-extrabold text-white mb-0 mt-1 fs-5" style="letter-spacing: -0.5px;">
                                     🎉 Selamat Ulang Tahun Kepada:
                                 </h4>
                             </div>
                         </div>
 
-                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <div class="d-flex align-items-center gap-2 flex-wrap w-100-mobile">
                             <?php foreach ($birthday_employees as $bemp): ?>
                             <div class="bday-card-item">
                                 <div class="bday-avatar-ring">
                                     <img src="../uploads/<?php echo htmlspecialchars($bemp['pas_photo'] ?: 'default.png'); ?>" class="bday-avatar" onerror="this.onerror=null; this.src='https://via.placeholder.com/50/003c9c/ffffff?Text=<?php echo strtoupper(substr($bemp['nama'], 0, 1)); ?>';">
                                 </div>
-                                <div>
-                                    <div class="fw-bold text-white fs-6" style="text-transform: capitalize;"><?php echo htmlspecialchars($bemp['nama']); ?></div>
+                                <div style="min-width: 0;">
+                                    <div class="fw-bold text-white fs-6" style="text-transform: capitalize; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?php echo htmlspecialchars($bemp['nama']); ?></div>
                                     <div class="text-white-50 small" style="font-size: 0.75rem;"><?php echo htmlspecialchars($bemp['jabatan'] ?: 'Karyawan'); ?> <?php if ($bemp['umur']) echo "• " . $bemp['umur'] . " Thn"; ?></div>
                                 </div>
                             </div>
@@ -416,11 +486,9 @@ $asset_version = time();
                 return Math.random() * (max - min) + min;
             }
 
-            // Dual Cannon Blast awal
             confetti({ particleCount: 80, angle: 60, spread: 75, origin: { x: 0, y: 0.7 }, colors: ['#fbbf24', '#f43f5e', '#a855f7', '#3b82f6', '#ffffff'] });
             confetti({ particleCount: 80, angle: 120, spread: 75, origin: { x: 1, y: 0.7 }, colors: ['#fbbf24', '#f43f5e', '#a855f7', '#3b82f6', '#ffffff'] });
 
-            // Pertunjukan Kembang Api Berkelanjutan selama 5 Detik
             const interval = setInterval(function() {
                 const timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) {
@@ -488,12 +556,10 @@ $asset_version = time();
 
         const calendar = new FullCalendar.Calendar(calendarEl, {
             locale: 'id',
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,listWeek'
-            },
+            initialView: (window.innerWidth < 768) ? 'dayGridMonth' : 'dayGridMonth',
+            headerToolbar: (window.innerWidth < 768) 
+                ? { left: 'prev,next', center: 'title', right: 'today' }
+                : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,listWeek' },
             events: 'api_get_events.php',
             
             eventsSet: function(info) {
