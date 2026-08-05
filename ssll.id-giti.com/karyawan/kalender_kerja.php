@@ -187,6 +187,45 @@ $asset_version = time();
             display: block;
         }
 
+        /* 3D Floating Celebration Balloons */
+        .balloon-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9998;
+            overflow: hidden;
+        }
+
+        .floating-balloon {
+            position: absolute;
+            bottom: -120px;
+            width: 44px;
+            height: 56px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            box-shadow: inset -6px -6px 12px rgba(0,0,0,0.18), inset 6px 6px 12px rgba(255,255,255,0.45), 0 10px 25px rgba(0,0,0,0.25);
+            animation: floatUp 9s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+        }
+
+        .floating-balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 16px;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 1; }
+            50% { transform: translateY(-55vh) rotate(18deg) scale(1.05); opacity: 0.9; }
+            100% { transform: translateY(-120vh) rotate(-18deg) scale(1.1); opacity: 0; }
+        }
+
         /* 3D Main Card Container */
         .main-calendar-card {
             background: rgba(255, 255, 255, 0.95) !important;
@@ -389,6 +428,10 @@ $asset_version = time();
 <body>
     <?php include 'nav/sidebar.php'; ?>
 
+    <?php if (!empty($birthday_employees)): ?>
+    <div class="balloon-overlay" id="balloonOverlay"></div>
+    <?php endif; ?>
+
     <div class="main-content-wrapper p-0">
         <div class="header-banner page-specific-header no-print">
             <div class="container-fluid px-lg-4">
@@ -477,8 +520,58 @@ $asset_version = time();
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         <?php if (!empty($birthday_employees)): ?>
+        // 1. Audio Fanfare Syukuran (Web Audio API Synthesizer)
+        function playCelebrationChime() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98]; // C5, E5, G5, C6, E6, G6
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.1);
+                    gain.gain.setValueAtTime(0, ctx.currentTime + idx * 0.1);
+                    gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + idx * 0.1 + 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.1 + 0.55);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + idx * 0.1);
+                    osc.stop(ctx.currentTime + idx * 0.1 + 0.6);
+                });
+            } catch(e) {}
+        }
+        playCelebrationChime();
+
+        // 2. 3D Floating Celebration Balloons Generator
+        const balloonOverlay = document.getElementById('balloonOverlay');
+        const balloonColors = [
+            'linear-gradient(135deg, #fbbf24, #f59e0b)', // Gold
+            'linear-gradient(135deg, #ec4899, #f43f5e)', // Pink
+            'linear-gradient(135deg, #3b82f6, #1d4ed8)', // Blue
+            'linear-gradient(135deg, #10b981, #059669)', // Emerald
+            'linear-gradient(135deg, #a855f7, #7c3aed)'  // Violet
+        ];
+
+        for (let i = 0; i < 15; i++) {
+            const balloon = document.createElement('div');
+            balloon.className = 'floating-balloon';
+            const randomColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+            const leftPos = Math.random() * 95;
+            const animDelay = Math.random() * 6;
+            const animDuration = 7 + Math.random() * 6;
+
+            balloon.style.background = randomColor;
+            balloon.style.left = `${leftPos}%`;
+            balloon.style.animationDelay = `${animDelay}s`;
+            balloon.style.animationDuration = `${animDuration}s`;
+            balloonOverlay.appendChild(balloon);
+        }
+
+        // 3. Ultra Spectacular Multi-Stage Fireworks Confetti
         if (typeof confetti === 'function') {
-            const duration = 5 * 1000;
+            const duration = 6 * 1000;
             const animationEnd = Date.now() + duration;
             const defaults = { startVelocity: 45, spread: 360, ticks: 120, zIndex: 9999 };
 
@@ -486,15 +579,15 @@ $asset_version = time();
                 return Math.random() * (max - min) + min;
             }
 
-            confetti({ particleCount: 80, angle: 60, spread: 75, origin: { x: 0, y: 0.7 }, colors: ['#fbbf24', '#f43f5e', '#a855f7', '#3b82f6', '#ffffff'] });
-            confetti({ particleCount: 80, angle: 120, spread: 75, origin: { x: 1, y: 0.7 }, colors: ['#fbbf24', '#f43f5e', '#a855f7', '#3b82f6', '#ffffff'] });
+            confetti({ particleCount: 90, angle: 60, spread: 80, origin: { x: 0, y: 0.75 }, colors: ['#fbbf24', '#f43f5e', '#a855f7', '#3b82f6', '#ffffff'] });
+            confetti({ particleCount: 90, angle: 120, spread: 80, origin: { x: 1, y: 0.75 }, colors: ['#fbbf24', '#f43f5e', '#a855f7', '#3b82f6', '#ffffff'] });
 
             const interval = setInterval(function() {
                 const timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) {
                     return clearInterval(interval);
                 }
-                const particleCount = 35 * (timeLeft / duration);
+                const particleCount = 40 * (timeLeft / duration);
 
                 confetti(Object.assign({}, defaults, {
                     particleCount,
@@ -506,7 +599,7 @@ $asset_version = time();
                     origin: { x: randomInRange(0.6, 0.9), y: Math.random() - 0.2 },
                     colors: ['#3b82f6', '#e11d48', '#fbbf24', '#ffffff']
                 }));
-            }, 250);
+            }, 200);
         }
         <?php endif; ?>
 
