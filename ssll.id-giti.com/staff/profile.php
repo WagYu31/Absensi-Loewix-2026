@@ -7,6 +7,7 @@ if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadm
 
 include '../conn.php';
 $current_page_basename = basename($_SERVER['PHP_SELF']);
+$asset_version = time();
 
 $nip_login = $_SESSION['nip'];
 $stmt = $conn->prepare("SELECT * FROM karyawan WHERE nip = ?");
@@ -36,133 +37,273 @@ $nip = $kar['nip'];
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Staff - Grav-Tech</title>
+    <title>Profil Staff 3D - Gravitti Tech</title>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a97d5963a4.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../assets/css/main-styles.css">
-    <link rel="stylesheet" href="../assets/css/sidebar.css">
-    <link rel="stylesheet" href="../assets/css/footer.css">
+    
+    <link rel="stylesheet" href="../assets/css/main-styles.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/sidebar.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/footer.css?v=<?php echo $asset_version; ?>">
+
     <style>
-        .popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 2000; justify-content: center; align-items: center; }
-        .popup-content { background-color: white; padding: 25px; border-radius: var(--card-border-radius, 0.5rem); width: 90%; max-width: 500px; position: relative; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); }
-        .popup-content .close-popup-btn { position: absolute; top: 10px; right: 15px; font-size: 28px; font-weight: bold; cursor: pointer; color: #777; line-height: 1; }
-        .popup-content .close-popup-btn:hover { color: #333; }
-        .popup-content h2 { margin-top: 0; margin-bottom: 1.5rem; font-weight: 600; color: var(--dark-color, #212529); }
+        :root {
+            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%);
+            --card-radius-lg: 24px;
+            --primary-3d: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+            background: #f1f5f9 !important;
+        }
+
+        .main-content-wrapper {
+            background: #f1f5f9;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%) !important;
+            min-height: 100vh;
+        }
+
+        /* 3D Header Banner */
+        .page-specific-header {
+            background: var(--header-gradient) !important;
+            color: #ffffff;
+            padding: 2.25rem 0 4.5rem 0 !important;
+            margin-bottom: -50px !important;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.25) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .page-specific-header h1 {
+            font-weight: 800 !important;
+            font-size: 1.65rem !important;
+            letter-spacing: -0.5px;
+            color: #ffffff !important;
+        }
+
+        /* 3D Glassmorphic Profile Card */
+        .profile-3d-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border-radius: var(--card-radius-lg) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 
+                0 25px 50px -12px rgba(15, 23, 42, 0.12),
+                0 12px 24px -12px rgba(15, 23, 42, 0.08) !important;
+            padding: 2rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+
+        .avatar-3d-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .avatar-3d-img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.25), 0 0 0 4px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .avatar-3d-wrapper:hover .avatar-3d-img {
+            transform: scale(1.04);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.35), 0 0 0 6px rgba(37, 99, 235, 0.5);
+        }
+
+        .avatar-camera-badge {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 38px;
+            height: 38px;
+            background: var(--primary-3d);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.4);
+            font-size: 0.9rem;
+        }
+
+        /* 3D Buttons */
+        .btn-3d-primary {
+            background: var(--primary-3d) !important;
+            color: #ffffff !important;
+            border: none !important;
+            font-weight: 700 !important;
+            border-radius: 14px !important;
+            padding: 10px 24px !important;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35), 0 3px 0 #1d4ed8 !important;
+            transition: all 0.15s ease-out !important;
+        }
+
+        .btn-3d-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45), 0 4px 0 #1e40af !important;
+            color: #ffffff !important;
+        }
+
+        .btn-3d-outline {
+            background: #ffffff !important;
+            color: #2563eb !important;
+            border: 1.5px solid #cbd5e1 !important;
+            font-weight: 700 !important;
+            border-radius: 14px !important;
+            padding: 10px 24px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04), 0 2px 0 #cbd5e1 !important;
+            transition: all 0.15s ease-out !important;
+        }
+
+        .btn-3d-outline:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08), 0 3px 0 #94a3b8 !important;
+            color: #1d4ed8 !important;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content-3d {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--card-radius-lg);
+            width: 90%;
+            max-width: 480px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .popup-content-3d .close-popup-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .popup-content-3d .close-popup-btn:hover {
+            color: #1e293b;
+        }
     </style>
 </head>
 <body>
     <?php include 'nav/sidebar.php'; ?>
 
-    <div class="main-content-wrapper">
-        <div class="header-banner profile-page-header">
+    <div class="main-content-wrapper p-0">
+        <div class="header-banner page-specific-header no-print">
             <div class="container-fluid px-lg-4">
-                <h1>Profil Saya (Staff)</h1>
-                <p>Lihat dan kelola informasi kredensial Anda di dalam sistem.</p>
+                <h1><i class="fa-solid fa-user-gear me-2 text-primary-light"></i>Profil Saya (Staff/Admin)</h1>
+                <p class="small mb-0 opacity-80">Lihat dan kelola informasi akun administrator Anda.</p>
             </div>
         </div>
 
-        <div class="dashboard-content profile-page-content">
-            <div class="container-fluid px-lg-4 px-0">
-                <div class="card profile-header-card mb-4">
-                    <div class="card-body text-center">
-                        <?php
-                        $base_upload_path_profile = '../uploads/';
-                        $universal_default_image_profile = $base_upload_path_profile . 'default_avatar.png';
-                        $image_source_profile = '';
+        <div class="dashboard-content px-0">
+            <div class="container-fluid px-lg-4">
 
-                        if (!empty($photo)) { 
-                            $image_source_profile = htmlspecialchars($base_upload_path_profile . $photo);
-                        } else {
-                            $initial_profile = !empty($nama) ? strtoupper(substr($nama, 0, 1)) : 'U';
-                            $image_source_profile = 'https://via.placeholder.com/120/2979ff/ffffff?Text=' . $initial_profile;
-                        }
-                        ?>
+                <!-- 3D Header Profile Card -->
+                <div class="profile-3d-card text-center position-relative">
+                    <?php
+                    $base_upload_path_profile = '../uploads/';
+                    $universal_default_image_profile = $base_upload_path_profile . 'default_avatar.png';
+                    $image_source_profile = '';
+
+                    if (!empty($photo)) { 
+                        $image_source_profile = htmlspecialchars($base_upload_path_profile . $photo);
+                    } else {
+                        $initial_profile = !empty($nama) ? strtoupper(substr($nama, 0, 1)) : 'U';
+                        $image_source_profile = 'https://via.placeholder.com/130/2563eb/ffffff?Text=' . $initial_profile;
+                    }
+                    ?>
+                    
+                    <div class="avatar-3d-wrapper" id="photoButton">
                         <img src="<?php echo $image_source_profile; ?>"
                             alt="Foto Profil"
-                            class="profile-photo-main"
-                            id="photoButton"
+                            class="avatar-3d-img"
                             onerror="this.onerror=null; this.src='<?php echo htmlspecialchars($universal_default_image_profile); ?>';">
-
-                        <h5 class="profile-name-main mt-3"><?php echo htmlspecialchars($nama); ?></h5>
-                        <p class="profile-position-main text-muted"><?php echo htmlspecialchars($jabatan); ?></p>
-
-                        <div class="profile-buttons-main mt-3">
-                            <button type="button" class="btn btn-primary rounded-pill me-md-2 me-0" onclick="changePasswordPrompt('<?php echo htmlspecialchars($nip); ?>')">
-                                <i class="fas fa-key me-1"></i> Ganti Password
-                            </button>
-                            <a href="edit-profile.php" class="btn btn-outline-primary rounded-pill ms-0">
-                                <i class="fas fa-user-edit me-1"></i> Edit Profil
-                            </a>
+                        <div class="avatar-camera-badge">
+                            <i class="fa-solid fa-camera"></i>
                         </div>
                     </div>
-                </div>
 
-                <div class="card profile-details-card mb-5">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0"><i class="fa-solid fa-circle-info title-icon"></i>Informasi Detail Staff</h5>
+                    <h4 class="fw-extrabold text-dark mb-1" style="letter-spacing: -0.5px;"><?php echo htmlspecialchars($nama); ?></h4>
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+                        <span class="badge bg-primary-subtle text-primary fw-bold rounded-pill px-3 py-1"><?php echo htmlspecialchars($jabatan); ?></span>
+                        <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-3 py-1"><i class="fa-solid fa-shield-halved me-1"></i><?php echo htmlspecialchars(strtoupper($_SESSION['role'])); ?></span>
                     </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table profile-table-custom mb-0">
-                                <tbody>
-                                    <tr><th colspan="2" class="table-section-header">Profil Dasar</th></tr>
-                                    <tr><td width="35%">NIK</td><td><?php echo htmlspecialchars($nik); ?></td></tr>
-                                    <tr><td>Nama Lengkap</td><td><?php echo htmlspecialchars($nama); ?></td></tr>
-                                    <tr><td>Tempat Lahir</td><td><?php echo htmlspecialchars($tempatLahir); ?></td></tr>
-                                    <tr><td>Tanggal Lahir</td><td><?php echo !empty($tanggalLahir) ? date('d F Y', strtotime($tanggalLahir)) : '-'; ?></td></tr>
-                                    <tr><td>Alamat</td><td><?php echo nl2br(htmlspecialchars($alamat)); ?></td></tr>
-                                    
-                                    <tr><th colspan="2" class="table-section-header">Informasi Kontak</th></tr>
-                                    <tr><td>No Handphone</td><td><?php echo htmlspecialchars($nomorHP); ?></td></tr>
-                                    <tr><td>No Telepon</td><td><?php echo htmlspecialchars($nomorTelepon ?: '-'); ?></td></tr>
-                                    <tr><td>Email</td><td class="text-wrap text-break"><?php echo htmlspecialchars($email); ?></td></tr>
-                                    
-                                    <tr><th colspan="2" class="table-section-header">Informasi Kepegawaian</th></tr>
-                                    <tr><td>Jabatan</td><td><?php echo htmlspecialchars($jabatan); ?></td></tr>
-                                    <tr><td>Status</td><td><?php echo htmlspecialchars($statusKaryawan); ?></td></tr>
-                                    <tr><td>Hak Akses Sistem</td><td class="text-uppercase fw-bold text-primary"><?php echo htmlspecialchars($_SESSION['role']); ?></td></tr>
-                                    <tr><td>Tanggal Masuk</td><td><?php echo !empty($tanggalMasuk) ? date('d F Y', strtotime($tanggalMasuk)) : '-'; ?></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+
+                    <div class="d-flex align-items-center justify-content-center gap-3 flex-wrap mt-3">
+                        <button type="button" class="btn btn-3d-primary" onclick="changePasswordPrompt('<?php echo htmlspecialchars($nip); ?>')">
+                            <i class="fas fa-key me-2"></i>Ganti Password
+                        </button>
+                        <a href="edit-profile.php" class="btn btn-3d-outline">
+                            <i class="fas fa-user-edit me-2"></i>Edit Profil
+                        </a>
                     </div>
                 </div>
 
-                <div class="footer pb-5 pb-md-3">
-                    Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>. All Rights Reserved.
-                    <br><small>Version 1.1.0</small>
-                </div>
             </div>
         </div>
     </div>
 
+    <!-- Popup Upload Photo 3D -->
     <div id="uploadPopup" class="popup">
-        <div class="popup-content">
+        <div class="popup-content-3d text-center">
             <span class="close-popup-btn" id="cancelBtn">&times;</span>
-            <h2>Upload Foto Profil Baru</h2>
+            <div class="avatar-3d-wrapper mb-3">
+                <img src="<?php echo $image_source_profile; ?>" class="avatar-3d-img" style="width: 90px; height: 90px;">
+            </div>
+            <h5 class="fw-bold text-dark mb-3">Upload Foto Profil Baru</h5>
             <form action="../upload-photo-kar.php" method="post" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="newPhotoInput" class="form-label">Pilih file gambar (JPG/PNG):</label>
-                    <input type="file" class="form-control" id="newPhotoInput" name="newPhoto" accept="image/jpeg, image/png" required>
+                <div class="mb-4">
+                    <input type="file" class="form-control rounded-3 p-2" id="newPhotoInput" name="newPhoto" accept="image/jpeg, image/png" required>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Upload Foto</button>
+                <button type="submit" class="btn btn-3d-primary w-100"><i class="fa-solid fa-cloud-arrow-up me-2"></i>Upload Foto Sekarang</button>
             </form>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         $(document).ready(function() {
             $("#photoButton").click(function() {
                 $("#uploadPopup").css("display", "flex");
             });
+
             $("#cancelBtn").click(function() {
                 $("#uploadPopup").css("display", "none");
             });
+
             $(window).click(function(event) {
                 if (event.target == document.getElementById('uploadPopup')) {
                     $("#uploadPopup").css("display", "none");
@@ -173,10 +314,13 @@ $nip = $kar['nip'];
         function changePasswordPrompt(nip) {
             var oldPassword = prompt("Masukkan Password Lama:");
             if (oldPassword === null) return;
+
             var newPassword = prompt("Masukkan Password Baru:");
             if (newPassword === null) return;
+
             var confirmPassword = prompt("Konfirmasi Password Baru:");
             if (confirmPassword === null) return;
+
             if (newPassword.length < 6) { 
                 alert("Password baru minimal harus 6 karakter.");
                 return;
@@ -185,17 +329,25 @@ $nip = $kar['nip'];
                 alert("Konfirmasi Password Baru tidak sesuai dengan Password Baru.");
                 return;
             }
+
             $.ajax({
                 type: "POST",
-                url: "kar-validate_old_password.php",
-                data: { nip: nip, oldPassword: oldPassword },
+                url: "../kar-validate_old_password.php",
+                data: {
+                    nip: nip,
+                    oldPassword: oldPassword
+                },
                 success: function(response) {
                     if (response.trim() === "success") {
-                        var hashedNewPassword = newPassword;
+                        var hashedNewPassword = btoa(newPassword);
+
                         $.ajax({
                             type: "POST",
-                            url: "kar-change_password_script.php",
-                            data: { nip: nip, newPassword: hashedNewPassword },
+                            url: "../kar-change_password_script.php",
+                            data: {
+                                nip: nip,
+                                newPassword: hashedNewPassword
+                            },
                             success: function(changeResponse) {
                                 alert(changeResponse);
                             },
