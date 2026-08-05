@@ -1,43 +1,43 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadmin'])) {
+    header('Location: ../index.php');
+    exit();
+}
+
 include '../conn.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Ambil data dari form
-    $pin_absen = $_POST['pin'];
-    $tgl_mulai = $_POST['tanggal_mulai'];
-    $tgl_selesai = $_POST['tanggal_selesai'];
-    $shift = $_POST['shift'];
+    $pin_absen = $_POST['pin'] ?? '';
+    $tgl_mulai = $_POST['tanggal_mulai'] ?? '';
+    $tgl_selesai = $_POST['tanggal_selesai'] ?? '';
+    $shift = $_POST['shift'] ?? '';
     $valid = "W";
 
-    // Validasi data
     if (!empty($pin_absen) && !empty($tgl_mulai) && !empty($tgl_selesai) && !empty($shift)) {
-        // Query untuk memasukkan data ke dalam tabel shift_req
         $sql = "INSERT INTO shift_req (nip, tgl_mulai, tgl_selesai, shifting, valid) VALUES (?, ?, ?, ?, ?)";
 
-        // Prepare statement
         if ($stmt = $conn->prepare($sql)) {
-            // Bind parameters
             $stmt->bind_param('sssss', $pin_absen, $tgl_mulai, $tgl_selesai, $shift, $valid);
 
-            // Eksekusi statement
             if ($stmt->execute()) {
-                header("Location: shit-req.php");
+                $stmt->close();
+                echo "<script>alert('Permintaan shifting berhasil ditambahkan!'); window.location.href = 'shift-req.php';</script>";
                 exit();
             } else {
-                echo "Error: " . $stmt->error;
+                echo "<script>alert('Error: " . addslashes($stmt->error) . "'); window.history.back();</script>";
             }
-
-            // Tutup statement
-            $stmt->close();
         } else {
-            echo "Error: " . $conn->error;
+            echo "<script>alert('Error database: " . addslashes($conn->error) . "'); window.history.back();</script>";
         }
     } else {
-        echo "Semua field harus diisi.";
+        echo "<script>alert('Semua field form shifting harus diisi.'); window.history.back();</script>";
     }
 
-    // Tutup koneksi
     $conn->close();
 } else {
-    echo "Metode request tidak valid.";
+    header("Location: shift-req.php");
+    exit();
 }
+?>
