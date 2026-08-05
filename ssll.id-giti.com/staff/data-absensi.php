@@ -609,11 +609,11 @@ $asset_version = time();
                                                              @chmod(__DIR__ . '/../uploads/' . $cleanImg, 0777);
                                                              @chmod(__DIR__ . '/../uploads/attendance/' . $cleanImg, 0777);
                                                              if (strpos($cleanImg, 'uploads/') === 0) {
-                                                                 $finalImgSrc = '../' . $cleanImg;
+                                                                 $finalImgSrc = '/' . $cleanImg;
                                                              } elseif (strpos($cleanImg, 'attendance/') === 0) {
-                                                                 $finalImgSrc = '../uploads/' . $cleanImg;
+                                                                 $finalImgSrc = '/uploads/' . $cleanImg;
                                                              } else {
-                                                                 $finalImgSrc = '../uploads/attendance/' . $cleanImg;
+                                                                 $finalImgSrc = '/uploads/attendance/' . $cleanImg;
                                                              }
                                                          }
                                                          ?>
