@@ -9,6 +9,8 @@ if (!isset($_SESSION['nip']) || (isset($_SESSION['role']) && $_SESSION['role'] !
 include '../conn.php';
 include 'get-kar-login-data.php';
 
+$nama_karyawan_login = $nama ?? $_SESSION['nama'] ?? 'Karyawan';
+
 $pesan_sukses_flash = '';
 if (isset($_SESSION['pesan_sukses_cuti'])) {
     $pesan_sukses_flash = $_SESSION['pesan_sukses_cuti'];
@@ -174,7 +176,8 @@ function formatJenisCuti($jenis)
 
 function formatStatusVerif($status)
 {
-    switch (ucfirst(strtolower($status))) {
+    $status_str = $status ? ucfirst(strtolower($status)) : '';
+    switch ($status_str) {
         case 'Pending':
             return '<span class="badge bg-warning text-dark rounded-pill px-3 py-1 fw-bold"><i class="fa-solid fa-hourglass-half me-1"></i>Pending</span>';
         case 'Disetujui':
@@ -182,7 +185,7 @@ function formatStatusVerif($status)
         case 'Ditolak':
             return '<span class="badge bg-danger text-white rounded-pill px-3 py-1 fw-bold"><i class="fa-solid fa-circle-xmark me-1"></i>Ditolak</span>';
         default:
-            return '<span class="badge bg-secondary rounded-pill px-3 py-1 fw-bold">' . htmlspecialchars($status) . '</span>';
+            return '<span class="badge bg-secondary rounded-pill px-3 py-1 fw-bold">' . htmlspecialchars($status ?? '') . '</span>';
     }
 }
 
