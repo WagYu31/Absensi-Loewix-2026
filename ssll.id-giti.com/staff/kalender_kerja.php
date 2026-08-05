@@ -7,10 +7,22 @@ if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadm
 }
 include '../conn.php';
 
+// Auto Create Table IF NOT EXISTS
+$conn->query("CREATE TABLE IF NOT EXISTS ucapan_ultah (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nip_penerima VARCHAR(50) NOT NULL,
+    nip_pengirim VARCHAR(50) NOT NULL,
+    nama_pengirim VARCHAR(255) NOT NULL,
+    ucapan TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX (nip_penerima),
+    INDEX (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
 // Cek siapa yang berulang tahun hari ini (Month-Day match)
 $today_md = date('m-d');
 $birthday_employees = [];
-$res_bday = $conn->query("SELECT nama, pas_photo, tanggal_lahir, jabatan, TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) AS umur FROM karyawan WHERE DATE_FORMAT(tanggal_lahir, '%m-%d') = '$today_md' AND status_karyawan = 'aktif' AND deleted_at IS NULL");
+$res_bday = $conn->query("SELECT nip, nama, pas_photo, tanggal_lahir, jabatan, TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) AS umur FROM karyawan WHERE DATE_FORMAT(tanggal_lahir, '%m-%d') = '$today_md' AND status_karyawan = 'aktif' AND deleted_at IS NULL");
 if ($res_bday) {
     while ($rb = $res_bday->fetch_assoc()) {
         $birthday_employees[] = $rb;
@@ -155,16 +167,17 @@ $asset_version = time();
             backdrop-filter: blur(20px) !important;
             border: 1.5px solid rgba(255, 215, 0, 0.4) !important;
             border-radius: 20px !important;
-            padding: 10px 18px 10px 12px !important;
+            padding: 10px 14px !important;
             display: flex;
             align-items: center;
-            gap: 14px;
+            justify-content: space-between;
+            gap: 12px;
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
             transition: all 0.25s ease;
         }
 
         .bday-card-item:hover {
-            transform: translateY(-4px) scale(1.03);
+            transform: translateY(-3px) scale(1.02);
             border-color: rgba(255, 255, 255, 0.8) !important;
             box-shadow: 0 16px 35px rgba(0, 0, 0, 0.35), 0 0 20px rgba(251, 191, 36, 0.5);
         }
@@ -178,12 +191,31 @@ $asset_version = time();
         }
 
         .bday-avatar {
-            width: 48px;
-            height: 48px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid #ffffff;
             display: block;
+        }
+
+        .btn-kirim-ucapan {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+            color: #451a03 !important;
+            font-weight: 800 !important;
+            font-size: 0.78rem !important;
+            padding: 6px 14px !important;
+            border-radius: 14px !important;
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4), 0 2px 0 #b45309 !important;
+            transition: all 0.15s ease !important;
+            white-space: nowrap;
+        }
+
+        .btn-kirim-ucapan:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 18px rgba(245, 158, 11, 0.5), 0 3px 0 #92400e !important;
+            color: #451a03 !important;
         }
 
         /* 3D Floating Celebration Balloons */
@@ -223,6 +255,42 @@ $asset_version = time();
             0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 1; }
             50% { transform: translateY(-55vh) rotate(18deg) scale(1.05); opacity: 0.9; }
             100% { transform: translateY(-120vh) rotate(-18deg) scale(1.1); opacity: 0; }
+        }
+
+        /* Wishes Feed Glass Cards */
+        .wish-feed-item {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: all 0.2s ease;
+        }
+
+        .wish-feed-item:hover {
+            transform: translateX(4px);
+            border-color: #3b82f6;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.12);
+        }
+
+        .quick-chip-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: left;
+        }
+
+        .quick-chip-btn:hover {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: #2563eb;
+            color: #2563eb;
         }
 
         /* 3D Main Card Container */
@@ -397,7 +465,7 @@ $asset_version = time();
             }
 
             .bday-card-item .fw-bold {
-                max-width: 180px;
+                max-width: 150px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -483,16 +551,32 @@ $asset_version = time();
                         <div class="d-flex align-items-center gap-2 flex-wrap w-100-mobile">
                             <?php foreach ($birthday_employees as $bemp): ?>
                             <div class="bday-card-item">
-                                <div class="bday-avatar-ring">
-                                    <img src="../uploads/<?php echo htmlspecialchars($bemp['pas_photo'] ?: 'default.png'); ?>" class="bday-avatar" onerror="this.onerror=null; this.src='https://via.placeholder.com/50/003c9c/ffffff?Text=<?php echo strtoupper(substr($bemp['nama'], 0, 1)); ?>';">
+                                <div class="d-flex align-items-center gap-3" style="min-width: 0;">
+                                    <div class="bday-avatar-ring">
+                                        <img src="../uploads/<?php echo htmlspecialchars($bemp['pas_photo'] ?: 'default.png'); ?>" class="bday-avatar" onerror="this.onerror=null; this.src='https://via.placeholder.com/50/003c9c/ffffff?Text=<?php echo strtoupper(substr($bemp['nama'], 0, 1)); ?>';">
+                                    </div>
+                                    <div style="min-width: 0;">
+                                        <div class="fw-bold text-white fs-6" style="text-transform: capitalize; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?php echo htmlspecialchars($bemp['nama']); ?></div>
+                                        <div class="text-white-50 small" style="font-size: 0.75rem;"><?php echo htmlspecialchars($bemp['jabatan'] ?: 'Karyawan'); ?> <?php if ($bemp['umur']) echo "• " . $bemp['umur'] . " Thn"; ?></div>
+                                    </div>
                                 </div>
-                                <div style="min-width: 0;">
-                                    <div class="fw-bold text-white fs-6" style="text-transform: capitalize; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?php echo htmlspecialchars($bemp['nama']); ?></div>
-                                    <div class="text-white-50 small" style="font-size: 0.75rem;"><?php echo htmlspecialchars($bemp['jabatan'] ?: 'Karyawan'); ?> <?php if ($bemp['umur']) echo "• " . $bemp['umur'] . " Thn"; ?></div>
-                                </div>
+                                <button type="button" class="btn btn-kirim-ucapan open-ucapan-btn" data-nip="<?php echo htmlspecialchars($bemp['nip']); ?>" data-nama="<?php echo htmlspecialchars($bemp['nama']); ?>">
+                                    <i class="fa-solid fa-paper-plane me-1"></i>Kirim Ucapan
+                                </button>
                             </div>
                             <?php endforeach; ?>
                         </div>
+                    </div>
+                </div>
+
+                <!-- 💌 Live Wishes Wall Card -->
+                <div class="main-calendar-card mb-4 p-3 no-print">
+                    <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                        <h6 class="fw-extrabold text-dark mb-0 fs-6"><i class="fa-solid fa-comments me-2 text-primary"></i>💌 Dinding Ucapan Rekan Kerja</h6>
+                        <span class="badge bg-primary rounded-pill px-3 py-1 text-white fw-bold small" id="totalWishesCount">0 Ucapan</span>
+                    </div>
+                    <div id="wishesFeedContainer" style="max-height: 280px; overflow-y: auto; padding-right: 4px;">
+                        <div class="text-center text-muted py-3 small"><i class="fa-solid fa-spinner fa-spin me-2"></i>Memuat dinding ucapan...</div>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -571,6 +655,36 @@ $asset_version = time();
         </div>
     </div>
 
+    <!-- Modal Kirim Ucapan Ulang Tahun 3D -->
+    <div class="modal fade" id="modalUcapan" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-bottom bg-gradient" style="background: linear-gradient(135deg, #1e1b4b, #312e81); color: #fff;">
+                    <h5 class="modal-title fw-extrabold fs-6" id="modalUcapanTitle"><i class="fa-solid fa-gift text-warning me-2"></i>Kirim Ucapan Selamat</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formKirimUcapan">
+                        <input type="hidden" id="ucapanNipPenerima" name="nip_penerima">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-secondary">Pilih Ucapan Instan (1-Klik):</label>
+                            <div class="d-flex flex-column gap-2 mb-3">
+                                <button type="button" class="quick-chip-btn" data-text="🎂 Selamat Ulang Tahun! Sehat, panjang umur, & sukses selalu ya!">🎂 Selamat Ulang Tahun! Sehat, panjang umur, & sukses selalu ya!</button>
+                                <button type="button" class="quick-chip-btn" data-text="🎉 Barokah umurnya & makin cemerlang kariernya di Gravitti Tech!">🎉 Barokah umurnya & makin cemerlang kariernya!</button>
+                                <button type="button" class="quick-chip-btn" data-text="🥳 Happy Birthday! Semoga makin bahagia & berlimpah rezekinya!">🥳 Happy Birthday! Semoga makin bahagia & berlimpah rezeki!</button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="inputPesanUcapan" class="form-label fw-bold small text-secondary">Pesan Ucapan Anda:</label>
+                            <textarea class="form-control rounded-3" id="inputPesanUcapan" name="ucapan" rows="3" placeholder="Tuliskan ucapan dan doa terbaik Anda di sini..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 rounded-3 py-2.5 fw-bold" id="btnSubmitUcapan"><i class="fa-solid fa-paper-plane me-2"></i>Kirim Ucapan Sekarang</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
@@ -580,13 +694,13 @@ $asset_version = time();
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         <?php if (!empty($birthday_employees)): ?>
-        // 1. Audio Fanfare Syukuran (Web Audio API Synthesizer)
+        // 1. Audio Fanfare Syukuran
         function playCelebrationChime() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
-                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98]; // C5, E5, G5, C6, E6, G6
+                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
                 notes.forEach((freq, idx) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -607,11 +721,11 @@ $asset_version = time();
         // 2. 3D Floating Celebration Balloons Generator
         const balloonOverlay = document.getElementById('balloonOverlay');
         const balloonColors = [
-            'linear-gradient(135deg, #fbbf24, #f59e0b)', // Gold
-            'linear-gradient(135deg, #ec4899, #f43f5e)', // Pink
-            'linear-gradient(135deg, #3b82f6, #1d4ed8)', // Blue
-            'linear-gradient(135deg, #10b981, #059669)', // Emerald
-            'linear-gradient(135deg, #a855f7, #7c3aed)'  // Violet
+            'linear-gradient(135deg, #fbbf24, #f59e0b)',
+            'linear-gradient(135deg, #ec4899, #f43f5e)',
+            'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+            'linear-gradient(135deg, #10b981, #059669)',
+            'linear-gradient(135deg, #a855f7, #7c3aed)'
         ];
 
         for (let i = 0; i < 15; i++) {
@@ -629,38 +743,96 @@ $asset_version = time();
             balloonOverlay.appendChild(balloon);
         }
 
-        // 3. Ultra Spectacular Multi-Stage Fireworks Confetti
+        // 3. Fireworks Confetti
         if (typeof confetti === 'function') {
             const duration = 6 * 1000;
             const animationEnd = Date.now() + duration;
             const defaults = { startVelocity: 45, spread: 360, ticks: 120, zIndex: 9999 };
 
-            function randomInRange(min, max) {
-                return Math.random() * (max - min) + min;
-            }
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
 
             confetti({ particleCount: 90, angle: 60, spread: 80, origin: { x: 0, y: 0.75 }, colors: ['#fbbf24', '#f43f5e', '#a855f7', '#3b82f6', '#ffffff'] });
             confetti({ particleCount: 90, angle: 120, spread: 80, origin: { x: 1, y: 0.75 }, colors: ['#fbbf24', '#f43f5e', '#a855f7', '#3b82f6', '#ffffff'] });
 
             const interval = setInterval(function() {
                 const timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) {
-                    return clearInterval(interval);
-                }
+                if (timeLeft <= 0) return clearInterval(interval);
                 const particleCount = 40 * (timeLeft / duration);
 
-                confetti(Object.assign({}, defaults, {
-                    particleCount,
-                    origin: { x: randomInRange(0.1, 0.4), y: Math.random() - 0.2 },
-                    colors: ['#fbbf24', '#f43f5e', '#a855f7', '#ffffff']
-                }));
-                confetti(Object.assign({}, defaults, {
-                    particleCount,
-                    origin: { x: randomInRange(0.6, 0.9), y: Math.random() - 0.2 },
-                    colors: ['#3b82f6', '#e11d48', '#fbbf24', '#ffffff']
-                }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.4), y: Math.random() - 0.2 }, colors: ['#fbbf24', '#f43f5e', '#a855f7', '#ffffff'] }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.6, 0.9), y: Math.random() - 0.2 }, colors: ['#3b82f6', '#e11d48', '#fbbf24', '#ffffff'] }));
             }, 200);
         }
+
+        // 4. Live Wishes Wall System
+        const modalUcapan = new bootstrap.Modal(document.getElementById('modalUcapan'));
+
+        function loadWishesFeed() {
+            $.get('api_ucapan_ultah.php?action=fetch', function(res) {
+                if (res.status === 'success') {
+                    const container = $('#wishesFeedContainer');
+                    $('#totalWishesCount').text(`${res.wishes.length} Ucapan`);
+                    if (res.wishes.length === 0) {
+                        container.html('<div class="text-center text-muted py-3 small"><i class="fa-solid fa-heart me-1 text-danger"></i>Belum ada ucapan. Jadilah yang pertama memberikan selamat!</div>');
+                        return;
+                    }
+                    let html = '';
+                    res.wishes.forEach(w => {
+                        const photoSrc = w.photo_pengirim ? `../uploads/${w.photo_pengirim}` : 'https://via.placeholder.com/40/2563eb/ffffff?Text=👤';
+                        html += `
+                        <div class="wish-feed-item">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="${photoSrc}" class="rounded-circle" style="width:28px; height:28px; object-fit:cover; border:1px solid #3b82f6;">
+                                    <strong class="text-dark small">${w.nama_pengirim}</strong>
+                                </div>
+                                <span class="text-muted" style="font-size:0.7rem;"><i class="fa-regular fa-clock me-1"></i>${w.time_formatted}</span>
+                            </div>
+                            <p class="mb-0 text-secondary small fw-medium" style="padding-left: 36px; line-height: 1.4;">${w.ucapan}</p>
+                        </div>`;
+                    });
+                    container.html(html);
+                }
+            }, 'json');
+        }
+
+        loadWishesFeed();
+
+        $('.open-ucapan-btn').on('click', function() {
+            const nip = $(this).data('nip');
+            const nama = $(this).data('nama');
+            $('#ucapanNipPenerima').val(nip);
+            $('#modalUcapanTitle').html(`<i class="fa-solid fa-gift text-warning me-2"></i>Kirim Ucapan Untuk <strong>${nama}</strong>`);
+            $('#inputPesanUcapan').val('');
+            modalUcapan.show();
+        });
+
+        $('.quick-chip-btn').on('click', function() {
+            $('#inputPesanUcapan').val($(this).data('text'));
+        });
+
+        $('#formKirimUcapan').on('submit', function(e) {
+            e.preventDefault();
+            const btn = $('#btnSubmitUcapan');
+            btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin me-2"></i>Mengirim...');
+
+            $.post('api_ucapan_ultah.php?action=send', $(this).serialize(), function(res) {
+                btn.prop('disabled', false).html('<i class="fa-solid fa-paper-plane me-2"></i>Kirim Ucapan Sekarang');
+                if (res.status === 'success') {
+                    modalUcapan.hide();
+                    loadWishesFeed();
+                    if (typeof confetti === 'function') {
+                        confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+                    }
+                    alert(res.message);
+                } else {
+                    alert(res.message);
+                }
+            }, 'json').fail(function() {
+                btn.prop('disabled', false).html('<i class="fa-solid fa-paper-plane me-2"></i>Kirim Ucapan Sekarang');
+                alert('Gagal mengirim ucapan.');
+            });
+        });
         <?php endif; ?>
 
         const calendarEl = document.getElementById('calendar');
