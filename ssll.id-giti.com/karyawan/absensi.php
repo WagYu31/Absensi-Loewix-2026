@@ -380,7 +380,7 @@ $asset_version = time();
             border: 3px solid #60a5fa !important;
             color: #ffffff !important;
             font-size: 1.2rem !important;
-            display: flex !important;
+            display: flex;
             align-items: center !important;
             justify-content: center !important;
             cursor: pointer !important;
@@ -803,97 +803,87 @@ $asset_version = time();
         });
 
         $('#cameraModal').on('shown.bs.modal', function() { 
-            $('#photoPreviewImg').css('display', 'none').attr('src', '');
-            $('#cameraPlaceholder').css('display', 'flex');
-            $('#captureBtnLabel').css('display', 'flex');
-            $('#retakeBtn').css('display', 'none');
+            $('#photoPreviewImg').attr('style', 'display: none !important; width: 100% !important; height: 320px !important; object-fit: cover !important;');
+            $('#photoPreviewImg').attr('src', '');
+            $('#cameraPlaceholder').attr('style', 'display: flex !important; width: 100%; height: 320px; background: #0f172a; color: #94a3b8; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;');
+            $('#captureBtnLabel').attr('style', 'display: flex !important;');
+            $('#retakeBtn').attr('style', 'display: none !important;');
             $('#uploadPhotoBtn').prop('disabled', true);
         });
 
         $('#cameraModal').on('hidden.bs.modal', function() {
-            $('#photoPreviewImg').css('display', 'none').attr('src', '');
-            $('#cameraPlaceholder').css('display', 'flex');
-            $('#captureBtnLabel').css('display', 'flex');
-            $('#retakeBtn').css('display', 'none');
+            $('#photoPreviewImg').attr('style', 'display: none !important; width: 100% !important; height: 320px !important; object-fit: cover !important;');
+            $('#photoPreviewImg').attr('src', '');
+            $('#cameraPlaceholder').attr('style', 'display: flex !important; width: 100%; height: 320px; background: #0f172a; color: #94a3b8; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;');
+            $('#captureBtnLabel').attr('style', 'display: flex !important;');
+            $('#retakeBtn').attr('style', 'display: none !important;');
             $('#uploadPhotoBtn').prop('disabled', true).html('<i class="fas fa-cloud-arrow-up me-1.5"></i>Upload & Kirim');
         });
 
         $('#nativeCameraInput').change(function(e) {
             if (e.target.files && e.target.files[0]) {
                 const file = e.target.files[0];
-                const objectUrl = URL.createObjectURL(file);
-                const photoImg = document.getElementById('photoPreviewImg');
-                photoImg.src = objectUrl;
+                const reader = new FileReader();
                 
-                $('#photoPreviewImg').css('display', 'block');
-                $('#cameraPlaceholder').css('display', 'none');
-                $('#captureBtnLabel').css('display', 'none');
-                $('#retakeBtn').css('display', 'block');
-                $('#uploadPhotoBtn').prop('disabled', false);
+                reader.onload = function(evt) {
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let w = tempImg.naturalWidth || tempImg.width || 640;
+                        let h = tempImg.naturalHeight || tempImg.height || 480;
+                        const maxDim = 640;
+
+                        if (w > maxDim || h > maxDim) {
+                            if (w >= h) {
+                                h = Math.round((h * maxDim) / w);
+                                w = maxDim;
+                            } else {
+                                w = Math.round((w * maxDim) / h);
+                                h = maxDim;
+                            }
+                        }
+
+                        canvas.width = w;
+                        canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(tempImg, 0, 0, w, h);
+
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.80);
+                        const photoImg = document.getElementById('photoPreviewImg');
+                        photoImg.src = compressedDataUrl;
+                        
+                        $('#photoPreviewImg').attr('style', 'display: block !important; width: 100% !important; height: 320px !important; object-fit: cover !important;');
+                        $('#cameraPlaceholder').attr('style', 'display: none !important;');
+                        $('#captureBtnLabel').attr('style', 'display: none !important;');
+                        $('#retakeBtn').attr('style', 'display: block !important;');
+                        $('#uploadPhotoBtn').prop('disabled', false);
+                    };
+                    tempImg.src = evt.target.result;
+                };
+                reader.readAsDataURL(file);
             }
         });
 
         $('#retakeBtn').click(function() {
-            const photoImg = document.getElementById('photoPreviewImg');
-            if (photoImg.src && photoImg.src.startsWith('blob:')) {
-                URL.revokeObjectURL(photoImg.src);
-            }
             $('#nativeCameraInput').val('');
-            $('#photoPreviewImg').css('display', 'none').attr('src', '');
-            $('#cameraPlaceholder').css('display', 'flex');
-            $('#captureBtnLabel').css('display', 'flex');
-            $('#retakeBtn').css('display', 'none');
+            $('#photoPreviewImg').attr('style', 'display: none !important; width: 100% !important; height: 320px !important; object-fit: cover !important;');
+            $('#photoPreviewImg').attr('src', '');
+            $('#cameraPlaceholder').attr('style', 'display: flex !important; width: 100%; height: 320px; background: #0f172a; color: #94a3b8; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;');
+            $('#captureBtnLabel').attr('style', 'display: flex !important;');
+            $('#retakeBtn').attr('style', 'display: none !important;');
             $('#uploadPhotoBtn').prop('disabled', true);
         });
 
         $('#uploadPhotoBtn').click(function() {
             const photoImg = document.getElementById('photoPreviewImg');
-            if (!photoImg.src || photoImg.src === '') {
-                alert('Foto belum diambil.');
+            const imageData = photoImg.src;
+
+            if (!imageData || !imageData.startsWith('data:image')) {
+                alert('Gagal mengambil data foto. Silakan foto ulang.');
                 return;
             }
 
-            // Attempt canvas compression first
-            try {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                let w = photoImg.naturalWidth || photoImg.width || 640;
-                let h = photoImg.naturalHeight || photoImg.height || 480;
-                const maxDim = 640;
-
-                if (w > maxDim || h > maxDim) {
-                    if (w >= h) {
-                        h = Math.round((h * maxDim) / w);
-                        w = maxDim;
-                    } else {
-                        w = Math.round((w * maxDim) / h);
-                        h = maxDim;
-                    }
-                }
-
-                canvas.width = w;
-                canvas.height = h;
-                ctx.drawImage(photoImg, 0, 0, w, h);
-
-                const imageData = canvas.toDataURL('image/jpeg', 0.80);
-                if (!imageData || imageData.length < 500) {
-                    throw new Error('Canvas empty');
-                }
-
-                submitAttendance(imageData);
-            } catch (err) {
-                // Fallback: Read file directly as raw Base64 if canvas fails/returns black
-                const file = document.getElementById('nativeCameraInput').files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(evt) {
-                        submitAttendance(evt.target.result);
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    alert('Gagal mengambil data foto. Silakan foto ulang.');
-                }
-            }
+            submitAttendance(imageData);
         });
 
         function submitAttendance(imageData) {
