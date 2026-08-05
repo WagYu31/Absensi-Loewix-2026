@@ -78,51 +78,103 @@ $asset_version = time();
             color: #ffffff !important;
         }
 
-        /* Birthday Celebration Banner 3D */
+        /* Ultra Luxury Birthday Celebration Banner 3D */
         .birthday-banner-3d {
             position: relative;
-            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #ec4899 100%) !important;
+            background: linear-gradient(135deg, #2e1065 0%, #4c1d95 35%, #701a75 70%, #9f1239 100%) !important;
             border-radius: var(--card-radius-lg) !important;
-            padding: 1.5rem 1.75rem !important;
-            box-shadow: 0 20px 40px -10px rgba(124, 58, 237, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
+            padding: 1.6rem 2rem !important;
+            border: 2px solid transparent !important;
+            background-image: 
+                linear-gradient(135deg, #2e1065 0%, #4c1d95 35%, #701a75 70%, #9f1239 100%), 
+                linear-gradient(135deg, #fbbf24 0%, #f43f5e 50%, #a855f7 100%) !important;
+            background-origin: border-box !important;
+            background-clip: padding-box, border-box !important;
+            box-shadow: 
+                0 25px 50px -12px rgba(112, 26, 117, 0.5),
+                0 10px 25px -5px rgba(251, 191, 36, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
             overflow: hidden;
-            animation: pulseBdayGlow 3s infinite alternate;
+            animation: pulseLuxuryGlow 3s infinite alternate ease-in-out;
         }
 
-        @keyframes pulseBdayGlow {
-            0% { box-shadow: 0 15px 35px -10px rgba(124, 58, 237, 0.4); }
-            100% { box-shadow: 0 25px 50px -5px rgba(236, 72, 153, 0.6); }
+        @keyframes pulseLuxuryGlow {
+            0% { box-shadow: 0 20px 40px -10px rgba(112, 26, 117, 0.4), 0 0 20px rgba(251, 191, 36, 0.2); }
+            100% { box-shadow: 0 30px 60px -5px rgba(236, 72, 153, 0.65), 0 0 35px rgba(251, 191, 36, 0.5); }
+        }
+
+        .bday-sparkle-bg {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.15), transparent 60%);
+            pointer-events: none;
+            animation: spinSparkle 20s linear infinite;
+        }
+
+        @keyframes spinSparkle {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .bday-icon-wrapper {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(15px);
+            border-radius: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-            animation: bdayBounce 2s infinite ease-in-out;
+            border: 1.5px solid rgba(255, 215, 0, 0.6);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25), 0 0 15px rgba(251, 191, 36, 0.4);
+            animation: bdayBounce 2.5s infinite ease-in-out;
         }
 
         @keyframes bdayBounce {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-6px) rotate(8deg); }
+            50% { transform: translateY(-7px) rotate(8deg); }
+        }
+
+        .bday-badge-ribbon {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%) !important;
+            color: #451a03 !important;
+            font-weight: 900 !important;
+            font-size: 0.72rem !important;
+            padding: 5px 14px !important;
+            border-radius: 20px !important;
+            letter-spacing: 0.8px;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4), 0 2px 0 #b45309 !important;
+            text-transform: uppercase;
         }
 
         .bday-card-item {
-            background: rgba(255, 255, 255, 0.18) !important;
-            backdrop-filter: blur(15px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.3) !important;
-            border-radius: 18px !important;
-            padding: 8px 16px 8px 10px !important;
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1.5px solid rgba(255, 215, 0, 0.4) !important;
+            border-radius: 20px !important;
+            padding: 10px 18px 10px 12px !important;
             display: flex;
             align-items: center;
-            gap: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            gap: 14px;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+            transition: all 0.25s ease;
+        }
+
+        .bday-card-item:hover {
+            transform: translateY(-4px) scale(1.03);
+            border-color: rgba(255, 255, 255, 0.8) !important;
+            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.35), 0 0 20px rgba(251, 191, 36, 0.5);
+        }
+
+        .bday-avatar-ring {
+            position: relative;
+            padding: 3px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fbbf24, #f43f5e, #a855f7);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
         }
 
         .bday-avatar {
@@ -131,7 +183,7 @@ $asset_version = time();
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: block;
         }
 
         /* 3D Main Card Container */
@@ -278,9 +330,10 @@ $asset_version = time();
         <div class="dashboard-content px-0">
             <div class="container-fluid px-lg-4">
 
-                <!-- Animated Birthday Celebration Banner -->
+                <!-- Ultra Luxury Birthday Celebration Banner 3D -->
                 <?php if (!empty($birthday_employees)): ?>
                 <div class="birthday-banner-3d mb-4 no-print">
+                    <div class="bday-sparkle-bg"></div>
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 position-relative z-1">
                         <div class="d-flex align-items-center gap-3">
                             <div class="bday-icon-wrapper">
@@ -288,7 +341,7 @@ $asset_version = time();
                             </div>
                             <div>
                                 <div class="d-flex align-items-center gap-2">
-                                    <span class="badge text-dark font-black px-2 py-1 rounded-pill text-uppercase" style="font-size: 0.7rem; background: #fbbf24;"><i class="fa-solid fa-crown me-1"></i>HARI INI BERULANG TAHUN!</span>
+                                    <span class="bday-badge-ribbon"><i class="fa-solid fa-crown me-1"></i>HARI INI BERULANG TAHUN!</span>
                                 </div>
                                 <h4 class="fw-extrabold text-white mb-0 mt-1" style="letter-spacing: -0.5px;">
                                     🎉 Selamat Ulang Tahun Kepada:
@@ -299,7 +352,9 @@ $asset_version = time();
                         <div class="d-flex align-items-center gap-3 flex-wrap">
                             <?php foreach ($birthday_employees as $bemp): ?>
                             <div class="bday-card-item">
-                                <img src="../uploads/<?php echo htmlspecialchars($bemp['pas_photo'] ?: 'default.png'); ?>" class="bday-avatar" onerror="this.onerror=null; this.src='https://via.placeholder.com/50/003c9c/ffffff?Text=<?php echo strtoupper(substr($bemp['nama'], 0, 1)); ?>';">
+                                <div class="bday-avatar-ring">
+                                    <img src="../uploads/<?php echo htmlspecialchars($bemp['pas_photo'] ?: 'default.png'); ?>" class="bday-avatar" onerror="this.onerror=null; this.src='https://via.placeholder.com/50/003c9c/ffffff?Text=<?php echo strtoupper(substr($bemp['nama'], 0, 1)); ?>';">
+                                </div>
                                 <div>
                                     <div class="fw-bold text-white fs-6" style="text-transform: capitalize;"><?php echo htmlspecialchars($bemp['nama']); ?></div>
                                     <div class="text-white-50 small" style="font-size: 0.75rem;"><?php echo htmlspecialchars($bemp['jabatan'] ?: 'Karyawan'); ?> <?php if ($bemp['umur']) echo "• " . $bemp['umur'] . " Thn"; ?></div>
@@ -353,11 +408,20 @@ $asset_version = time();
     document.addEventListener('DOMContentLoaded', function() {
         <?php if (!empty($birthday_employees)): ?>
         if (typeof confetti === 'function') {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
+            const count = 200;
+            const defaults = { origin: { y: 0.7 } };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55, colors: ['#fbbf24', '#f43f5e'] });
+            fire(0.2, { spread: 60, colors: ['#a855f7', '#3b82f6'] });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, colors: ['#ffffff', '#fbbf24'] });
+            fire(0.1, { spread: 120, startVelocity: 45 });
         }
         <?php endif; ?>
 
