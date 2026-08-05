@@ -1,22 +1,36 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 
-if (!isset($_SESSION["nip"]) || $_SESSION["role"] !== "superadmin") {
-    header("Location: index.php");
+if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadmin'])) {
+    echo json_encode(['success' => false, 'message' => 'Akses ditolak. Silakan login kembali.']);
     exit();
 }
 
 include 'conn.php';
 
-if (isset($_GET['nip']) && isset($_GET['status'])) {
-    $nip = $_GET['nip'];
-    $status = $_GET['status'];
+$nip = $_GET['nip'] ?? $_POST['nip'] ?? '';
+$status = $_GET['status'] ?? $_POST['status'] ?? '';
 
-    $queryUpdate = "UPDATE karyawan SET status_karyawan = '$status' WHERE nip = '$nip'";
-    if ($conn->query($queryUpdate) === TRUE) {
-        echo "Status updated successfully!";
-    } else {
-        echo "Error occurred while updating status: " . $conn->error;
-    }
+if (empty($nip) || empty($status)) {
+    echo json_encode(['success' => false, 'message' => 'Parameter nip dan status harus diisi.']);
+    exit();
 }
+
+$status = (strtolower($status) === 'aktif') ? 'aktif' : 'tidak aktif';
+
+$stmt = $conn->prepare("UPDATE karyawan SET status_karyawan = ? WHERE nip = ?");
+if (!$stmt) {
+    echo json_encode(['success' => false, 'message' => 'Gagal mempersiapkan query database: ' . $conn->error]);
+    exit();
+}
+
+$stmt->bind_param("ss", $status, $nip);
+if ($stmt->execute()) {
+    echo json_encode(['success' => true, 'message' => 'Status karyawan berhasil diubah menjadi ' . $status, 'status' => $status]);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Gagal mengubah status: ' . $stmt->error]);
+}
+$stmt->close();
+$conn->close();
 ?>
