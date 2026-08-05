@@ -827,8 +827,8 @@ $asset_version = time();
 
         $('#captureBtn').click(function() {
             const video = document.getElementById('cameraPreview');
-            if (!video || !stream) {
-                alert('Kamera belum aktif.');
+            if (!video || !stream || !video.videoWidth || video.videoWidth === 0) {
+                alert('Kamera belum aktif/siap, silakan coba 1 detik lagi.');
                 return;
             }
 
@@ -836,83 +836,63 @@ $asset_version = time();
             btn.prop('disabled', true);
 
             function displayCapturedPhoto(dataUrl) {
-                const photoImg = document.getElementById('photoPreviewImg');
-                photoImg.src = dataUrl;
-                $('#photoPreviewImg').removeClass('d-none');
-                $('#cameraPreview').addClass('d-none');
-                $('#captureBtn').addClass('d-none').prop('disabled', false);
-                $('#retakeBtn').removeClass('d-none');
-                $('#uploadPhotoBtn').prop('disabled', false);
-                setTimeout(function() { stopCamera(); }, 150);
-            }
-
-            function isCanvasBlack(ctx, width, height) {
-                try {
-                    const imgData = ctx.getImageData(Math.floor(width / 4), Math.floor(height / 4), Math.floor(width / 2), Math.floor(height / 2)).data;
-                    let sum = 0;
-                    for (let i = 0; i < imgData.length; i += 40) {
-                        sum += (imgData[i] + imgData[i+1] + imgData[i+2]);
-                    }
-                    return (sum / (imgData.length / 40)) < 12;
-                } catch(e) {
-                    return false;
-                }
-            }
-
-            // Pause video frame momentarily to force GPU SurfaceView buffer flush
-            try { video.pause(); } catch(e) {}
-
-            // Method 1: createImageBitmap (Direct GPU Texture Capture for Mobile Chrome/Android)
-            if (window.createImageBitmap) {
-                createImageBitmap(video)
-                    .then(function(bmp) {
-                        const canvas = document.createElement('canvas');
-                        let w = bmp.width || 640;
-                        let h = bmp.height || 480;
-                        const maxDim = 640;
-                        if (w > maxDim || h > maxDim) {
-                            if (w >= h) { h = Math.round((h * maxDim) / w); w = maxDim; }
-                            else { w = Math.round((w * maxDim) / h); h = maxDim; }
-                        }
-                        canvas.width = w;
-                        canvas.height = h;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(bmp, 0, 0, w, h);
-                        
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-                        if (!isCanvasBlack(ctx, w, h)) {
-                            displayCapturedPhoto(dataUrl);
-                            return;
-                        }
-                        fallbackCanvasCapture();
-                    })
-                    .catch(function(err) {
-                        fallbackCanvasCapture();
-                    });
-            } else {
-                fallbackCanvasCapture();
-            }
-
-            function fallbackCanvasCapture() {
-                try {
-                    const canvas = document.createElement('canvas');
-                    let w = video.videoWidth || 640;
-                    let h = video.videoHeight || 480;
-                    const maxDim = 640;
-                    if (w > maxDim || h > maxDim) {
-                        if (w >= h) { h = Math.round((h * maxDim) / w); w = maxDim; }
-                        else { w = Math.round((w * maxDim) / h); h = maxDim; }
-                    }
-                    canvas.width = w;
-                    canvas.height = h;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(video, 0, 0, w, h);
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-                    displayCapturedPhoto(dataUrl);
-                } catch(err) {
+                if (!dataUrl || dataUrl.length < 500) {
                     btn.prop('disabled', false);
-                    alert('Gagal mengambil foto: ' + err.message);
+                    alert('Gagal mengambil foto, silakan coba lagi.');
+                    return;
                 }
+
+                const photoImg = document.getElementById('photoPreviewImg');
+                let done = false;
+
+                function applyDisplay() {
+                    if (done) return;
+                    done = true;
+                    $('#photoPreviewImg').removeClass('d-none');
+                    $('#cameraPreview').addClass('d-none');
+                    $('#captureBtn').addClass('d-none').prop('disabled', false);
+                    $('#retakeBtn').removeClass('d-none');
+                    $('#uploadPhotoBtn').prop('disabled', false);
+                    setTimeout(function() { stopCamera(); }, 100);
+                }
+
+                photoImg.onload = applyDisplay;
+                photoImg.src = dataUrl;
+
+                if (photoImg.complete && photoImg.naturalWidth > 0) {
+                    applyDisplay();
+                } else {
+                    setTimeout(applyDisplay, 150);
+                }
+            }
+
+            try {
+                const canvas = document.createElement('canvas');
+                let w = video.videoWidth || 640;
+                let h = video.videoHeight || 480;
+                const maxDim = 640;
+
+                if (w > maxDim || h > maxDim) {
+                    if (w >= h) {
+                        h = Math.round((h * maxDim) / w);
+                        w = maxDim;
+                    } else {
+                        w = Math.round((w * maxDim) / h);
+                        h = maxDim;
+                    }
+                }
+
+                canvas.width = w;
+                canvas.height = h;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, w, h);
+
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                displayCapturedPhoto(dataUrl);
+            } catch(err) {
+                btn.prop('disabled', false);
+                alert('Gagal mengambil foto: ' + err.message);
             }
         });
 
