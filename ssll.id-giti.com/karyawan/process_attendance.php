@@ -130,9 +130,11 @@ if (@file_put_contents($filepath, $imageBinary) === false) {
 }
 
 try {
-    // Auto-expand PIN column in DB if needed to accommodate longer NIPs / PINs (e.g. TEST001)
+    // Auto-expand PIN and NIP columns in DB if needed to accommodate longer NIPs / PINs (e.g. TEST001)
     @$conn->query("ALTER TABLE absen_manual MODIFY COLUMN pin VARCHAR(50)");
+    @$conn->query("ALTER TABLE absen_manual MODIFY COLUMN nip VARCHAR(50)");
     @$conn->query("ALTER TABLE absen MODIFY COLUMN pin VARCHAR(50)");
+    @$conn->query("ALTER TABLE absen MODIFY COLUMN nip VARCHAR(50)");
 
     $query = "INSERT INTO absen_manual (
                 tgl_absen, tipe_absen, image, pin, nip, nama, lokasi_absen, lokasi_koordinat, ip, device_name, verif
