@@ -557,6 +557,13 @@ $asset_version = time();
                 </div>
                 <div class="modal-body p-0 position-relative" style="height: 320px; max-height: 320px; overflow: hidden; background: #0f172a;">
                     <video id="cameraPreview" autoplay playsinline muted class="camera-video-presensi" style="width: 100%; height: 320px; object-fit: cover; object-position: center; display: block;"></video>
+                    <div id="cameraPlaceholder" class="d-none" style="width: 100%; height: 320px; background: #0f172a; color: #94a3b8; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;">
+                        <div class="placeholder-icon-wrapper mb-3" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(37, 99, 235, 0.1); display: flex; align-items: center; justify-content: center; border: 2px dashed #2563eb;">
+                            <i class="fas fa-camera text-primary" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="text-white fw-bold mb-1">Kamera Siap</h6>
+                        <p class="small text-white-50 px-3" style="font-size: 0.75rem; margin: 0;">Ketuk tombol kamera biru di bawah untuk mulai mengambil foto selfie Anda.</p>
+                    </div>
                     <img id="photoPreviewImg" class="d-none photo-preview-img" style="width: 100%; height: 320px; object-fit: cover; object-position: center; display: block;">
                     <canvas id="photoCanvas" class="d-none" style="display: none;"></canvas>
                     <input type="file" id="nativeCameraInput" accept="image/*" capture="user" class="d-none" style="display: none;">
@@ -789,8 +796,11 @@ $asset_version = time();
             $('#cameraModal').modal('show');
         });
 
+        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
         $('#cameraModal').on('shown.bs.modal', function() { 
             $('#photoPreviewImg').addClass('d-none').attr('src', '');
+            $('#cameraPlaceholder').addClass('d-none');
             $('#cameraPreview').removeClass('d-none');
             $('#captureBtnLabel').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
@@ -800,6 +810,7 @@ $asset_version = time();
         $('#cameraModal').on('hidden.bs.modal', function() {
             stopCamera();
             $('#cameraPreview').removeClass('d-none');
+            $('#cameraPlaceholder').addClass('d-none');
             $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#photoCanvas').addClass('d-none');
             $('#captureBtnLabel').removeClass('d-none');
@@ -808,13 +819,21 @@ $asset_version = time();
         });
 
         function startCamera() {
-            const video = document.getElementById('cameraPreview');
-            $('#cameraPreview').removeClass('d-none');
             $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#photoCanvas').addClass('d-none');
             $('#captureBtnLabel').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
             $('#uploadPhotoBtn').prop('disabled', true);
+
+            if (isMobileDevice) {
+                $('#cameraPreview').addClass('d-none');
+                $('#cameraPlaceholder').removeClass('d-none');
+                return;
+            }
+
+            $('#cameraPlaceholder').addClass('d-none');
+            $('#cameraPreview').removeClass('d-none');
+            const video = document.getElementById('cameraPreview');
             navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false })
                 .then(function(s) { 
                     stream = s; 
@@ -823,8 +842,8 @@ $asset_version = time();
                     video.play().catch(function(e) { console.log(e); }); 
                 })
                 .catch(function(err) {
-                    alert('Tidak dapat mengakses kamera. Pastikan Anda memberikan izin.');
-                    closeCameraModal();
+                    $('#cameraPreview').addClass('d-none');
+                    $('#cameraPlaceholder').removeClass('d-none');
                 });
         }
 
@@ -833,45 +852,62 @@ $asset_version = time();
         $('#nativeCameraInput').change(function(e) {
             if (e.target.files && e.target.files[0]) {
                 const file = e.target.files[0];
-                const reader = new FileReader();
+                const blobUrl = URL.createObjectURL(file);
+                const tempImg = new Image();
                 
-                reader.onload = function(evt) {
-                    const tempImg = new Image();
-                    tempImg.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        let w = tempImg.naturalWidth || tempImg.width || 640;
-                        let h = tempImg.naturalHeight || tempImg.height || 480;
-                        const maxDim = 640;
+                tempImg.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let w = tempImg.naturalWidth || tempImg.width || 640;
+                    let h = tempImg.naturalHeight || tempImg.height || 480;
+                    const maxDim = 640;
 
-                        if (w > maxDim || h > maxDim) {
-                            if (w >= h) {
-                                h = Math.round((h * maxDim) / w);
-                                w = maxDim;
-                            } else {
-                                w = Math.round((w * maxDim) / h);
-                                h = maxDim;
-                            }
+                    if (w > maxDim || h > maxDim) {
+                        if (w >= h) {
+                            h = Math.round((h * maxDim) / w);
+                            w = maxDim;
+                        } else {
+                            w = Math.round((w * maxDim) / h);
+                            h = maxDim;
                         }
+                    }
 
-                        canvas.width = w;
-                        canvas.height = h;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(tempImg, 0, 0, w, h);
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(tempImg, 0, 0, w, h);
 
-                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.80);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.80);
+                    const photoImg = document.getElementById('photoPreviewImg');
+                    photoImg.src = compressedDataUrl;
+                    
+                    $('#photoPreviewImg').removeClass('d-none');
+                    $('#cameraPreview').addClass('d-none');
+                    $('#cameraPlaceholder').addClass('d-none');
+                    $('#captureBtnLabel').addClass('d-none');
+                    $('#retakeBtn').removeClass('d-none');
+                    $('#uploadPhotoBtn').prop('disabled', false);
+                    
+                    URL.revokeObjectURL(blobUrl);
+                    stopCamera();
+                };
+
+                tempImg.onerror = function() {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
                         const photoImg = document.getElementById('photoPreviewImg');
-                        photoImg.src = compressedDataUrl;
-                        
+                        photoImg.src = evt.target.result;
                         $('#photoPreviewImg').removeClass('d-none');
                         $('#cameraPreview').addClass('d-none');
+                        $('#cameraPlaceholder').addClass('d-none');
                         $('#captureBtnLabel').addClass('d-none');
                         $('#retakeBtn').removeClass('d-none');
                         $('#uploadPhotoBtn').prop('disabled', false);
                         stopCamera();
                     };
-                    tempImg.src = evt.target.result;
+                    reader.readAsDataURL(file);
                 };
-                reader.readAsDataURL(file);
+
+                tempImg.src = blobUrl;
             }
         });
 
