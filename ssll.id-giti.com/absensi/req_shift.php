@@ -173,6 +173,7 @@ $dataa = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                             <option value="M">Shift 2 (08.30 s/d 17.30)</option>
                             <option value="S">Shift 3 (09.30 s/d 18.30)</option>
                             <option value="T">Shift Harco (09.10 s/d 18.00)</option>
+                            <option value="TEST">Shift Testing (24 Jam Kamera Test)</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -272,6 +273,8 @@ $dataa = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                             $shifting_1 = "Sabtu (8.30 s/d 13.00)";
                         } elseif ($shifting == "TW") {
                             $shifting_1 = "Harco Sabtu (9.00 s/d 13.00)";
+                        } elseif ($shifting == "TEST") {
+                            $shifting_1 = "Shift Testing (24 Jam Kamera Test)";
                         } else {
                             $shifting_1 = $shifting;
                         }

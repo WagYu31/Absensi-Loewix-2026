@@ -423,6 +423,7 @@ $asset_version = time();
                                                     case 'T': $shifting_display = "Shift Harco (09.10 - 18.00)"; $badge_class = "shift-2"; break;
                                                     case 'W': $shifting_display = "Sabtu (8.30 - 13.00)"; $badge_class = "shift-sabtu"; break;
                                                     case 'TW': $shifting_display = "Harco Sabtu (9.00 - 13.00)"; $badge_class = "shift-sabtu"; break;
+                                                    case 'TEST': $shifting_display = "Shift Testing (24 Jam Test)"; $badge_class = "shift-3"; break;
                                                 }
                                     
                                                 echo "<tr>";

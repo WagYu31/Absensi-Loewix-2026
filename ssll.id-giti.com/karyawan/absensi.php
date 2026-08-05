@@ -497,53 +497,54 @@ $asset_version = time();
         <div class="dashboard-content presensi-main-content px-lg-4 px-md-3 px-0">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-lg-7 col-md-9">
+<div class="col-lg-7 col-md-9">
                         <div class="card presensi-action-card shadow-lg" id="card3d">
                             <div class="card-body p-lg-4">
                                 <div class="text-center mb-3">
                                     <h5 class="section-title-presensi-card mb-2">JADWAL ANDA HARI INI</h5>
-                                    <p class="shift-name-presensi-card mb-2">
-                                        Shift: <?php
-                                                $shiftNames = ['P' => 'Pagi', 'M' => 'Tengah', 'N' => 'Siang', 'S' => 'Siang', 'T' => 'Harco (HC)'];
-                                                echo $shiftNames[$final_shifting] ?? $final_shifting;
-                                                ?>
-                                    </p>
-                                    <?php
-                                    $shiftSchedule = '';
-                                    if ($isSaturday) {
-                                        $shiftSchedule = '08.30 - 13.00';
-                                    } else {
-                                        switch ($final_shifting) {
-                                            case 'P': $shiftSchedule = '07.00 - 16.00'; break;
-                                            case 'M': $shiftSchedule = '08.30 - 17.30'; break;
-                                            case 'N': $shiftSchedule = '09.00 - 18.00'; break;
-                                            case 'S': $shiftSchedule = '09.30 - 18.30'; break;
-                                            case 'T': $shiftSchedule = '09.10 - 18.00'; break; 
-                                            default: $shiftSchedule = 'Tidak Terdefinisi';
-                                        }
-                                    }
-                                    ?>
-                                    <p class="schedule-display-presensi-card my-2"><?php echo $shiftSchedule; ?></p>
-                                </div>
-                                <hr class="my-3 presensi-divider">
-                                <div class="status-area-presensi mb-3">
-                                    <div id="locationStatus" class="d-flex align-items-center justify-content-center location-status-presensi-card">
-                                        <i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi...
-                                    </div>
-                                    <div id="locationWarning" class="alert alert-warning d-none text-center mt-2 py-2 small">
-                                        <i class="fas fa-map-marker-alt me-2"></i>
-                                        Anda di luar lokasi kantor, jika lokasi tidak sesuai, pastikan GPS handphone aktif dan browser tidak memblokir lokasi pada situs ini.
-                                    </div>
-                                    <div id="lateWarning" class="alert alert-danger d-none text-center mt-2 py-2 late-warning-presensi-card">
-                                        <i class="fas fa-exclamation-triangle me-2"></i>
-                                        <span id="lateMessage"></span>
-                                    </div>
-                                </div>
-                                <div class="button-area-presensi mt-3">
-                                    <button class="btn btn-check-in-presensi w-100 mb-2 py-3" id="btnCheckIn" disabled><i class="fas fa-hand-point-up fa-fw me-2"></i>MASUK</button>
-                                    <button class="btn btn-check-out-presensi w-100 mb-2 py-3" id="btnCheckOut" disabled><i class="fas fa-door-open fa-fw me-2"></i>PULANG</button>
-                                    <a href="riwayat-absen.php" class="btn btn-riwayat-absen w-100 py-3"><strong><i class="fas fa-calendar-check fa-fw me-2"></i>CEK ABSEN KAMU DISINI</strong></a>
-                                </div>
+                                     <p class="shift-name-presensi-card mb-2">
+                                         Shift: <?php
+                                                 $shiftNames = ['P' => 'Pagi', 'M' => 'Tengah', 'N' => 'Siang', 'S' => 'Siang', 'T' => 'Harco (HC)', 'TEST' => 'Shift Testing (24 Jam)'];
+                                                 echo $shiftNames[$final_shifting] ?? $final_shifting;
+                                                 ?>
+                                     </p>
+                                     <?php
+                                     $shiftSchedule = '';
+                                     if ($isSaturday && $final_shifting !== 'TEST') {
+                                         $shiftSchedule = '08.30 - 13.00';
+                                     } else {
+                                         switch ($final_shifting) {
+                                             case 'P': $shiftSchedule = '07.00 - 16.00'; break;
+                                             case 'M': $shiftSchedule = '08.30 - 17.30'; break;
+                                             case 'N': $shiftSchedule = '09.00 - 18.00'; break;
+                                             case 'S': $shiftSchedule = '09.30 - 18.30'; break;
+                                             case 'T': $shiftSchedule = '09.10 - 18.00'; break;
+                                             case 'TEST': $shiftSchedule = 'Bisa Masuk & Pulang Kapan Saja (Test Mode)'; break; 
+                                             default: $shiftSchedule = 'Tidak Terdefinisi';
+                                         }
+                                     }
+                                     ?>
+                                     <p class="schedule-display-presensi-card my-2"><?php echo $shiftSchedule; ?></p>
+                                 </div>
+                                 <hr class="my-3 presensi-divider">
+                                 <div class="status-area-presensi mb-3">
+                                     <div id="locationStatus" class="d-flex align-items-center justify-content-center location-status-presensi-card">
+                                         <i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi...
+                                     </div>
+                                     <div id="locationWarning" class="alert alert-warning d-none text-center mt-2 py-2 small">
+                                         <i class="fas fa-map-marker-alt me-2"></i>
+                                         Anda di luar lokasi kantor, jika lokasi tidak sesuai, pastikan GPS handphone aktif dan browser tidak memblokir lokasi pada situs ini.
+                                     </div>
+                                     <div id="lateWarning" class="alert alert-danger d-none text-center mt-2 py-2 late-warning-presensi-card">
+                                         <i class="fas fa-exclamation-triangle me-2"></i>
+                                         <span id="lateMessage"></span>
+                                     </div>
+                                 </div>
+                                 <div class="button-area-presensi mt-3">
+                                     <button class="btn btn-check-in-presensi w-100 mb-2 py-3" id="btnCheckIn" disabled><i class="fas fa-hand-point-up fa-fw me-2"></i>MASUK</button>
+                                     <button class="btn btn-check-out-presensi w-100 mb-2 py-3" id="btnCheckOut" disabled><i class="fas fa-door-open fa-fw me-2"></i>PULANG</button>
+                                     <a href="riwayat-absen.php" class="btn btn-riwayat-absen w-100 py-3"><strong><i class="fas fa-calendar-check fa-fw me-2"></i>CEK ABSEN KAMU DISINI</strong></a>
+                                 </div>
                             </div>
                         </div>
                     </div>
@@ -716,7 +717,7 @@ $asset_version = time();
             const currentMinute = now.getMinutes();
             <?php
             $lateThresholdPHP = '';
-            if ($isSaturday) {
+            if ($isSaturday && $final_shifting !== 'TEST') {
                 $lateThresholdPHP = '08:30';
             } else {
                 switch ($final_shifting) {
@@ -725,6 +726,7 @@ $asset_version = time();
                     case 'N': $lateThresholdPHP = '09:00'; break;
                     case 'S': $lateThresholdPHP = '09:30'; break;
                     case 'T': $lateThresholdPHP = '09:10'; break;
+                    case 'TEST': $lateThresholdPHP = '09:30'; break;
                     default: $lateThresholdPHP = '23:59';
                 }
             }
@@ -742,6 +744,17 @@ $asset_version = time();
         }
 
         function checkAbsenConditions() {
+            const isTestMode = <?php echo ($final_shifting === 'TEST') ? 'true' : 'false'; ?>;
+            const isLocationActive = (userLat !== null && userLng !== null);
+            const hasCheckedInToday = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='masuk' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
+            const hasCheckedOutToday = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='pulang' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
+
+            if (isTestMode) {
+                $('#btnCheckIn').prop('disabled', !isLocationActive);
+                $('#btnCheckOut').prop('disabled', !isLocationActive);
+                return;
+            }
+
             const now = new Date();
             const currentHour = now.getHours();
             const currentMinute = now.getMinutes();
@@ -769,10 +782,6 @@ $asset_version = time();
             }
             
             const isCheckOutTime = !isCheckInTime;
-            const isLocationActive = (userLat !== null && userLng !== null);
-
-            const hasCheckedInToday = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='masuk' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
-            const hasCheckedOutToday = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='pulang' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
 
             if (!hasCheckedInToday && isCheckInTime && isLocationActive) { $('#btnCheckIn').prop('disabled', false); } 
             else { $('#btnCheckIn').prop('disabled', true); }
