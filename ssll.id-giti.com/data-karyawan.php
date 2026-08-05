@@ -57,7 +57,7 @@ if (isset($_GET['deleteNIP'])) {
     deleteKaryawan($conn, $deleteNIP);
 }
 
-$query = "SELECT * FROM karyawan  ORDER BY nama ASC;";
+$query = "SELECT * FROM karyawan WHERE nip NOT IN (SELECT nip FROM users WHERE role = 'superadmin') ORDER BY nama ASC;";
 $result = $conn->query($query);
 
 if (!$result) {

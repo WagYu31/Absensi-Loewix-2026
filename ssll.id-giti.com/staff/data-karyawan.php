@@ -52,7 +52,7 @@ if ($res_jabatan) {
     }
 }
 
-$query = "SELECT nik, nama, jabatan, tanggal_masuk, nomor_handphone, alamat, status_karyawan, nip, gaji_pokok, pas_photo FROM karyawan WHERE deleted_at IS NULL ORDER BY nama ASC";
+$query = "SELECT nik, nama, jabatan, tanggal_masuk, nomor_handphone, alamat, status_karyawan, nip, gaji_pokok, pas_photo FROM karyawan WHERE deleted_at IS NULL AND nip NOT IN (SELECT nip FROM users WHERE role = 'superadmin') ORDER BY nama ASC";
 $result = $conn->query($query);
 if (!$result) {
     die("Query gagal dieksekusi: " . $conn->error);
