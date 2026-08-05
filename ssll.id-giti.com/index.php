@@ -90,7 +90,7 @@ $conn->close();
         }
 
         .brand-logo-img {
-            height: 48px;
+            height: 52px;
             width: auto;
             object-fit: contain;
             margin-bottom: 0.75rem;
@@ -101,10 +101,6 @@ $conn->close();
             font-weight: 700;
             color: #1c2b36;
             margin: 0 0 0.25rem 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
         .brand-subtitle {
@@ -280,8 +276,8 @@ $conn->close();
             
             <!-- Brand Header -->
             <div class="brand-header">
-                <img src="img/giti.png" alt="Gravitti Tech" class="brand-logo-img" onerror="this.style.display='none';">
-                <h1 class="brand-title">Gravitti Tech</h1>
+                <img src="img/giti.png" alt="Gravitti Tech" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('text-fallback').style.display='block';">
+                <h1 class="brand-title" id="text-fallback" style="display: none;">Gravitti Tech</h1>
                 <p class="brand-subtitle">Silakan masuk untuk melanjutkan</p>
             </div>
 
