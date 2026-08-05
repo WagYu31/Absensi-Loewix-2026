@@ -155,80 +155,274 @@ $stmt = null;
 
 $nama_hari_map = ['Monday'=>'SEN','Tuesday'=>'SEL','Wednesday'=>'RAB','Thursday'=>'KAM','Friday'=>'JUM','Saturday'=>'SAB','Sunday'=>'MIN'];
 $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
+$asset_version = time();
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validasi Absensi - Gravitti Tech</title>
+    <title>Validasi Absensi 3D - Gravitti Tech</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a97d5963a4.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../assets/css/main-styles.css">
-    <link rel="stylesheet" href="../assets/css/sidebar.css">
+    <link rel="stylesheet" href="../assets/css/main-styles.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/sidebar.css?v=<?php echo $asset_version; ?>">
+
     <style>
-        .date-wrapper { display: flex; flex-direction: column; gap: 8px; }
-        .date-row { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
-        .date-row::-webkit-scrollbar { display: none; }
-        .date-btn { min-width: 50px; padding: 4px; border-radius: 8px; border: 1px solid #dee2e6; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #495057; }
-        .date-btn .day-num { font-size: 1rem; font-weight: 700; line-height: 1.2; }
-        .date-btn .day-name { font-size: 0.6rem; text-transform: uppercase; font-weight: 600; opacity: 0.8; }
-        .date-btn.active { background-color: #0d6efd; color: #fff; border-color: #0d6efd; }
-        .employee-card { border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin-bottom: 20px; border-top: 3px solid #0d6efd; }
-        .prof-img { width: 45px; height: 45px; object-fit: cover; border-radius: 50%; border: 1px solid #eee; flex-shrink: 0; }
-        .profile-info { display: flex; align-items: center; gap: 10px; }
-        .abs-box { background: #f8f9fa; border: 1px solid #edf0f2; border-radius: 10px; padding: 12px; height: 100%; }
-        .abs-photo { width: 65px; height: 65px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 1px solid #dee2e6; flex-shrink: 0; }
-        .abs-content { display: flex; gap: 12px; align-items: center; margin-top: 8px; }
-        .abs-details { flex: 1; min-width: 0; font-size: 0.82rem; }
-        .abs-details div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .status-badge { font-size: 0.65rem; padding: 4px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; line-height: 1; height: 22px; }
-        .nav-tabs { border-bottom: 2px solid #f1f1f1; gap: 15px; }
-        .nav-link { font-weight: 600; color: #888; border: none !important; padding: 10px 5px; font-size: 0.95rem; }
-        .nav-link.active { color: #0d6efd !important; border-bottom: 3px solid #0d6efd !important; background: none !important; }
-        .modal-img-preview { max-height: 50vh; width: auto; max-width: 90vw; border-radius: 10px; }
-        .abs-header-flex { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px; }
-        .badge-group { display: flex; gap: 4px; align-items: center; }
-        
-        .btn-edit-time {
-            color: #2563eb;
-            background: rgba(37, 99, 235, 0.1);
-            border: 1px solid rgba(37, 99, 235, 0.2);
-            border-radius: 6px;
-            padding: 2px 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-edit-time:hover {
-            background: #2563eb;
-            color: #ffffff;
+        :root {
+            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%);
+            --card-radius-lg: 24px;
+            --primary-3d: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
+            --success-3d: linear-gradient(135deg, #059669 0%, #10b981 50%, #047857 100%);
+            --danger-3d: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #b91c1c 100%);
         }
 
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+            background: #f1f5f9 !important;
+        }
+
+        .main-content-wrapper {
+            background: #f1f5f9;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%) !important;
+            min-height: 100vh;
+        }
+
+        /* 3D Header Banner */
+        .page-specific-header {
+            background: var(--header-gradient) !important;
+            color: #ffffff;
+            padding: 2.25rem 0 4.5rem 0 !important;
+            margin-bottom: -50px !important;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.25) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .page-specific-header h1 {
+            font-weight: 800 !important;
+            font-size: 1.65rem !important;
+            letter-spacing: -0.5px;
+            color: #ffffff !important;
+        }
+
+        /* 3D Glass Filter Card */
         .filter-section-card {
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border-radius: var(--card-radius-lg) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 
+                0 20px 40px -10px rgba(15, 23, 42, 0.1),
+                0 10px 20px -10px rgba(15, 23, 42, 0.05) !important;
+            padding: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+
+        .form-label {
+            font-size: 0.78rem !important;
+            font-weight: 700 !important;
+            color: #475569 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px !important;
+            border: 1.5px solid #cbd5e1 !important;
+            padding: 0.55rem 0.85rem !important;
+            font-size: 0.875rem !important;
+            font-weight: 600 !important;
+            color: #1e293b !important;
+            background-color: #f8fafc !important;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6 !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
+        }
+
+        /* 3D Working Days Picker Buttons */
+        .date-wrapper { display: flex; flex-direction: column; gap: 10px; }
+        .date-row { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding: 2px 0; }
+        .date-row::-webkit-scrollbar { display: none; }
+        
+        .date-btn {
+            min-width: 52px;
+            padding: 8px 6px;
             border-radius: 14px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.25rem;
+            border: 1.5px solid #e2e8f0;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #475569;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03), 0 2px 0 #cbd5e1;
+            transition: all 0.15s ease-out;
+        }
+
+        .date-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), 0 3px 0 #94a3b8;
+            color: #1e293b;
+        }
+
+        .date-btn .day-num { font-size: 1.1rem; font-weight: 800; line-height: 1.1; }
+        .date-btn .day-name { font-size: 0.65rem; text-transform: uppercase; font-weight: 700; opacity: 0.75; }
+
+        .date-btn.active {
+            background: var(--primary-3d) !important;
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35), 0 3px 0 #1d4ed8 !important;
+        }
+        .date-btn.active .day-name { opacity: 0.9; }
+
+        /* 3D Nav Tabs */
+        .nav-tabs-3d {
+            border-bottom: 2px solid #e2e8f0 !important;
+            gap: 12px;
+        }
+
+        .nav-tabs-3d .nav-link {
+            font-weight: 800 !important;
+            font-size: 0.9rem !important;
+            color: #64748b !important;
+            border: none !important;
+            padding: 10px 20px !important;
+            border-radius: 14px 14px 0 0 !important;
+            background: transparent !important;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tabs-3d .nav-link.active {
+            color: #2563eb !important;
+            background: #ffffff !important;
+            border-bottom: 3px solid #2563eb !important;
+            box-shadow: 0 -4px 12px rgba(37, 99, 235, 0.08) !important;
+        }
+
+        /* 3D Employee Attendance Card */
+        .employee-card-3d {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            border-radius: var(--card-radius-lg) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 
+                0 20px 40px -10px rgba(15, 23, 42, 0.08),
+                0 10px 20px -10px rgba(15, 23, 42, 0.04) !important;
+            margin-bottom: 1.5rem !important;
+            overflow: hidden;
+            border-top: 4px solid #3b82f6 !important;
+        }
+
+        .employee-card-3d .card-header {
+            background: #ffffff !important;
+            padding: 1rem 1.25rem !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+        }
+
+        .prof-img {
+            width: 44px;
+            height: 44px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .abs-box-3d {
+            background: #f8fafc !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 16px !important;
+            padding: 1rem !important;
+            height: 100%;
+        }
+
+        .abs-photo {
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transition: transform 0.2s ease;
+        }
+
+        .abs-photo:hover {
+            transform: scale(1.05);
+        }
+
+        .status-badge-3d {
+            font-size: 0.7rem !important;
+            padding: 4px 10px !important;
+            border-radius: 20px !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.3px;
+        }
+
+        /* Tactile 3D Buttons */
+        .btn-approve-3d {
+            background: var(--success-3d) !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            font-size: 0.8rem !important;
+            border-radius: 10px !important;
+            padding: 6px 14px !important;
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3), 0 2px 0 #047857 !important;
+            transition: all 0.15s ease-out !important;
+        }
+
+        .btn-approve-3d:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.4), 0 3px 0 #065f46 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-reject-3d {
+            background: var(--danger-3d) !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            font-size: 0.8rem !important;
+            border-radius: 10px !important;
+            padding: 6px 14px !important;
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3), 0 2px 0 #b91c1c !important;
+            transition: all 0.15s ease-out !important;
+        }
+
+        .btn-reject-3d:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.4), 0 3px 0 #991b1b !important;
+            color: #ffffff !important;
         }
 
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.7); z-index: 9999;
+            background-color: rgba(15, 23, 42, 0.75); z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: white; backdrop-filter: blur(2px);
+            color: white; backdrop-filter: blur(4px);
         }
-        .loading-spinner { width: 3rem; height: 3rem; border-width: 0.25em; }
     </style>
 </head>
 <body>
     <?php include 'nav/sidebar.php'; ?>
     
     <div id="fullScreenLoader" class="loading-overlay d-none">
-        <div class="spinner-border text-light loading-spinner mb-3" role="status">
+        <div class="spinner-border text-primary loading-spinner mb-3" role="status" style="width: 3rem; height: 3rem;">
             <span class="visually-hidden">Loading...</span>
         </div>
         <h5 class="fw-bold">Memproses Data...</h5>
@@ -238,21 +432,22 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
     <div class="main-content-wrapper p-0">
         <div class="header-banner page-specific-header no-print">
             <div class="container-fluid px-lg-4">
-                <h1 class="fs-4 fw-bold">Validasi Absensi Manual</h1>
-                <p class="small opacity-75 mb-0">Verifikasi kehadiran foto harian karyawan</p>
+                <h1><i class="fa-solid fa-clipboard-user me-2 text-primary-light"></i>Validasi Absensi Manual</h1>
+                <p class="small opacity-80 mb-0">Verifikasi kehadiran foto & titik lokasi harian seluruh karyawan.</p>
             </div>
         </div>
-        <div class="dashboard-content">
+
+        <div class="dashboard-content px-0">
             <div class="container-fluid px-lg-4">
                 
                 <!-- Expanded Multi-Filter Card -->
-                <div class="filter-section-card mb-3">
+                <div class="filter-section-card">
                     <form method="GET" id="filterForm" class="row g-2 align-items-end mb-2">
                         <input type="hidden" name="tgl" value="<?php echo htmlspecialchars($selectedDate); ?>">
                         
                         <div class="col-6 col-md-2">
-                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-calendar me-1"></i>Bulan</label>
-                            <select name="bulan" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <label class="form-label mb-1"><i class="fa-solid fa-calendar me-1 text-primary"></i>Bulan</label>
+                            <select name="bulan" class="form-select" onchange="this.form.submit()">
                                 <?php foreach ($bulanNames as $num => $name): ?>
                                     <option value="<?php echo $num; ?>" <?php if ($num == $bulan) echo 'selected'; ?>><?php echo $name; ?></option>
                                 <?php endforeach; ?>
@@ -260,8 +455,8 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                         </div>
                         
                         <div class="col-6 col-md-2">
-                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-calendar-days me-1"></i>Tahun</label>
-                            <select name="tahun" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <label class="form-label mb-1"><i class="fa-solid fa-calendar-days me-1 text-primary"></i>Tahun</label>
+                            <select name="tahun" class="form-select" onchange="this.form.submit()">
                                 <?php for ($i = date('Y'); $i >= date('Y') - 3; $i--): ?>
                                     <option value="<?php echo $i; ?>" <?php if ($i == $tahun) echo 'selected'; ?>><?php echo $i; ?></option>
                                 <?php endfor; ?>
@@ -269,8 +464,8 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                         </div>
 
                         <div class="col-12 col-md-3">
-                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-user me-1"></i>Karyawan</label>
-                            <select name="karyawan" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <label class="form-label mb-1"><i class="fa-solid fa-user me-1 text-primary"></i>Karyawan</label>
+                            <select name="karyawan" class="form-select" onchange="this.form.submit()">
                                 <option value="">-- Semua Karyawan --</option>
                                 <?php foreach ($list_karyawan as $kar): ?>
                                     <option value="<?php echo htmlspecialchars($kar['nip']); ?>" <?php if ($filter_karyawan == $kar['nip']) echo 'selected'; ?>>
@@ -281,8 +476,8 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                         </div>
 
                         <div class="col-6 col-md-2">
-                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-location-dot me-1"></i>Lokasi Absen</label>
-                            <select name="lokasi" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <label class="form-label mb-1"><i class="fa-solid fa-location-dot me-1 text-primary"></i>Lokasi Absen</label>
+                            <select name="lokasi" class="form-select" onchange="this.form.submit()">
                                 <option value="">Semua Lokasi</option>
                                 <option value="kantor" <?php if ($filter_lokasi == 'kantor') echo 'selected'; ?>>Di Kantor (&le;150m)</option>
                                 <option value="luar" <?php if ($filter_lokasi == 'luar') echo 'selected'; ?>>Luar Kantor (&gt;150m)</option>
@@ -290,8 +485,8 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                         </div>
 
                         <div class="col-6 col-md-2">
-                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-clock me-1"></i>Tipe Absen</label>
-                            <select name="tipe" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <label class="form-label mb-1"><i class="fa-solid fa-clock me-1 text-primary"></i>Tipe Absen</label>
+                            <select name="tipe" class="form-select" onchange="this.form.submit()">
                                 <option value="">Semua Tipe</option>
                                 <option value="masuk" <?php if ($filter_tipe == 'masuk') echo 'selected'; ?>>Hanya Masuk</option>
                                 <option value="pulang" <?php if ($filter_tipe == 'pulang') echo 'selected'; ?>>Hanya Pulang</option>
@@ -299,24 +494,24 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                         </div>
 
                         <div class="col-12 col-md-1">
-                            <a href="data-absensi.php" class="btn btn-outline-secondary btn-sm w-100" title="Reset Filter"><i class="fa-solid fa-rotate-left"></i> Reset</a>
+                            <a href="data-absensi.php" class="btn btn-outline-secondary w-100 fw-bold rounded-3" style="font-size: 0.85rem; padding: 0.55rem 0.5rem;" title="Reset Filter"><i class="fa-solid fa-rotate-left"></i> Reset</a>
                         </div>
                     </form>
 
                     <!-- Realtime Search Input -->
-                    <div class="row g-2 mt-1">
+                    <div class="row g-2 mt-2">
                         <div class="col-12">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
-                                <input type="text" id="liveSearchInput" class="form-control form-control-sm" placeholder="Cari nama karyawan atau NIK secara cepat..." onkeyup="filterLiveCards()">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-primary"></i></span>
+                                <input type="text" id="liveSearchInput" class="form-control border-start-0 ps-0" placeholder="Cari nama karyawan atau NIK secara cepat..." onkeyup="filterLiveCards()">
                             </div>
                         </div>
                     </div>
 
-                    <hr class="my-2 text-muted opacity-25">
+                    <hr class="my-3 text-secondary opacity-20">
 
-                    <!-- Working Days Picker -->
-                    <div class="date-wrapper mt-2">
+                    <!-- 3D Working Days Date Picker -->
+                    <div class="date-wrapper">
                         <?php foreach ($dateChunks as $chunk): ?>
                         <div class="date-row">
                             <?php foreach ($chunk as $wd): ?>
@@ -330,21 +525,21 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                     </div>
                 </div>
 
-                <!-- Status Nav Tabs -->
-                <ul class="nav nav-tabs mb-4" id="absTab" role="tablist">
+                <!-- Status Nav Tabs 3D -->
+                <ul class="nav nav-tabs nav-tabs-3d mb-4" id="absTab" role="tablist">
                     <li class="nav-item">
                         <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#verification">
-                            <i class="fa-solid fa-hourglass-half me-1"></i>Verification (<?php echo count($groupedData['Verification']); ?>)
+                            <i class="fa-solid fa-hourglass-half me-2 text-warning"></i>Verification (<?php echo count($groupedData['Verification']); ?>)
                         </button>
                     </li>
                     <li class="nav-item">
                         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#approved">
-                            <i class="fa-solid fa-circle-check me-1 text-success"></i>Approved (<?php echo count($groupedData['Approved']); ?>)
+                            <i class="fa-solid fa-circle-check me-2 text-success"></i>Approved (<?php echo count($groupedData['Approved']); ?>)
                         </button>
                     </li>
                     <li class="nav-item">
                         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rejected">
-                            <i class="fa-solid fa-circle-xmark me-1 text-danger"></i>Rejected (<?php echo count($groupedData['Rejected']); ?>)
+                            <i class="fa-solid fa-circle-xmark me-2 text-danger"></i>Rejected (<?php echo count($groupedData['Rejected']); ?>)
                         </button>
                     </li>
                 </ul>
@@ -353,19 +548,20 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                     <?php foreach (['Verification', 'Approved', 'Rejected'] as $statusTab): ?>
                     <div class="tab-pane fade <?php echo ($statusTab === 'Verification') ? 'show active' : ''; ?>" id="<?php echo strtolower($statusTab); ?>">
                         <?php if (empty($groupedData[$statusTab])): ?>
-                            <div class="text-center py-5 text-muted small bg-white rounded shadow-sm">
-                                <i class="fa-solid fa-clipboard-check fa-2x mb-2 text-muted opacity-50"></i><br>
-                                Tidak ada data absensi untuk kategori ini pada tanggal <?php echo date('d/m/Y', strtotime($selectedDate)); ?>.
+                            <div class="text-center py-5 text-muted small bg-white rounded-4 shadow-sm">
+                                <i class="fa-solid fa-clipboard-check fa-3x mb-3 text-primary opacity-30"></i><br>
+                                <span class="fw-bold fs-6">Tidak ada data absensi untuk kategori ini.</span><br>
+                                Pada tanggal <?php echo date('d M Y', strtotime($selectedDate)); ?>.
                             </div>
                         <?php else: ?>
                             <?php foreach ($groupedData[$statusTab] as $nip => $data): ?>
-                            <div class="card employee-card search-target-card" data-employee-name="<?php echo htmlspecialchars(strtolower($data['details']['nama'])); ?>" data-employee-nik="<?php echo htmlspecialchars(strtolower($data['details']['nik'])); ?>">
+                            <div class="card employee-card-3d search-target-card" data-employee-name="<?php echo htmlspecialchars(strtolower($data['details']['nama'])); ?>" data-employee-nik="<?php echo htmlspecialchars(strtolower($data['details']['nik'])); ?>">
                                 <div class="card-header bg-white py-2 border-0">
-                                    <div class="profile-info">
-                                        <img src="../uploads/<?php echo htmlspecialchars($data['details']['pas_photo'] ?: 'default.png'); ?>" class="prof-img">
-                                        <div class="lh-sm">
-                                            <div class="fw-bold text-dark small"><?php echo htmlspecialchars($data['details']['nama']); ?></div>
-                                            <div class="text-muted" style="font-size: 0.7rem;">NIK: <?php echo htmlspecialchars($data['details']['nik']); ?></div>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img src="../uploads/<?php echo htmlspecialchars($data['details']['pas_photo'] ?: 'default.png'); ?>" class="prof-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/003c9c/ffffff?Text=<?php echo strtoupper(substr($data['details']['nama'], 0, 1)); ?>';">
+                                        <div>
+                                            <div class="fw-bold text-dark fs-6" style="text-transform:capitalize;"><?php echo htmlspecialchars($data['details']['nama']); ?></div>
+                                            <small class="text-muted" style="font-size: 0.75rem;">NIK: <?php echo htmlspecialchars($data['details']['nik']); ?></small>
                                         </div>
                                     </div>
                                 </div>
@@ -373,7 +569,7 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                                     <div class="row g-3">
                                         <?php foreach (['masuk', 'pulang'] as $type): ?>
                                         <div class="col-md-6">
-                                            <div class="abs-box">
+                                            <div class="abs-box-3d">
                                                 <?php if (isset($data[$type])): 
                                                     $item = $data[$type];
                                                     $isAtOffice = false;
@@ -385,34 +581,36 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                                                         }
                                                     }
                                                 ?>
-                                                    <div class="abs-header-flex">
-                                                        <span class="small fw-bold <?php echo ($type === 'masuk') ? 'text-success' : 'text-danger'; ?>">ABSEN <?php echo strtoupper($type); ?></span>
-                                                        <div class="badge-group">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <span class="badge <?php echo ($type === 'masuk') ? 'bg-emerald-100 text-success border border-success-subtle' : 'bg-rose-100 text-danger border border-danger-subtle'; ?> fw-bold px-2 py-1" style="font-size: 0.75rem;">
+                                                            ABSEN <?php echo strtoupper($type); ?>
+                                                        </span>
+                                                        <div class="d-flex gap-1 align-items-center">
                                                             <?php if($isAtOffice): ?>
-                                                                <span class="badge bg-success status-badge"><i class="fa-solid fa-location-dot me-1"></i> DI KANTOR</span>
+                                                                <span class="badge bg-success status-badge-3d"><i class="fa-solid fa-location-dot me-1"></i> DI KANTOR</span>
                                                             <?php else: ?>
-                                                                <span class="badge bg-warning text-dark status-badge"><i class="fa-solid fa-map-pin me-1"></i> LUAR KANTOR</span>
+                                                                <span class="badge bg-warning text-dark status-badge-3d"><i class="fa-solid fa-map-pin me-1"></i> LUAR KANTOR</span>
                                                             <?php endif; ?>
-                                                            <span id="status-container-<?php echo $item['id']; ?>" style="margin-top:-2px;">
-                                                                <span class="badge status-badge <?php echo ($item['verif'] === 'Yes') ? 'bg-success' : (($item['verif'] === 'No') ? 'bg-danger' : 'bg-warning text-dark'); ?>">
-                                                                    <?php echo ($item['verif'] === 'Yes') ? 'Approved' : (($item['verif'] === 'No') ? 'Rejected' : 'Pending'); ?>
+                                                            <span id="status-container-<?php echo $item['id']; ?>">
+                                                                <span class="badge status-badge-3d <?php echo ($item['verif'] === 'Yes') ? 'bg-success' : (($item['verif'] === 'No') ? 'bg-danger' : 'bg-warning text-dark'); ?>">
+                                                                    <?php echo ($item['verif'] === 'Yes') ? 'APPROVED' : (($item['verif'] === 'No') ? 'REJECTED' : 'PENDING'); ?>
                                                                 </span>
                                                             </span>
                                                         </div>
                                                     </div>
 
-                                                    <div class="abs-content mt-0">
+                                                    <div class="d-flex gap-3 align-items-center mt-2">
                                                         <img src="../uploads/attendance/<?php echo htmlspecialchars($item['image']); ?>" class="abs-photo" onclick="previewImage(this.src)">
-                                                        <div class="abs-details">
+                                                        <div class="flex-grow-1 min-w-0" style="font-size: 0.85rem;">
                                                             <div class="fw-bold text-primary mb-1 d-flex align-items-center justify-content-between">
                                                                 <span><i class="fa-solid fa-clock me-1"></i><?php echo date('H:i:s', strtotime($item['tgl_absen'])); ?></span>
                                                                 <?php if ($allow_edit_jam): ?>
-                                                                <button class="btn-edit-time" title="Edit Jam Absen Ini" onclick="openEditTimeModal(<?php echo $item['id']; ?>, '<?php echo date('H:i:s', strtotime($item['tgl_absen'])); ?>', '<?php echo htmlspecialchars(addslashes($data['details']['nama'])); ?>', '<?php echo strtoupper($type); ?>')">
+                                                                <button class="btn btn-sm btn-outline-primary py-0 px-2 fw-semibold" style="font-size: 0.7rem;" title="Edit Jam Absen Ini" onclick="openEditTimeModal(<?php echo $item['id']; ?>, '<?php echo date('H:i:s', strtotime($item['tgl_absen'])); ?>', '<?php echo htmlspecialchars(addslashes($data['details']['nama'])); ?>', '<?php echo strtoupper($type); ?>')">
                                                                     <i class="fa-solid fa-pen-to-square me-1"></i>Edit Jam
                                                                 </button>
                                                                 <?php endif; ?>
                                                             </div>
-                                                            <div class="text-muted" style="white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                                            <div class="text-muted" style="white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-size: 0.8rem;">
                                                                 <i class="fa-solid fa-map-marker-alt me-1 text-danger"></i>
                                                                 <?php if (!empty($item['lokasi_koordinat']) && $item['lokasi_koordinat'] !== "Koordinat tidak valid/tersedia"): ?>
                                                                     <a href="https://www.google.com/maps?q=<?php echo $item['lokasi_koordinat']; ?>" target="_blank" class="text-decoration-none text-muted" title="Klik untuk lihat di Maps">
@@ -424,9 +622,10 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="btn-group btn-group-sm w-100 mt-3 shadow-sm">
-                                                        <button class="btn btn-success" onclick="validateAttendance(<?php echo $item['id']; ?>, 'Yes', this)"><i class="fa-solid fa-check me-1"></i> Approve</button>
-                                                        <button class="btn btn-danger" onclick="validateAttendance(<?php echo $item['id']; ?>, 'No', this)"><i class="fa-solid fa-xmark me-1"></i> Reject</button>
+
+                                                    <div class="d-flex gap-2 w-100 mt-3">
+                                                        <button class="btn btn-approve-3d flex-fill" onclick="validateAttendance(<?php echo $item['id']; ?>, 'Yes', this)"><i class="fa-solid fa-check me-1"></i> Approve</button>
+                                                        <button class="btn btn-reject-3d flex-fill" onclick="validateAttendance(<?php echo $item['id']; ?>, 'No', this)"><i class="fa-solid fa-xmark me-1"></i> Reject</button>
                                                     </div>
                                                 <?php else: ?>
                                                     <div class="text-center py-4 text-muted small fst-italic opacity-50">Data absen <?php echo $type; ?> belum tersedia</div>
@@ -451,7 +650,7 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 bg-transparent shadow-none">
                 <div class="modal-body p-0 d-flex justify-content-center">
-                    <img src="" id="modalImg" class="modal-img-preview shadow-lg">
+                    <img src="" id="modalImg" style="max-height: 80vh; width: auto; max-width: 90vw; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
                 </div>
             </div>
         </div>
@@ -460,8 +659,8 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
     <!-- Edit Time Modal -->
     <div class="modal fade" id="editTimeModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header py-2 bg-light">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header py-3 bg-light rounded-top-4">
                     <h6 class="modal-title fw-bold text-dark mb-0"><i class="fa-solid fa-clock me-2 text-primary"></i>Edit Jam Absen</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -473,9 +672,9 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                         <input type="time" step="1" class="form-control form-control-lg fw-bold text-center text-primary" id="editTimeInput">
                     </div>
                 </div>
-                <div class="modal-footer py-2 bg-light">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary btn-sm fw-bold" onclick="saveEditedTime()"><i class="fa-solid fa-floppy-disk me-1"></i>Simpan</button>
+                <div class="modal-footer py-2 bg-light rounded-bottom-4">
+                    <button type="button" class="btn btn-secondary btn-sm rounded-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary btn-sm fw-bold rounded-3" onclick="saveEditedTime()"><i class="fa-solid fa-floppy-disk me-1"></i>Simpan</button>
                 </div>
             </div>
         </div>
@@ -541,7 +740,6 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
 
     function validateAttendance(id, status, button) {
         const container = $(`#status-container-${id}`);
-        const group = $(button).parent();
         
         $('#fullScreenLoader').removeClass('d-none');
         
@@ -556,18 +754,18 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                     
                     if (res.success) {
                         const badgeClass = status === 'Yes' ? 'bg-success' : 'bg-danger';
-                        const label = status === 'Yes' ? 'Approved' : 'Rejected';
-                        container.html(`<span class="badge status-badge ${badgeClass}">${label}</span>`);
+                        const label = status === 'Yes' ? 'APPROVED' : 'REJECTED';
+                        container.html(`<span class="badge status-badge-3d ${badgeClass}">${label}</span>`);
                     } else {
                         alert(res.message);
-                        container.html('<span class="badge status-badge bg-warning text-dark">Pending</span>');
+                        container.html('<span class="badge status-badge-3d bg-warning text-dark">PENDING</span>');
                     }
                 }, 500);
             },
             error: function() {
                 $('#fullScreenLoader').addClass('d-none');
                 alert('Terjadi kesalahan saat memproses data.');
-                container.html('<span class="badge status-badge bg-warning text-dark">Pending</span>');
+                container.html('<span class="badge status-badge-3d bg-warning text-dark">PENDING</span>');
             }
         });
     }
