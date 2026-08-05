@@ -50,7 +50,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
     <title>Presensi Online - Grav-Tech</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a97d5963a4.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../assets/css/main-styles.css">
@@ -59,14 +59,14 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/presensi-styles.css">
     <style>
-        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
-        .loading-spinner { width: 3rem; height: 3rem; border-width: 0.25em; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; backdrop-filter: blur(8px); }
+        .loading-spinner { width: 3.5rem; height: 3.5rem; border-width: 0.25em; color: #3b82f6; }
     </style>
 </head>
 <body>
     <?php include 'nav/sidebar.php'; ?>
     <div id="fullScreenLoader" class="loading-overlay d-none">
-        <div class="spinner-border text-light loading-spinner mb-3" role="status"><span class="visually-hidden">Loading...</span></div>
+        <div class="spinner-border loading-spinner mb-3" role="status"><span class="visually-hidden">Loading...</span></div>
         <h5 class="fw-bold">Sedang Mengirim Data...</h5>
         <p class="small text-white-50">Mohon jangan tutup atau refresh halaman ini.</p>
     </div>
@@ -74,10 +74,10 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
         <div class="presensi-header-section">
             <div class="container">
                 <div class="d-flex justify-content-between align-items-center mb-3 px-2 presensi-top-bar">
-                    <h5 class="text-light mb-0 page-title-presensi">PRESENSI ONLINE</h5>
+                    <h5 class="text-light mb-0 page-title-presensi"><i class="fas fa-fingerprint me-2"></i>PRESENSI ONLINE</h5>
                     <div class="text-light text-end time-date-display">
                         <span id="realTimeClockDisplay" class="d-block fw-bold"><?php echo date('H:i:s'); ?></span>
-                        <small><?php echo date('d F Y'); ?></small>
+                        <small class="d-block mt-1 opacity-75"><?php echo date('d F Y'); ?></small>
                     </div>
                 </div>
                 <div class="employee-info-presensi card card-body shadow-sm mx-1">
@@ -85,7 +85,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                         <img src="../uploads/<?php echo htmlspecialchars($photo); ?>" alt="Foto Profil" class="employee-photo-presensi me-3" onerror="this.onerror=null; this.src='https://via.placeholder.com/60/003c9c/ffffff?Text=<?php echo strtoupper(substr($nama, 0, 1)); ?>';">
                         <div>
                             <h6 class="mb-0 employee-name-presensi"><?php echo htmlspecialchars($nama); ?></h6>
-                            <small class="text-light opacity-75 employee-details-presensi"><?php echo htmlspecialchars($jabatan); ?> - NIK: <?php echo htmlspecialchars($nik); ?></small>
+                            <small class="employee-details-presensi"><?php echo htmlspecialchars($jabatan); ?> &bull; NIK: <?php echo htmlspecialchars($nik); ?></small>
                         </div>
                     </div>
                 </div>
@@ -98,12 +98,12 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                         <div class="card presensi-action-card shadow-lg">
                             <div class="card-body p-lg-4">
                                 <div class="text-center mb-3">
-                                    <h5 class="section-title-presensi-card mb-1">JADWAL ANDA HARI INI</h5>
-                                    <p class="text-muted small mb-0 shift-name-presensi-card">
-                                        (Shift: <?php
+                                    <h5 class="section-title-presensi-card mb-2">JADWAL ANDA HARI INI</h5>
+                                    <p class="shift-name-presensi-card mb-2">
+                                        Shift: <?php
                                                 $shiftNames = ['P' => 'Pagi', 'M' => 'Tengah', 'N' => 'Siang', 'S' => 'Siang', 'T' => 'Harco (HC)'];
                                                 echo $shiftNames[$final_shifting] ?? $final_shifting;
-                                                ?>)
+                                                ?>
                                     </p>
                                     <?php
                                     $shiftSchedule = '';
@@ -120,14 +120,14 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                         }
                                     }
                                     ?>
-                                    <p class="display-5 fw-bolder text-primary my-2 schedule-display-presensi-card"><?php echo $shiftSchedule; ?></p>
+                                    <p class="schedule-display-presensi-card my-2"><?php echo $shiftSchedule; ?></p>
                                 </div>
                                 <hr class="my-3 presensi-divider">
                                 <div class="status-area-presensi mb-3">
-                                    <div id="locationStatus" class="d-flex align-items-center justify-content-center p-2 rounded location-status-presensi-card bg-light-subtle border">
+                                    <div id="locationStatus" class="d-flex align-items-center justify-content-center location-status-presensi-card">
                                         <i class="fas fa-spinner fa-spin me-2"></i> Mengambil lokasi...
                                     </div>
-                                    <div id="locationWarning" class="alert alert-warning d-none text-center mt-2 py-2 small" style="font-size: 0.8rem;">
+                                    <div id="locationWarning" class="alert alert-warning d-none text-center mt-2 py-2 small">
                                         <i class="fas fa-map-marker-alt me-2"></i>
                                         Anda di luar lokasi kantor, jika lokasi tidak sesuai, pastikan GPS handphone aktif dan browser tidak memblokir lokasi pada situs ini.
                                     </div>
@@ -139,7 +139,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                 <div class="button-area-presensi mt-3">
                                     <button class="btn btn-check-in-presensi w-100 mb-2 py-3" id="btnCheckIn" disabled><i class="fas fa-hand-point-up fa-fw me-2"></i>MASUK</button>
                                     <button class="btn btn-check-out-presensi w-100 mb-2 py-3" id="btnCheckOut" disabled><i class="fas fa-door-open fa-fw me-2"></i>PULANG</button>
-                                    <a href="riwayat-absen.php" class="btn btn-warning w-100 py-3"><strong><i class="fas fa-calendar-check fa-fw me-2"></i>CEK ABSEN KAMU DISINI</strong></a>
+                                    <a href="riwayat-absen.php" class="btn btn-riwayat-absen w-100 py-3"><strong><i class="fas fa-calendar-check fa-fw me-2"></i>CEK ABSEN KAMU DISINI</strong></a>
                                 </div>
                             </div>
                         </div>
@@ -153,17 +153,17 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="attendanceTypeTitle">Ambil Foto</h5>
+                        <h5 class="modal-title" id="attendanceTypeTitle"><i class="fas fa-camera me-2 text-primary"></i>Ambil Foto</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-0 position-relative">
                         <video id="cameraPreview" autoplay playsinline class="camera-video-presensi"></video>
                         <canvas id="photoCanvas" class="d-none photo-canvas-presensi"></canvas>
-                        <button id="captureBtn" class="capture-btn-presensi"><i class="fas fa-camera"></i></button>
+                        <button id="captureBtn" class="capture-btn-presensi" title="Ambil Foto"><i class="fas fa-camera"></i></button>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-primary" id="uploadPhotoBtn" disabled><i class="fas fa-upload me-2"></i>Upload & Kirim</button>
+                        <button type="button" class="btn btn-primary fw-bold" id="uploadPhotoBtn" disabled><i class="fas fa-cloud-arrow-up me-2"></i>Upload & Kirim</button>
                     </div>
                 </div>
             </div>
@@ -203,9 +203,9 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
 
             function getUserLocation() {
                 const locationStatusEl = $('#locationStatus');
-                locationStatusEl.html('<i class="fas fa-spinner fa-spin me-1"></i> Mengambil lokasi...');
+                locationStatusEl.html('<i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi...');
                 if (!navigator.geolocation) {
-                    locationStatusEl.html('<i class="fas fa-times-circle text-danger me-1"></i> Geolocation tidak didukung.');
+                    locationStatusEl.html('<i class="fas fa-times-circle text-danger me-2"></i> Geolocation tidak didukung.');
                     checkAbsenConditions();
                     return;
                 }
@@ -225,7 +225,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                             })
                             .catch(error => {
                                 userLocationAddress = `Lat: ${userLat.toFixed(4)}, Lng: ${userLng.toFixed(4)}`;
-                                locationStatusEl.html(`<i class="fas fa-map-marker-alt text-info me-1"></i> ${userLocationAddress} (Alamat gagal diambil)`);
+                                locationStatusEl.html(`<i class="fas fa-map-marker-alt text-info me-2"></i> ${userLocationAddress} (Alamat gagal diambil)`);
                             });
                         checkAbsenConditions();
                     },
@@ -237,7 +237,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                             case error.TIMEOUT: errorMsg += "Timeout permintaan lokasi."; break;
                             default: errorMsg += "Error tidak diketahui."; break;
                         }
-                        locationStatusEl.html(`<i class="fas fa-times-circle text-danger me-1"></i> ${errorMsg}`);
+                        locationStatusEl.html(`<i class="fas fa-times-circle text-danger me-2"></i> ${errorMsg}`);
                         checkAbsenConditions();
                     }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
                 );
@@ -331,7 +331,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
             $('#btnCheckIn, #btnCheckOut').click(function() {
                 if ($(this).prop('disabled')) return;
                 attendanceType = $(this).attr('id') === 'btnCheckIn' ? 'masuk' : 'pulang';
-                $('#attendanceTypeTitle').text('Ambil Foto Absen ' + (attendanceType === 'masuk' ? 'Masuk' : 'Pulang'));
+                $('#attendanceTypeTitle').html('<i class="fas fa-camera me-2 text-primary"></i>Ambil Foto Absen ' + (attendanceType === 'masuk' ? 'Masuk' : 'Pulang'));
                 $('#cameraModal').modal('show');
             });
 
@@ -340,7 +340,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                 stopCamera();
                 $('#cameraPreview').removeClass('d-none');
                 $('#photoCanvas').addClass('d-none');
-                $('#uploadPhotoBtn').prop('disabled', true).html('<i class="fas fa-upload me-2"></i>Upload & Kirim');
+                $('#uploadPhotoBtn').prop('disabled', true).html('<i class="fas fa-cloud-arrow-up me-2"></i>Upload & Kirim');
             });
 
             function startCamera() {
