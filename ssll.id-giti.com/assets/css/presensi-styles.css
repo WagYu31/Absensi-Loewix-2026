@@ -20,6 +20,7 @@
     min-height: 100dvh;
     perspective: 1200px;
     overflow-x: hidden;
+    padding-bottom: 110px !important;
 }
 
 /* Presensi Header Section */
@@ -98,13 +99,6 @@
 }
 
 /* Presensi Main Action Card - 3D Glassmorphism */
-.presensi-main-content {
-    position: relative;
-    z-index: 10;
-    padding-top: 1rem;
-    padding-bottom: 90px;
-}
-
 .presensi-action-card.card {
     background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(20px) saturate(180%);
@@ -113,111 +107,56 @@
     border: 1px solid rgba(255, 255, 255, 0.9);
     box-shadow: 
         0 30px 60px -12px rgba(15, 23, 42, 0.15),
-        0 18px 36px -18px rgba(15, 23, 42, 0.12),
-        inset 0 1px 1px rgba(255, 255, 255, 0.9);
-    transform-style: preserve-3d;
-    transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+        0 15px 30px -10px rgba(15, 23, 42, 0.1);
+    position: relative;
+    z-index: 10;
+    margin-bottom: 2rem;
+    overflow: hidden;
 }
 
-.presensi-action-card .card-body {
-    padding: 2.1rem 1.65rem;
-}
-
-@media (min-width: 768px) {
-    .presensi-action-card .card-body {
-        padding: 2.5rem 2.25rem;
-    }
-}
-
-.presensi-action-card .section-title-presensi-card {
-    color: #334155;
+.presensi-card-title {
     font-weight: 800;
+    letter-spacing: 0.5px;
     font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    transform: translateZ(20px);
+    color: #334155;
 }
 
-.presensi-action-card .schedule-display-presensi-card {
-    font-size: 2.75rem;
-    font-weight: 900;
-    line-height: 1.1;
-    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -1.5px;
-    margin: 0.4rem 0;
-    transform: translateZ(30px);
-}
-
-@media (max-width: 576px) {
-    .presensi-action-card .schedule-display-presensi-card {
-        font-size: 2.25rem;
-    }
-}
-
-.presensi-action-card .shift-name-presensi-card {
-    font-size: 0.85rem;
+.shift-badge-presensi {
+    background: rgba(37, 99, 235, 0.1);
     color: #2563eb;
-    font-weight: 700;
-    background: rgba(37, 99, 235, 0.08);
+    font-weight: 800;
     padding: 6px 16px;
     border-radius: 20px;
+    font-size: 0.85rem;
     display: inline-block;
-    border: 1px solid rgba(37, 99, 235, 0.15);
-    transform: translateZ(20px);
+    border: 1px solid rgba(37, 99, 235, 0.2);
 }
 
-.presensi-divider {
-    border-color: #e2e8f0;
-    margin-top: 1.35rem;
-    margin-bottom: 1.35rem;
+.shift-time-presensi {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #1d4ed8;
+    letter-spacing: -1px;
+    text-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
 }
 
-/* Location Badge Status */
-.status-area-presensi .location-status-presensi-card {
-    font-size: 0.875rem;
-    font-weight: 600;
-    padding: 0.85rem 1.1rem !important;
-    background-color: rgba(248, 250, 252, 0.95);
-    border: 1.5px solid #cbd5e1;
-    border-radius: 16px;
-    min-height: 48px;
-    color: #1e293b;
+.location-box-presensi {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 1rem 1.25rem;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
-    transform: translateZ(25px);
 }
 
-.status-area-presensi .location-status-presensi-card i {
-    font-size: 1.05rem;
-}
-
-.status-area-presensi .late-warning-presensi-card {
-    font-weight: 700;
-    font-size: 0.875rem;
-    padding: 0.75rem 1.1rem !important;
-    border-radius: 14px;
-    transform: translateZ(25px);
-}
-
-/* Tactile 3D Action Buttons */
-.button-area-presensi {
-    transform-style: preserve-3d;
-}
-
-.button-area-presensi .btn {
-    font-size: 0.95rem;
-    font-weight: 800;
-    height: 54px;
+.btn-check-in-presensi,
+.btn-check-out-presensi,
+.btn-riwayat-absen {
     border-radius: var(--btn-radius);
-    letter-spacing: 0.4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s ease-out;
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
     border: none;
-    transform: translateZ(30px);
-    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .btn-check-in-presensi {
@@ -229,7 +168,7 @@
 }
 
 .btn-check-in-presensi:hover:not(:disabled), .btn-check-in-presensi:focus:not(:disabled) {
-    transform: translateZ(35px) translateY(-2px);
+    transform: translateY(-2px);
     box-shadow: 
         0 12px 25px rgba(16, 185, 129, 0.45),
         0 6px 0 #065f46;
@@ -237,7 +176,7 @@
 }
 
 .btn-check-in-presensi:active:not(:disabled) {
-    transform: translateZ(20px) translateY(2px);
+    transform: translateY(2px);
     box-shadow: 
         0 4px 10px rgba(16, 185, 129, 0.3),
         0 1px 0 #065f46;
@@ -245,11 +184,9 @@
 
 .btn-check-in-presensi:disabled {
     background: #cbd5e1;
-    border: none;
     color: #64748b;
     box-shadow: 0 4px 0 #94a3b8;
     opacity: 0.7;
-    transform: translateZ(15px);
 }
 
 .btn-check-out-presensi {
@@ -261,7 +198,7 @@
 }
 
 .btn-check-out-presensi:hover:not(:disabled), .btn-check-out-presensi:focus:not(:disabled) {
-    transform: translateZ(35px) translateY(-2px);
+    transform: translateY(-2px);
     box-shadow: 
         0 12px 25px rgba(239, 68, 68, 0.45),
         0 6px 0 #991b1b;
@@ -269,7 +206,7 @@
 }
 
 .btn-check-out-presensi:active:not(:disabled) {
-    transform: translateZ(20px) translateY(2px);
+    transform: translateY(2px);
     box-shadow: 
         0 4px 10px rgba(239, 68, 68, 0.3),
         0 1px 0 #991b1b;
@@ -277,147 +214,40 @@
 
 .btn-check-out-presensi:disabled {
     background: #cbd5e1;
-    border: none;
     color: #64748b;
     box-shadow: 0 4px 0 #94a3b8;
     opacity: 0.7;
-    transform: translateZ(15px);
 }
 
 .btn-riwayat-absen {
     background: var(--warning-3d);
-    color: #ffffff !important;
+    color: #ffffff;
     box-shadow: 
         0 8px 20px rgba(245, 158, 11, 0.35),
         0 4px 0 #b45309;
 }
 
 .btn-riwayat-absen:hover, .btn-riwayat-absen:focus {
-    transform: translateZ(35px) translateY(-2px);
+    transform: translateY(-2px);
     box-shadow: 
         0 12px 25px rgba(245, 158, 11, 0.45),
         0 6px 0 #92400e;
-    color: #ffffff !important;
+    color: #ffffff;
 }
 
 .btn-riwayat-absen:active {
-    transform: translateZ(20px) translateY(2px);
+    transform: translateY(2px);
     box-shadow: 
         0 4px 10px rgba(245, 158, 11, 0.3),
         0 1px 0 #92400e;
 }
 
-/* Camera Modal Premium iOS/Android UI */
-.camera-modal-presensi .modal-dialog {
-    max-width: 440px;
-    margin: 1rem auto;
-}
-
-.camera-modal-presensi .modal-content {
-    border-radius: 28px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    overflow: hidden;
-    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
-    background: #0f172a;
-}
-
-.camera-modal-presensi .modal-header {
-    background: #0f172a;
-    color: white;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 1.1rem 1.35rem;
-}
-
-.camera-modal-presensi .modal-header .btn-close {
-    filter: invert(1);
-    opacity: 0.85;
-}
-
-.camera-modal-presensi .modal-title {
-    font-weight: 800;
-    font-size: 1.1rem;
-    letter-spacing: -0.2px;
-}
-
-.camera-video-presensi,
-.photo-canvas-presensi {
-    width: 100%;
-    height: auto;
-    max-height: 55vh;
-    object-fit: cover;
-    background-color: #000;
-    display: block;
-}
-
-.capture-btn-presensi {
-    position: absolute;
-    bottom: 22px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 68px;
-    height: 68px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 4px solid #2563eb;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    box-shadow: 0 0 25px rgba(37, 99, 235, 0.6), 0 6px 14px rgba(0,0,0,0.4);
-    transition: all 0.15s ease-out;
-    cursor: pointer;
-}
-
-.capture-btn-presensi:active {
-    transform: translateX(-50%) scale(0.9);
-}
-
-.capture-btn-presensi i {
-    font-size: 1.75rem;
-    color: #2563eb;
-}
-
-.camera-modal-presensi .modal-footer {
-    background: #1e293b;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 1.1rem 1.35rem;
-    display: flex;
-    gap: 12px;
-}
-
-.camera-modal-presensi .modal-footer .btn {
-    flex: 1;
-    height: 50px;
-    border-radius: 14px;
-    font-weight: 800;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.camera-modal-presensi .modal-footer .btn-outline-secondary {
-    color: #cbd5e1;
-    border-color: #475569;
-}
-
-.camera-modal-presensi .modal-footer .btn-outline-secondary:hover {
-    background: #334155;
-    color: #ffffff;
-}
-
-.camera-modal-presensi .modal-footer .btn-primary {
-    background: var(--primary-3d);
-    border: none;
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
-}
-
-/* Footer Copyright */
+/* Footer Copyright Safe-Area Fix */
 .footer {
     text-align: center;
     margin-top: 2rem;
     font-size: 0.8rem;
     color: #64748b;
     font-weight: 600;
+    padding-bottom: 90px !important;
 }
