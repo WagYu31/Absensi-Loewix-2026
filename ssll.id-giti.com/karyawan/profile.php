@@ -160,6 +160,25 @@ $asset_version = time();
             color: #1d4ed8 !important;
         }
 
+        .btn-3d-danger {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #b91c1c 100%) !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            border-radius: 14px !important;
+            padding: 10px 20px !important;
+            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35), 0 3px 0 #991b1b !important;
+            transition: all 0.15s ease-out !important;
+            text-decoration: none !important;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-3d-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(220, 38, 38, 0.45), 0 4px 0 #7f1d1d !important;
+            color: #ffffff !important;
+        }
+
         /* Table Styling */
         .profile-table-3d {
             margin-bottom: 0 !important;
@@ -241,9 +260,14 @@ $asset_version = time();
 
     <div class="main-content-wrapper p-0">
         <div class="header-banner page-specific-header no-print">
-            <div class="container-fluid px-lg-4">
-                <h1><i class="fa-solid fa-id-card me-2 text-primary-light"></i>Profil Saya</h1>
-                <p class="small mb-0 opacity-80">Lihat dan kelola informasi pribadi serta kepegawaian Anda.</p>
+            <div class="container-fluid px-lg-4 d-flex align-items-center justify-content-between">
+                <div>
+                    <h1><i class="fa-solid fa-id-card me-2 text-primary-light"></i>Profil Saya</h1>
+                    <p class="small mb-0 opacity-80">Lihat dan kelola informasi pribadi serta kepegawaian Anda.</p>
+                </div>
+                <a href="../logout.php" class="btn btn-3d-danger btn-sm rounded-pill px-3 py-1.5 fs-7 text-white shadow-sm" onclick="return confirm('Apakah Anda yakin ingin keluar (Log Out)?');">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>Log Out
+                </a>
             </div>
         </div>
 
@@ -281,15 +305,18 @@ $asset_version = time();
                         <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-3 py-1"><i class="fa-solid fa-circle-check me-1"></i><?php echo htmlspecialchars($statusKaryawan); ?></span>
                     </div>
 
-                    <div class="d-flex align-items-center justify-content-center gap-3 flex-wrap mt-3">
+                    <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap mt-3">
                         <button type="button" class="btn btn-3d-primary" onclick="triggerPWAInstall()">
-                            <i class="fa-solid fa-mobile-screen-button me-2"></i>Install Aplikasi HP
+                            <i class="fa-solid fa-mobile-screen-button me-1.5"></i>Install HP
                         </button>
                         <button type="button" class="btn btn-3d-outline" onclick="changePasswordPrompt('<?php echo htmlspecialchars($nip); ?>')">
-                            <i class="fas fa-key me-2"></i>Ganti Password
+                            <i class="fas fa-key me-1.5"></i>Password
                         </button>
                         <a href="edit-profile.php" class="btn btn-3d-outline">
-                            <i class="fas fa-user-edit me-2"></i>Edit Profil
+                            <i class="fas fa-user-edit me-1.5"></i>Edit Profil
+                        </a>
+                        <a href="../logout.php" class="btn btn-3d-danger" onclick="return confirm('Apakah Anda yakin ingin keluar (Log Out) dari akun ini?');">
+                            <i class="fa-solid fa-arrow-right-from-bracket me-1.5"></i>Log Out
                         </a>
                     </div>
                 </div>
