@@ -298,6 +298,26 @@ $asset_version = time();
 
         <div class="dashboard-content px-0">
             <div class="container-fluid px-lg-4">
+
+                <?php if (isset($_GET['msg']) && $_GET['msg'] === 'added'): ?>
+                <div class="alert alert-success d-flex align-items-center justify-content-between mb-4 shadow-sm border-0 rounded-4" style="background: #d1fae5; border-left: 5px solid #10b981 !important; padding: 1rem 1.25rem;" role="alert">
+                    <div class="fw-bold text-emerald-900 fs-6">
+                        <i class="fa-solid fa-circle-check me-2 text-success fs-5"></i>
+                        Data biaya pengganti berhasil ditambahkan!
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php endif; ?>
+
+                <?php if (isset($_GET['msg']) && $_GET['msg'] === 'deleted'): ?>
+                <div class="alert alert-warning d-flex align-items-center justify-content-between mb-4 shadow-sm border-0 rounded-4" style="background: #fef3c7; border-left: 5px solid #f59e0b !important; padding: 1rem 1.25rem;" role="alert">
+                    <div class="fw-bold text-amber-900 fs-6">
+                        <i class="fa-solid fa-trash-can me-2 text-warning fs-5"></i>
+                        Data biaya pengganti telah berhasil dihapus.
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php endif; ?>
                 
                 <!-- Accordion Input Biaya Pengganti -->
                 <div class="accordion mb-4 no-print" id="accordionTunjangan">
