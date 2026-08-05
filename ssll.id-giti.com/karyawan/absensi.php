@@ -564,6 +564,7 @@ $asset_version = time();
                     <button type="button" class="btn-close btn-close-white opacity-75" id="closeCameraXBtn" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0 position-relative" style="height: 320px; max-height: 320px; overflow: hidden; background: #0f172a;">
+                    <video id="cameraVideo" autoplay playsinline style="width: 100%; height: 320px; object-fit: cover; object-position: center; display: none;"></video>
                     <div id="cameraPlaceholder" style="width: 100%; height: 320px; background: #0f172a; color: #94a3b8; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;">
                         <div class="placeholder-icon-wrapper mb-3" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(37, 99, 235, 0.1); display: flex; align-items: center; justify-content: center; border: 2px dashed #2563eb;">
                             <i class="fas fa-camera text-primary" style="font-size: 2rem;"></i>
@@ -804,6 +805,19 @@ $asset_version = time();
             return "PC/Browser";
         }
 
+        let isLiveWebcam = false;
+        let webcamStream = null;
+
+        function stopWebcamStream() {
+            if (webcamStream) {
+                webcamStream.getTracks().forEach(track => track.stop());
+                webcamStream = null;
+            }
+            const videoEl = document.getElementById('cameraVideo');
+            if (videoEl) { videoEl.srcObject = null; }
+            isLiveWebcam = false;
+        }
+
         $('#btnCheckIn, #btnCheckOut').click(function() {
             if ($(this).prop('disabled')) return;
             attendanceType = $(this).attr('id') === 'btnCheckIn' ? 'masuk' : 'pulang';
@@ -814,19 +828,72 @@ $asset_version = time();
         $('#cameraModal').on('shown.bs.modal', function() { 
             $('#photoPreviewImg').attr('style', 'display: none !important; width: 100% !important; height: 320px !important; object-fit: cover !important;');
             $('#photoPreviewImg').attr('src', '');
-            $('#cameraPlaceholder').attr('style', 'display: flex !important; width: 100%; height: 320px; background: #0f172a; color: #94a3b8; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;');
-            $('#captureBtnLabel').attr('style', 'display: flex !important;');
-            $('#retakeBtn').attr('style', 'display: none !important;');
             $('#uploadPhotoBtn').prop('disabled', true);
+            $('#retakeBtn').attr('style', 'display: none !important;');
+            $('#nativeCameraInput').val('');
+
+            // Attempt WebRTC live stream first (for desktop & supported browsers)
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' } })
+                .then(function(s) {
+                    webcamStream = s;
+                    isLiveWebcam = true;
+                    const videoEl = document.getElementById('cameraVideo');
+                    videoEl.srcObject = s;
+                    videoEl.play();
+                    $('#cameraVideo').attr('style', 'display: block !important; width: 100% !important; height: 320px !important; object-fit: cover !important;');
+                    $('#cameraPlaceholder').attr('style', 'display: none !important;');
+                    $('#captureBtnLabel').attr('style', 'display: flex !important;');
+                })
+                .catch(function(err) {
+                    // Fallback to native camera upload if getUserMedia fails
+                    stopWebcamStream();
+                    $('#cameraVideo').attr('style', 'display: none !important;');
+                    $('#cameraPlaceholder').attr('style', 'display: flex !important; width: 100%; height: 320px; background: #0f172a; color: #94a3b8; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;');
+                    $('#captureBtnLabel').attr('style', 'display: flex !important;');
+                });
+            } else {
+                stopWebcamStream();
+                $('#cameraVideo').attr('style', 'display: none !important;');
+                $('#cameraPlaceholder').attr('style', 'display: flex !important; width: 100%; height: 320px; background: #0f172a; color: #94a3b8; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;');
+                $('#captureBtnLabel').attr('style', 'display: flex !important;');
+            }
         });
 
         $('#cameraModal').on('hidden.bs.modal', function() {
+            stopWebcamStream();
+            $('#cameraVideo').attr('style', 'display: none !important;');
             $('#photoPreviewImg').attr('style', 'display: none !important; width: 100% !important; height: 320px !important; object-fit: cover !important;');
             $('#photoPreviewImg').attr('src', '');
             $('#cameraPlaceholder').attr('style', 'display: flex !important; width: 100%; height: 320px; background: #0f172a; color: #94a3b8; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;');
             $('#captureBtnLabel').attr('style', 'display: flex !important;');
             $('#retakeBtn').attr('style', 'display: none !important;');
             $('#uploadPhotoBtn').prop('disabled', true).html('<i class="fas fa-cloud-arrow-up me-1.5"></i>Upload & Kirim');
+        });
+
+        $('#captureBtnLabel').click(function(e) {
+            if (isLiveWebcam && webcamStream) {
+                e.preventDefault(); // Stop file input from opening when live stream is active
+                const videoEl = document.getElementById('cameraVideo');
+                const canvas = document.getElementById('photoCanvas');
+                const ctx = canvas.getContext('2d');
+                let w = videoEl.videoWidth || 640;
+                let h = videoEl.videoHeight || 480;
+                canvas.width = w;
+                canvas.height = h;
+                ctx.drawImage(videoEl, 0, 0, w, h);
+                
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                const photoImg = document.getElementById('photoPreviewImg');
+                photoImg.src = dataUrl;
+                
+                stopWebcamStream();
+                $('#cameraVideo').attr('style', 'display: none !important;');
+                $('#photoPreviewImg').attr('style', 'display: block !important; width: 100% !important; height: 320px !important; object-fit: cover !important;');
+                $('#captureBtnLabel').attr('style', 'display: none !important;');
+                $('#retakeBtn').attr('style', 'display: block !important;');
+                $('#uploadPhotoBtn').prop('disabled', false);
+            }
         });
 
         $('#nativeCameraInput').change(function(e) {
@@ -861,6 +928,8 @@ $asset_version = time();
                         const photoImg = document.getElementById('photoPreviewImg');
                         photoImg.src = compressedDataUrl;
                         
+                        stopWebcamStream();
+                        $('#cameraVideo').attr('style', 'display: none !important;');
                         $('#photoPreviewImg').attr('style', 'display: block !important; width: 100% !important; height: 320px !important; object-fit: cover !important;');
                         $('#cameraPlaceholder').attr('style', 'display: none !important;');
                         $('#captureBtnLabel').attr('style', 'display: none !important;');
@@ -874,13 +943,38 @@ $asset_version = time();
         });
 
         $('#retakeBtn').click(function() {
+            stopWebcamStream();
             $('#nativeCameraInput').val('');
             $('#photoPreviewImg').attr('style', 'display: none !important; width: 100% !important; height: 320px !important; object-fit: cover !important;');
             $('#photoPreviewImg').attr('src', '');
-            $('#cameraPlaceholder').attr('style', 'display: flex !important; width: 100%; height: 320px; background: #0f172a; color: #94a3b8; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;');
-            $('#captureBtnLabel').attr('style', 'display: flex !important;');
-            $('#retakeBtn').attr('style', 'display: none !important;');
             $('#uploadPhotoBtn').prop('disabled', true);
+            
+            // Re-trigger webcam stream if supported
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' } })
+                .then(function(s) {
+                    webcamStream = s;
+                    isLiveWebcam = true;
+                    const videoEl = document.getElementById('cameraVideo');
+                    videoEl.srcObject = s;
+                    videoEl.play();
+                    $('#cameraVideo').attr('style', 'display: block !important; width: 100% !important; height: 320px !important; object-fit: cover !important;');
+                    $('#cameraPlaceholder').attr('style', 'display: none !important;');
+                    $('#captureBtnLabel').attr('style', 'display: flex !important;');
+                    $('#retakeBtn').attr('style', 'display: none !important;');
+                })
+                .catch(function(err) {
+                    $('#cameraVideo').attr('style', 'display: none !important;');
+                    $('#cameraPlaceholder').attr('style', 'display: flex !important; width: 100%; height: 320px; background: #0f172a; color: #94a3b8; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;');
+                    $('#captureBtnLabel').attr('style', 'display: flex !important;');
+                    $('#retakeBtn').attr('style', 'display: none !important;');
+                });
+            } else {
+                $('#cameraVideo').attr('style', 'display: none !important;');
+                $('#cameraPlaceholder').attr('style', 'display: flex !important; width: 100%; height: 320px; background: #0f172a; color: #94a3b8; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box;');
+                $('#captureBtnLabel').attr('style', 'display: flex !important;');
+                $('#retakeBtn').attr('style', 'display: none !important;');
+            }
         });
 
         $('#uploadPhotoBtn').click(function() {
