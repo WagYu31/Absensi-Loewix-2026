@@ -252,8 +252,8 @@ $asset_version = time();
         }
 
         /* 3D Working Days Picker Buttons */
-        .date-wrapper { display: flex; flex-direction: column; gap: 10px; }
-        .date-row { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding: 2px 0; }
+        .date-wrapper { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+        .date-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; padding: 2px 0; }
         .date-row::-webkit-scrollbar { display: none; }
         
         .date-btn {
