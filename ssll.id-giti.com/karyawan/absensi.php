@@ -41,24 +41,275 @@ if ($res_shift_req && $res_shift_req->num_rows > 0) {
 }
 
 $current_page_basename = basename($_SERVER['PHP_SELF']); 
+$asset_version = time();
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Presensi Online - Grav-Tech</title>
+    <title>Presensi Online 3D - Gravitti Tech</title>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a97d5963a4.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../assets/css/main-styles.css">
-    <link rel="stylesheet" href="../assets/css/sidebar.css">
-    <link rel="stylesheet" href="../assets/css/bottom-nav.css">
-    <link rel="stylesheet" href="../assets/css/footer.css">
-    <link rel="stylesheet" href="../assets/css/presensi-styles.css">
+    
+    <link rel="stylesheet" href="../assets/css/main-styles.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/sidebar.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/bottom-nav.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/footer.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/presensi-styles.css?v=<?php echo $asset_version; ?>">
+    
     <style>
+        /* Taste Skill 3D Design Overrides */
+        :root {
+            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%);
+            --card-radius-lg: 28px;
+            --btn-radius: 16px;
+            --primary-3d: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
+            --success-3d: linear-gradient(135deg, #059669 0%, #10b981 50%, #047857 100%);
+            --danger-3d: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #b91c1c 100%);
+            --warning-3d: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #b45309 100%);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+            background: #e2e8f0 !important;
+        }
+
+        .main-content-wrapper {
+            background: #e2e8f0;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.15) 0px, transparent 50%) !important;
+            min-height: 100vh;
+            min-height: 100dvh;
+            perspective: 1200px;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        .presensi-header-section {
+            background: var(--header-gradient) !important;
+            color: #fff;
+            padding: 1.75rem 0 4rem 0 !important;
+            margin-bottom: -60px !important;
+            position: relative;
+            z-index: 5;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.3) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .page-title-presensi {
+            font-weight: 800 !important;
+            font-size: 1.1rem !important;
+            letter-spacing: 0.8px;
+            color: #ffffff !important;
+        }
+
+        #realTimeClockDisplay {
+            font-size: 1.35rem !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.5px;
+            background: rgba(255, 255, 255, 0.15) !important;
+            padding: 4px 14px !important;
+            border-radius: 20px !important;
+            display: inline-block;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .employee-info-presensi.card {
+            background: rgba(255, 255, 255, 0.12) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            color: #fff !important;
+            border-radius: 22px !important;
+            padding: 0.95rem 1.25rem !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .employee-photo-presensi {
+            width: 54px !important;
+            height: 54px !important;
+            border-radius: 50% !important;
+            object-fit: cover;
+            border: 2.5px solid #ffffff !important;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .employee-name-presensi {
+            font-weight: 800 !important;
+            font-size: 1.1rem !important;
+            color: #ffffff !important;
+        }
+
+        /* 3D Presensi Action Card */
+        .presensi-action-card.card {
+            background: rgba(255, 255, 255, 0.88) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border-radius: var(--card-radius-lg) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 
+                0 30px 60px -12px rgba(15, 23, 42, 0.15),
+                0 18px 36px -18px rgba(15, 23, 42, 0.12),
+                inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+            transform-style: preserve-3d;
+            will-change: transform;
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+        }
+
+        .presensi-action-card .section-title-presensi-card {
+            color: #334155 !important;
+            font-weight: 800 !important;
+            font-size: 0.85rem !important;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .presensi-action-card .schedule-display-presensi-card {
+            font-size: 2.75rem !important;
+            font-weight: 900 !important;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            letter-spacing: -1.5px;
+            margin: 0.4rem 0 !important;
+        }
+
+        @media (max-width: 576px) {
+            .presensi-action-card .schedule-display-presensi-card {
+                font-size: 2.25rem !important;
+            }
+        }
+
+        .presensi-action-card .shift-name-presensi-card {
+            font-size: 0.85rem !important;
+            color: #2563eb !important;
+            font-weight: 700 !important;
+            background: rgba(37, 99, 235, 0.08) !important;
+            padding: 6px 16px !important;
+            border-radius: 20px !important;
+            display: inline-block;
+            border: 1px solid rgba(37, 99, 235, 0.15) !important;
+        }
+
+        .status-area-presensi .location-status-presensi-card {
+            font-size: 0.875rem !important;
+            font-weight: 600 !important;
+            padding: 0.85rem 1.1rem !important;
+            background-color: rgba(248, 250, 252, 0.95) !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 16px !important;
+            min-height: 48px;
+            color: #1e293b !important;
+        }
+
+        /* Tactile 3D Buttons */
+        .button-area-presensi .btn {
+            font-size: 0.95rem !important;
+            font-weight: 800 !important;
+            height: 54px !important;
+            border-radius: var(--btn-radius) !important;
+            letter-spacing: 0.4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease-out !important;
+            border: none !important;
+            cursor: pointer;
+        }
+
+        .btn-check-in-presensi {
+            background: var(--success-3d) !important;
+            color: #ffffff !important;
+            box-shadow: 
+                0 8px 20px rgba(16, 185, 129, 0.35),
+                0 4px 0 #047857 !important;
+        }
+
+        .btn-check-in-presensi:hover:not(:disabled), .btn-check-in-presensi:focus:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 25px rgba(16, 185, 129, 0.45),
+                0 6px 0 #065f46 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-check-in-presensi:active:not(:disabled) {
+            transform: translateY(2px);
+            box-shadow: 
+                0 4px 10px rgba(16, 185, 129, 0.3),
+                0 1px 0 #065f46 !important;
+        }
+
+        .btn-check-in-presensi:disabled {
+            background: #cbd5e1 !important;
+            color: #64748b !important;
+            box-shadow: 0 4px 0 #94a3b8 !important;
+            opacity: 0.7;
+        }
+
+        .btn-check-out-presensi {
+            background: var(--danger-3d) !important;
+            color: #ffffff !important;
+            box-shadow: 
+                0 8px 20px rgba(239, 68, 68, 0.35),
+                0 4px 0 #b91c1c !important;
+        }
+
+        .btn-check-out-presensi:hover:not(:disabled), .btn-check-out-presensi:focus:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 25px rgba(239, 68, 68, 0.45),
+                0 6px 0 #991b1b !important;
+            color: #ffffff !important;
+        }
+
+        .btn-check-out-presensi:active:not(:disabled) {
+            transform: translateY(2px);
+            box-shadow: 
+                0 4px 10px rgba(239, 68, 68, 0.3),
+                0 1px 0 #991b1b !important;
+        }
+
+        .btn-check-out-presensi:disabled {
+            background: #cbd5e1 !important;
+            color: #64748b !important;
+            box-shadow: 0 4px 0 #94a3b8 !important;
+            opacity: 0.7;
+        }
+
+        .btn-riwayat-absen {
+            background: var(--warning-3d) !important;
+            color: #ffffff !important;
+            box-shadow: 
+                0 8px 20px rgba(245, 158, 11, 0.35),
+                0 4px 0 #b45309 !important;
+        }
+
+        .btn-riwayat-absen:hover, .btn-riwayat-absen:focus {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 25px rgba(245, 158, 11, 0.45),
+                0 6px 0 #92400e !important;
+            color: #ffffff !important;
+        }
+
+        .btn-riwayat-absen:active {
+            transform: translateY(2px);
+            box-shadow: 
+                0 4px 10px rgba(245, 158, 11, 0.3),
+                0 1px 0 #92400e !important;
+        }
+
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; backdrop-filter: blur(8px); }
         .loading-spinner { width: 3.5rem; height: 3.5rem; border-width: 0.25em; color: #3b82f6; }
     </style>
@@ -412,7 +663,6 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                 setInterval(updateClockDisplay, 1000);
                 getUserLocation();
 
-                // Interactive 3D Touch Drag & Mouse Parallax Tilt for Attendance Card
                 const card = document.getElementById('card3d');
                 if (card) {
                     function apply3DTilt(clientX, clientY) {
