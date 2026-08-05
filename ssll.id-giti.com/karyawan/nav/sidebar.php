@@ -11,7 +11,8 @@
         <a href="absen.php"><i class="fa-solid fa-list-check"></i> Data Absen</a>
         <a href="absensi.php"><i class="fa-solid fa-user-check"></i> Absen Manual</a>
         <a href="riwayat-gaji.php"><i class="fa-solid fa-file-invoice-dollar"></i> Slip Gaji</a>
+        <a href="javascript:void(0)" onclick="window.triggerPWAInstall && window.triggerPWAInstall()" class="text-primary fw-bold"><i class="fa-solid fa-mobile-screen-button"></i> Install App</a>
         <!--<a href="cashbon.php"><i class="fa-solid fa-money-bill-transfer"></i> Cashbon</a>-->
-        <a href="../logout.php" class="mt-4"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
+        <a href="../logout.php" class="mt-3"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
     </div>
 </div>

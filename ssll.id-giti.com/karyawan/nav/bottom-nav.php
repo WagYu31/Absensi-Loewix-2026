@@ -15,3 +15,4 @@
             </a>
         </nav>
     </div>
+    <script src="../assets/js/pwa-install.js?v=<?php echo time(); ?>"></script>

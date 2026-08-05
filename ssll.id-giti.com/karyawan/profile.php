@@ -282,7 +282,10 @@ $asset_version = time();
                     </div>
 
                     <div class="d-flex align-items-center justify-content-center gap-3 flex-wrap mt-3">
-                        <button type="button" class="btn btn-3d-primary" onclick="changePasswordPrompt('<?php echo htmlspecialchars($nip); ?>')">
+                        <button type="button" class="btn btn-3d-primary" onclick="triggerPWAInstall()">
+                            <i class="fa-solid fa-mobile-screen-button me-2"></i>Install Aplikasi HP
+                        </button>
+                        <button type="button" class="btn btn-3d-outline" onclick="changePasswordPrompt('<?php echo htmlspecialchars($nip); ?>')">
                             <i class="fas fa-key me-2"></i>Ganti Password
                         </button>
                         <a href="edit-profile.php" class="btn btn-3d-outline">
