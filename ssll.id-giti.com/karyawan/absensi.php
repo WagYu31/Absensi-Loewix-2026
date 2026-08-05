@@ -345,14 +345,19 @@ $asset_version = time();
             z-index: 1070 !important;
         }
         .camera-video-presensi,
+        .photo-canvas-presensi,
         .photo-preview-img {
             width: 100% !important;
             height: 320px !important;
             max-height: 320px !important;
+            min-height: 320px !important;
             object-fit: cover !important;
             object-position: center !important;
             display: block !important;
             background: #0f172a !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
         /* 3D Circular Blue Camera Shutter Button */
