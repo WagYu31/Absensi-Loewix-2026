@@ -553,8 +553,7 @@ $asset_version = time();
                 </div>
                 <div class="modal-body p-0 position-relative" style="height: 320px; max-height: 320px; overflow: hidden; background: #0f172a;">
                     <video id="cameraPreview" autoplay playsinline muted class="camera-video-presensi" style="width: 100%; height: 320px; object-fit: cover; object-position: center; display: block;"></video>
-                    <img id="photoPreviewImg" class="d-none photo-preview-img" style="width: 100%; height: 320px; object-fit: cover; object-position: center; display: block;">
-                    <canvas id="photoCanvas" class="d-none" style="display: none;"></canvas>
+                    <canvas id="photoCanvas" class="d-none photo-canvas-presensi" style="width: 100%; height: 320px; object-fit: cover; object-position: center;"></canvas>
                     <button id="captureBtn" class="capture-btn-presensi" title="Ambil Foto"><i class="fas fa-camera"></i></button>
                     <button id="retakeBtn" class="retake-btn-presensi d-none" title="Ulang Foto"><i class="fas fa-rotate-left me-1.5"></i>Foto Ulang</button>
                 </div>
@@ -785,7 +784,7 @@ $asset_version = time();
         });
 
         $('#cameraModal').on('shown.bs.modal', function() { 
-            $('#photoPreviewImg').addClass('d-none').attr('src', '');
+            $('#photoCanvas').addClass('d-none');
             $('#cameraPreview').removeClass('d-none');
             $('#captureBtn').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
@@ -795,7 +794,6 @@ $asset_version = time();
         $('#cameraModal').on('hidden.bs.modal', function() {
             stopCamera();
             $('#cameraPreview').removeClass('d-none');
-            $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#photoCanvas').addClass('d-none');
             $('#captureBtn').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
@@ -805,7 +803,6 @@ $asset_version = time();
         function startCamera() {
             const video = document.getElementById('cameraPreview');
             $('#cameraPreview').removeClass('d-none');
-            $('#photoPreviewImg').addClass('d-none');
             $('#photoCanvas').addClass('d-none');
             $('#captureBtn').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
@@ -827,77 +824,33 @@ $asset_version = time();
 
         $('#captureBtn').click(function() {
             const video = document.getElementById('cameraPreview');
+            const canvas = document.getElementById('photoCanvas');
+
             if (!video || !stream || !video.videoWidth || video.videoWidth === 0) {
-                alert('Kamera belum aktif/siap, silakan coba 1 detik lagi.');
+                alert('Kamera belum siap, mohon tunggu 1 detik lalu coba lagi.');
                 return;
             }
 
-            const btn = $(this);
-            btn.prop('disabled', true);
+            const w = video.videoWidth;
+            const h = video.videoHeight;
+            canvas.width = w;
+            canvas.height = h;
 
-            function displayCapturedPhoto(dataUrl) {
-                if (!dataUrl || dataUrl.length < 500) {
-                    btn.prop('disabled', false);
-                    alert('Gagal mengambil foto, silakan coba lagi.');
-                    return;
-                }
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, w, h);
 
-                const photoImg = document.getElementById('photoPreviewImg');
-                let done = false;
+            // Show captured canvas frame instantly!
+            $('#photoCanvas').removeClass('d-none');
+            $('#cameraPreview').addClass('d-none');
+            $('#captureBtn').addClass('d-none');
+            $('#retakeBtn').removeClass('d-none');
+            $('#uploadPhotoBtn').prop('disabled', false);
 
-                function applyDisplay() {
-                    if (done) return;
-                    done = true;
-                    $('#photoPreviewImg').removeClass('d-none');
-                    $('#cameraPreview').addClass('d-none');
-                    $('#captureBtn').addClass('d-none').prop('disabled', false);
-                    $('#retakeBtn').removeClass('d-none');
-                    $('#uploadPhotoBtn').prop('disabled', false);
-                    setTimeout(function() { stopCamera(); }, 100);
-                }
-
-                photoImg.onload = applyDisplay;
-                photoImg.src = dataUrl;
-
-                if (photoImg.complete && photoImg.naturalWidth > 0) {
-                    applyDisplay();
-                } else {
-                    setTimeout(applyDisplay, 150);
-                }
-            }
-
-            try {
-                const canvas = document.createElement('canvas');
-                let w = video.videoWidth || 640;
-                let h = video.videoHeight || 480;
-                const maxDim = 640;
-
-                if (w > maxDim || h > maxDim) {
-                    if (w >= h) {
-                        h = Math.round((h * maxDim) / w);
-                        w = maxDim;
-                    } else {
-                        w = Math.round((w * maxDim) / h);
-                        h = maxDim;
-                    }
-                }
-
-                canvas.width = w;
-                canvas.height = h;
-
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(video, 0, 0, w, h);
-
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-                displayCapturedPhoto(dataUrl);
-            } catch(err) {
-                btn.prop('disabled', false);
-                alert('Gagal mengambil foto: ' + err.message);
-            }
+            stopCamera();
         });
 
         $('#retakeBtn').click(function() {
-            $('#photoPreviewImg').addClass('d-none').attr('src', '');
+            $('#photoCanvas').addClass('d-none');
             $('#cameraPreview').removeClass('d-none');
             $('#captureBtn').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
@@ -906,12 +859,14 @@ $asset_version = time();
         });
 
         $('#uploadPhotoBtn').click(function() {
-            const photoImg = document.getElementById('photoPreviewImg');
-            let imageData = photoImg.src;
-            if (!imageData || !imageData.startsWith('data:image')) {
-                const canvas = document.getElementById('photoCanvas');
-                imageData = canvas.toDataURL('image/jpeg', 0.70);
-            } 
+            const canvas = document.getElementById('photoCanvas');
+            const imageData = canvas.toDataURL('image/jpeg', 0.85);
+
+            if (!imageData || imageData.length < 500) {
+                alert('Gagal mengambil data foto. Silakan foto ulang.');
+                return;
+            }
+
             const deviceName = getDeviceName();
             closeCameraModal();
             $('#fullScreenLoader').removeClass('d-none');
