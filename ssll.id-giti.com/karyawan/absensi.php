@@ -555,7 +555,7 @@ $asset_version = time();
                     <img id="photoPreviewImg" class="d-none photo-preview-img" style="width: 100%; height: 320px; object-fit: cover; object-position: center; display: block;">
                     <canvas id="photoCanvas" class="d-none" style="display: none;"></canvas>
                     <input type="file" id="nativeCameraInput" accept="image/*" capture="user" class="d-none" style="display: none;">
-                    <button id="captureBtn" class="capture-btn-presensi" title="Ambil Foto"><i class="fas fa-camera"></i></button>
+                    <label for="nativeCameraInput" id="captureBtnLabel" class="capture-btn-presensi" title="Ambil Foto" style="cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-camera"></i></label>
                     <button id="retakeBtn" class="retake-btn-presensi d-none" title="Ulang Foto"><i class="fas fa-rotate-left me-1.5"></i>Foto Ulang</button>
                 </div>
                 <div class="modal-footer" style="background: #0f172a; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 10px 14px; display: flex; gap: 10px;">
@@ -787,7 +787,7 @@ $asset_version = time();
         $('#cameraModal').on('shown.bs.modal', function() { 
             $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#cameraPreview').removeClass('d-none');
-            $('#captureBtn').removeClass('d-none');
+            $('#captureBtnLabel').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
             startCamera(); 
         });
@@ -797,7 +797,7 @@ $asset_version = time();
             $('#cameraPreview').removeClass('d-none');
             $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#photoCanvas').addClass('d-none');
-            $('#captureBtn').removeClass('d-none');
+            $('#captureBtnLabel').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
             $('#uploadPhotoBtn').prop('disabled', true).html('<i class="fas fa-cloud-arrow-up me-1.5"></i>Upload & Kirim');
         });
@@ -807,7 +807,7 @@ $asset_version = time();
             $('#cameraPreview').removeClass('d-none');
             $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#photoCanvas').addClass('d-none');
-            $('#captureBtn').removeClass('d-none');
+            $('#captureBtnLabel').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
             $('#uploadPhotoBtn').prop('disabled', true);
             navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false })
@@ -835,7 +835,7 @@ $asset_version = time();
                     photoImg.src = dataUrl;
                     $('#photoPreviewImg').removeClass('d-none');
                     $('#cameraPreview').addClass('d-none');
-                    $('#captureBtn').addClass('d-none');
+                    $('#captureBtnLabel').addClass('d-none');
                     $('#retakeBtn').removeClass('d-none');
                     $('#uploadPhotoBtn').prop('disabled', false);
                     stopCamera();
@@ -844,71 +844,14 @@ $asset_version = time();
             }
         });
 
-        function isCanvasBlack(ctx, width, height) {
-            try {
-                const imgData = ctx.getImageData(Math.floor(width / 4), Math.floor(height / 4), Math.floor(width / 2), Math.floor(height / 2)).data;
-                let sum = 0;
-                for (let i = 0; i < imgData.length; i += 40) {
-                    sum += (imgData[i] + imgData[i+1] + imgData[i+2]);
-                }
-                return (sum / (imgData.length / 40)) < 15;
-            } catch(e) {
-                return true;
-            }
-        }
-
-        $('#captureBtn').click(function() {
-            const video = document.getElementById('cameraPreview');
-            const canvas = document.getElementById('photoCanvas');
-
-            if (video && video.videoWidth > 0) {
-                let w = video.videoWidth;
-                let h = video.videoHeight;
-                const maxDim = 640;
-
-                if (w > maxDim || h > maxDim) {
-                    if (w >= h) {
-                        h = Math.round((h * maxDim) / w);
-                        w = maxDim;
-                    } else {
-                        w = Math.round((w * maxDim) / h);
-                        h = maxDim;
-                    }
-                }
-
-                canvas.width = w;
-                canvas.height = h;
-
-                const context = canvas.getContext('2d');
-                context.drawImage(video, 0, 0, w, h);
-
-                if (!isCanvasBlack(context, w, h)) {
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-                    const photoImg = document.getElementById('photoPreviewImg');
-                    photoImg.src = dataUrl;
-
-                    $('#photoPreviewImg').removeClass('d-none');
-                    $('#cameraPreview').addClass('d-none');
-                    $('#captureBtn').addClass('d-none');
-                    $('#retakeBtn').removeClass('d-none');
-                    $('#uploadPhotoBtn').prop('disabled', false);
-                    return;
-                }
-            }
-
-            // Fallback for Android WebView security restrictions: Open Native Device Camera
-            document.getElementById('nativeCameraInput').click();
-        });
-
         $('#retakeBtn').click(function() {
+            $('#nativeCameraInput').val('');
             $('#photoPreviewImg').addClass('d-none').attr('src', '');
             $('#cameraPreview').removeClass('d-none');
-            $('#captureBtn').removeClass('d-none');
+            $('#captureBtnLabel').removeClass('d-none');
             $('#retakeBtn').addClass('d-none');
             $('#uploadPhotoBtn').prop('disabled', true);
-            if (!stream) {
-                startCamera();
-            }
+            startCamera();
         });
 
         $('#uploadPhotoBtn').click(function() {
