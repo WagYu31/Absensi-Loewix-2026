@@ -8,6 +8,9 @@ if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadm
 
 include '../conn.php';
 
+// Flag untuk menampilkan / menyembunyikan tombol Edit Jam (Set false untuk menyembunyikan)
+$allow_edit_jam = false;
+
 $bulan = $_GET['bulan'] ?? date('m');
 $tahun = $_GET['tahun'] ?? date('Y');
 $filter_karyawan = $_GET['karyawan'] ?? '';
@@ -403,9 +406,11 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                                                         <div class="abs-details">
                                                             <div class="fw-bold text-primary mb-1 d-flex align-items-center justify-content-between">
                                                                 <span><i class="fa-solid fa-clock me-1"></i><?php echo date('H:i:s', strtotime($item['tgl_absen'])); ?></span>
+                                                                <?php if ($allow_edit_jam): ?>
                                                                 <button class="btn-edit-time" title="Edit Jam Absen Ini" onclick="openEditTimeModal(<?php echo $item['id']; ?>, '<?php echo date('H:i:s', strtotime($item['tgl_absen'])); ?>', '<?php echo htmlspecialchars(addslashes($data['details']['nama'])); ?>', '<?php echo strtoupper($type); ?>')">
                                                                     <i class="fa-solid fa-pen-to-square me-1"></i>Edit Jam
                                                                 </button>
+                                                                <?php endif; ?>
                                                             </div>
                                                             <div class="text-muted" style="white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
                                                                 <i class="fa-solid fa-map-marker-alt me-1 text-danger"></i>
