@@ -42,19 +42,248 @@ if ($resultLockedDates->num_rows > 0) {
         $lockedDates[] = $rowLockedDate['tahun'] . '-' . str_pad($rowLockedDate['bulan'], 2, '0', STR_PAD_LEFT);
     }
 }
+
+$asset_version = time();
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biaya Pengganti - Grav-Tech</title>
+    <title>Biaya Pengganti 3D - Gravitti Tech</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a97d5963a4.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../assets/css/main-styles.css">
-    <link rel="stylesheet" href="../assets/css/sidebar.css">
+    <link rel="stylesheet" href="../assets/css/main-styles.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/sidebar.css?v=<?php echo $asset_version; ?>">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+
+    <style>
+        :root {
+            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%);
+            --card-radius-lg: 24px;
+            --primary-3d: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
+            --success-3d: linear-gradient(135deg, #059669 0%, #10b981 50%, #047857 100%);
+            --danger-3d: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #b91c1c 100%);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+            background: #f1f5f9 !important;
+        }
+
+        .main-content-wrapper {
+            background: #f1f5f9;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%) !important;
+            min-height: 100vh;
+        }
+
+        /* 3D Header Banner */
+        .page-specific-header {
+            background: var(--header-gradient) !important;
+            color: #ffffff;
+            padding: 2.25rem 0 4.5rem 0 !important;
+            margin-bottom: -50px !important;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.25) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .page-specific-header h1 {
+            font-weight: 800 !important;
+            font-size: 1.65rem !important;
+            letter-spacing: -0.5px;
+            color: #ffffff !important;
+        }
+
+        /* 3D Glass Cards & Accordion */
+        .accordion-3d-item {
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border-radius: var(--card-radius-lg) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 
+                0 20px 40px -10px rgba(15, 23, 42, 0.1),
+                0 10px 20px -10px rgba(15, 23, 42, 0.05) !important;
+            overflow: hidden;
+        }
+
+        .accordion-3d-item .accordion-button {
+            background: #ffffff !important;
+            padding: 1.25rem 1.5rem !important;
+            font-weight: 800 !important;
+            color: #1e293b !important;
+            font-size: 1rem !important;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .accordion-3d-item .accordion-button:not(.collapsed) {
+            color: #2563eb !important;
+            background: rgba(37, 99, 235, 0.05) !important;
+            box-shadow: none !important;
+        }
+
+        .main-card-3d.card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            border-radius: var(--card-radius-lg) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 
+                0 25px 50px -12px rgba(15, 23, 42, 0.12),
+                0 12px 24px -12px rgba(15, 23, 42, 0.08) !important;
+            overflow: hidden;
+        }
+
+        .main-card-3d .card-header {
+            background: #ffffff !important;
+            padding: 1.25rem 1.5rem !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+        }
+
+        .form-label {
+            font-size: 0.825rem !important;
+            font-weight: 700 !important;
+            color: #475569 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 14px !important;
+            border: 1.5px solid #cbd5e1 !important;
+            padding: 0.65rem 0.95rem !important;
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            color: #1e293b !important;
+            background-color: #f8fafc !important;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6 !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
+        }
+
+        /* Tactile 3D Buttons */
+        .btn-submit-3d {
+            background: var(--primary-3d) !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            font-size: 0.9rem !important;
+            border-radius: 14px !important;
+            padding: 10px 24px !important;
+            border: none !important;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35), 0 3px 0 #1d4ed8 !important;
+            transition: all 0.15s ease-out !important;
+        }
+
+        .btn-submit-3d:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45), 0 4px 0 #1e40af !important;
+            color: #ffffff !important;
+        }
+
+        .btn-submit-3d:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 8px rgba(37, 99, 235, 0.3), 0 1px 0 #1e40af !important;
+        }
+
+        .btn-filter-3d {
+            background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%) !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            font-size: 0.875rem !important;
+            border-radius: 12px !important;
+            padding: 9px 18px !important;
+            border: none !important;
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35), 0 3px 0 #0369a1 !important;
+            transition: all 0.15s ease-out !important;
+        }
+
+        .btn-filter-3d:hover {
+            transform: translateY(-2px);
+            color: #ffffff !important;
+            box-shadow: 0 10px 20px rgba(2, 132, 199, 0.45), 0 4px 0 #0369a1 !important;
+        }
+
+        .btn-print-3d {
+            background: var(--success-3d) !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            border-radius: 12px !important;
+            padding: 9px 16px !important;
+            border: none !important;
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35), 0 3px 0 #047857 !important;
+            transition: all 0.15s ease-out !important;
+        }
+
+        .btn-print-3d:hover {
+            transform: translateY(-2px);
+            color: #ffffff !important;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.45), 0 4px 0 #065f46 !important;
+        }
+
+        .btn-action-delete {
+            background: var(--danger-3d) !important;
+            color: #ffffff !important;
+            border-radius: 10px !important;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3), 0 2px 0 #b91c1c !important;
+            transition: all 0.15s ease-out !important;
+        }
+
+        .btn-action-delete:hover {
+            transform: translateY(-2px);
+            color: #ffffff !important;
+            box-shadow: 0 8px 18px rgba(239, 68, 68, 0.4), 0 3px 0 #991b1b !important;
+        }
+
+        /* 3D Table Styling */
+        .table thead th {
+            background: #f8fafc !important;
+            color: #475569 !important;
+            font-weight: 800 !important;
+            font-size: 0.8rem !important;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 1rem 1.25rem !important;
+            border-bottom: 2px solid #e2e8f0 !important;
+        }
+
+        .table tbody td {
+            padding: 1rem 1.25rem !important;
+            vertical-align: middle;
+            color: #334155 !important;
+            font-size: 0.9rem !important;
+        }
+
+        .table-hover tbody tr:hover td {
+            background-color: #f1f5f9 !important;
+        }
+
+        .nominal-badge {
+            font-weight: 800 !important;
+            color: #059669 !important;
+            background: rgba(16, 185, 129, 0.1) !important;
+            padding: 6px 14px !important;
+            border-radius: 12px !important;
+            border: 1px solid rgba(16, 185, 129, 0.2) !important;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
     <?php include 'nav/sidebar.php'; ?>
@@ -62,27 +291,28 @@ if ($resultLockedDates->num_rows > 0) {
     <div class="main-content-wrapper p-0">
         <div class="header-banner page-specific-header no-print">
             <div class="container-fluid px-lg-4">
-                <h1>Biaya Pengganti</h1>
-                <p>Kelola data biaya pengganti karyawan (Tunjangan Lainnya).</p>
+                <h1><i class="fa-solid fa-file-invoice-dollar me-2 text-primary-light"></i>Biaya Pengganti</h1>
+                <p class="small mb-0 opacity-80">Kelola data klaim & biaya pengganti harian karyawan (Tunjangan Lainnya).</p>
             </div>
         </div>
 
-        <div class="dashboard-content">
+        <div class="dashboard-content px-0">
             <div class="container-fluid px-lg-4">
                 
+                <!-- Accordion Input Biaya Pengganti -->
                 <div class="accordion mb-4 no-print" id="accordionTunjangan">
-                    <div class="accordion-item">
+                    <div class="accordion-item accordion-3d-item border-0">
                         <h2 class="accordion-header" id="headingOne">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                <i class="fa-solid fa-plus me-2"></i> Klik untuk Tambah Biaya Pengganti Baru
+                                <i class="fa-solid fa-circle-plus me-2 text-primary"></i> Klik untuk Tambah Biaya Pengganti Baru
                             </button>
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionTunjangan">
-                            <div class="accordion-body">
+                            <div class="accordion-body p-4">
                                 <form action="../proses-tambah-data-tunjangan-lainnya-karyawan.php" method="POST">
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label for="nip-tunjangan" class="form-label">Nama Karyawan</label>
+                                            <label for="nip-tunjangan" class="form-label"><i class="fa-solid fa-user me-1 text-primary"></i>Nama Karyawan</label>
                                             <select class="form-select" id="nip-tunjangan" name="nip_tunjangan" required>
                                                 <option value="" disabled selected>-- Pilih Karyawan --</option>
                                                 <?php foreach ($karyawan_list as $kar): ?>
@@ -91,20 +321,20 @@ if ($resultLockedDates->num_rows > 0) {
                                             </select>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="tanggal-tunjangan" class="form-label">Tanggal</label>
+                                            <label for="tanggal-tunjangan" class="form-label"><i class="fa-solid fa-calendar-day me-1 text-primary"></i>Tanggal</label>
                                             <input type="date" class="form-control" id="tanggal-tunjangan" name="tanggal_tunjangan" onchange="checkLockedDates()" required>
                                         </div>
                                         <div class="col-12">
-                                            <label for="jumlah-tunjangan" class="form-label">Jumlah (Rp)</label>
+                                            <label for="jumlah-tunjangan" class="form-label"><i class="fa-solid fa-money-bill-wave me-1 text-primary"></i>Jumlah (Rp)</label>
                                             <input type="number" class="form-control" id="jumlah-tunjangan" name="jumlah_tunjangan" placeholder="Contoh: 100000" required>
                                         </div>
                                         <div class="col-12">
-                                            <label for="keterangan-tunjangan" class="form-label">Keterangan</label>
-                                            <textarea class="form-control" id="keterangan-tunjangan" name="keterangan_tunjangan" rows="3" required></textarea>
+                                            <label for="keterangan-tunjangan" class="form-label"><i class="fa-solid fa-comment-dots me-1 text-primary"></i>Keterangan</label>
+                                            <textarea class="form-control" id="keterangan-tunjangan" name="keterangan_tunjangan" rows="3" placeholder="Rincian keterangan biaya pengganti..." required></textarea>
                                         </div>
                                     </div>
-                                    <div class="text-end mt-3">
-                                        <button type="submit" class="btn btn-primary">Tambah Data</button>
+                                    <div class="text-end mt-4">
+                                        <button type="submit" class="btn btn-submit-3d"><i class="fa-solid fa-paper-plane me-2"></i>Simpan Biaya Pengganti</button>
                                     </div>
                                 </form>
                             </div>
@@ -112,10 +342,12 @@ if ($resultLockedDates->num_rows > 0) {
                     </div>
                 </div>
 
-                <div class="card shadow-sm">
+                <!-- Card Main Table -->
+                <div class="card main-card-3d">
                     <div class="card-header">
-                        <form method="POST" class="row g-3 align-items-center">
-                            <div class="col-md-5">
+                        <form method="POST" class="row g-2 align-items-center">
+                            <div class="col-6 col-md-4">
+                                <label class="form-label mb-1"><i class="fa-solid fa-calendar me-1 text-primary"></i>Bulan</label>
                                 <select id="bulan" name="bulan" class="form-select">
                                     <?php 
                                     $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April', '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus', '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'];
@@ -124,7 +356,8 @@ if ($resultLockedDates->num_rows > 0) {
                                     } ?>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-6 col-md-3">
+                                <label class="form-label mb-1"><i class="fa-solid fa-calendar-days me-1 text-primary"></i>Tahun</label>
                                 <select id="tahun" name="tahun" class="form-select">
                                     <?php 
                                     $tahunSekarang = date('Y');
@@ -133,25 +366,31 @@ if ($resultLockedDates->num_rows > 0) {
                                     } ?>
                                 </select>
                             </div>
-                            <div class="col-md-3 d-flex">
-                                <button type="submit" class="btn btn-primary w-100 me-2">Filter</button>
-                                <button type="button" onclick="printData()" class="btn btn-info w-100">
-                                    <i class="fa-solid fa-print"></i>
-                                </button>
+                            <div class="col-12 col-md-5 d-flex gap-2 align-items-end mt-md-0 mt-2">
+                                <div class="flex-fill">
+                                    <label class="form-label mb-1 opacity-0 d-none d-md-block">&nbsp;</label>
+                                    <button type="submit" class="btn btn-filter-3d w-100"><i class="fa-solid fa-magnifying-glass me-1"></i>Filter Data</button>
+                                </div>
+                                <div>
+                                    <label class="form-label mb-1 opacity-0 d-none d-md-block">&nbsp;</label>
+                                    <button type="button" onclick="printData()" class="btn btn-print-3d" title="Cetak Data">
+                                        <i class="fa-solid fa-print me-1"></i>Print
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-hover table-striped mb-0" style="font-size: 0.9rem;">
-                                <thead class="table-light">
+                            <table class="table table-hover mb-0 align-middle">
+                                <thead>
                                     <tr>
-                                        <th>NIK</th>
-                                        <th>Nama</th>
+                                        <th style="width: 80px;">NIK</th>
+                                        <th>Nama Karyawan</th>
                                         <th>Tanggal</th>
                                         <th>Keterangan</th>
                                         <th class="text-end">Jumlah</th>
-                                        <th class="text-center no-print">Aksi</th>
+                                        <th class="text-center no-print" style="width: 80px;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -160,13 +399,13 @@ if ($resultLockedDates->num_rows > 0) {
                                     <?php endif; ?>
                                     <?php foreach ($dataa as $data): ?>
                                     <tr>
-                                        <td><?php echo htmlspecialchars($data['nik']); ?></td>
-                                        <td style="text-transform:capitalize;"><?php echo htmlspecialchars($data['nama']); ?></td>
-                                        <td><?php echo date('d M Y', strtotime($data['tanggal'])); ?></td>
+                                        <td class="fw-bold text-secondary"><?php echo htmlspecialchars($data['nik']); ?></td>
+                                        <td style="text-transform:capitalize; font-weight: 600;"><?php echo htmlspecialchars($data['nama']); ?></td>
+                                        <td class="text-secondary"><?php echo date('d M Y', strtotime($data['tanggal'])); ?></td>
                                         <td><?php echo htmlspecialchars($data['keterangan']); ?></td>
-                                        <td class="text-end">Rp <?php echo number_format($data['jumlah'], 0, ',', '.'); ?></td>
+                                        <td class="text-end"><span class="nominal-badge">Rp <?php echo number_format($data['jumlah'], 0, ',', '.'); ?></span></td>
                                         <td class="text-center no-print">
-                                            <button onclick="deleteTunjangan('<?php echo $data['id_tunjangan_lain']; ?>')" class="btn btn-danger btn-sm">
+                                            <button onclick="deleteTunjangan('<?php echo $data['id_tunjangan_lain']; ?>')" class="btn btn-action-delete" title="Hapus Data">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </td>
