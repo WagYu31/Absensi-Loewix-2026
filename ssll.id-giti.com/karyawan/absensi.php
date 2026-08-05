@@ -602,7 +602,7 @@ $asset_version = time();
         let attendanceType = ''; 
 
         function closeCameraModal() {
-            stopCamera();
+            stopWebcamStream();
             $('#cameraModal').modal('hide');
             $('.modal-backdrop').remove();
             $('body').removeClass('modal-open').css('overflow', '');
