@@ -554,6 +554,7 @@ $asset_version = time();
                     <video id="cameraPreview" autoplay playsinline muted class="camera-video-presensi" style="width: 100%; height: 320px; object-fit: cover; object-position: center; display: block;"></video>
                     <img id="photoPreviewImg" class="d-none photo-preview-img" style="width: 100%; height: 320px; object-fit: cover; object-position: center; display: block;">
                     <canvas id="photoCanvas" class="d-none" style="display: none;"></canvas>
+                    <input type="file" id="nativeCameraInput" accept="image/*" capture="user" class="d-none" style="display: none;">
                     <button id="captureBtn" class="capture-btn-presensi" title="Ambil Foto"><i class="fas fa-camera"></i></button>
                     <button id="retakeBtn" class="retake-btn-presensi d-none" title="Ulang Foto"><i class="fas fa-rotate-left me-1.5"></i>Foto Ulang</button>
                 </div>
@@ -824,48 +825,79 @@ $asset_version = time();
 
         function stopCamera() { if (stream) { stream.getTracks().forEach(track => track.stop()); stream = null; } }
 
+        $('#nativeCameraInput').change(function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const dataUrl = evt.target.result;
+                    const photoImg = document.getElementById('photoPreviewImg');
+                    photoImg.src = dataUrl;
+                    $('#photoPreviewImg').removeClass('d-none');
+                    $('#cameraPreview').addClass('d-none');
+                    $('#captureBtn').addClass('d-none');
+                    $('#retakeBtn').removeClass('d-none');
+                    $('#uploadPhotoBtn').prop('disabled', false);
+                    stopCamera();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function isCanvasBlack(ctx, width, height) {
+            try {
+                const imgData = ctx.getImageData(Math.floor(width / 4), Math.floor(height / 4), Math.floor(width / 2), Math.floor(height / 2)).data;
+                let sum = 0;
+                for (let i = 0; i < imgData.length; i += 40) {
+                    sum += (imgData[i] + imgData[i+1] + imgData[i+2]);
+                }
+                return (sum / (imgData.length / 40)) < 15;
+            } catch(e) {
+                return true;
+            }
+        }
+
         $('#captureBtn').click(function() {
             const video = document.getElementById('cameraPreview');
             const canvas = document.getElementById('photoCanvas');
 
-            if (!video || !stream || !video.videoWidth || video.videoWidth === 0) {
-                alert('Kamera belum siap, mohon tunggu 1 detik lalu coba lagi.');
-                return;
-            }
+            if (video && video.videoWidth > 0) {
+                let w = video.videoWidth;
+                let h = video.videoHeight;
+                const maxDim = 640;
 
-            let w = video.videoWidth;
-            let h = video.videoHeight;
-            const maxDim = 640;
+                if (w > maxDim || h > maxDim) {
+                    if (w >= h) {
+                        h = Math.round((h * maxDim) / w);
+                        w = maxDim;
+                    } else {
+                        w = Math.round((w * maxDim) / h);
+                        h = maxDim;
+                    }
+                }
 
-            if (w > maxDim || h > maxDim) {
-                if (w >= h) {
-                    h = Math.round((h * maxDim) / w);
-                    w = maxDim;
-                } else {
-                    w = Math.round((w * maxDim) / h);
-                    h = maxDim;
+                canvas.width = w;
+                canvas.height = h;
+
+                const context = canvas.getContext('2d');
+                context.drawImage(video, 0, 0, w, h);
+
+                if (!isCanvasBlack(context, w, h)) {
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                    const photoImg = document.getElementById('photoPreviewImg');
+                    photoImg.src = dataUrl;
+
+                    $('#photoPreviewImg').removeClass('d-none');
+                    $('#cameraPreview').addClass('d-none');
+                    $('#captureBtn').addClass('d-none');
+                    $('#retakeBtn').removeClass('d-none');
+                    $('#uploadPhotoBtn').prop('disabled', false);
+                    return;
                 }
             }
 
-            canvas.width = w;
-            canvas.height = h;
-
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, w, h);
-
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-
-            const photoImg = document.getElementById('photoPreviewImg');
-            photoImg.src = dataUrl;
-
-            // Show captured photo preview image instantly!
-            $('#photoPreviewImg').removeClass('d-none');
-            $('#cameraPreview').addClass('d-none');
-            $('#captureBtn').addClass('d-none');
-            $('#retakeBtn').removeClass('d-none');
-            $('#uploadPhotoBtn').prop('disabled', false);
-
-            // DO NOT STOP CAMERA STREAM HERE to keep Android GPU HAL buffer active!
+            // Fallback for Android WebView security restrictions: Open Native Device Camera
+            document.getElementById('nativeCameraInput').click();
         });
 
         $('#retakeBtn').click(function() {
