@@ -92,7 +92,7 @@ $selectedDate = $_GET['tgl'] ?? $defaultDate;
 
 $sql = "SELECT am.*, k.nama, k.nik, k.pas_photo 
         FROM absen_manual am
-        JOIN karyawan k ON am.nip = k.nip
+        JOIN karyawan k ON (am.nip = k.nip OR am.nip = k.pin_absen OR am.nip = k.nik OR am.pin = k.pin_absen OR am.pin = k.nik)
         WHERE DATE(am.tgl_absen) = ? AND k.deleted_at IS NULL";
 
 $params = [$selectedDate];
@@ -606,6 +606,8 @@ $asset_version = time();
                                                              $finalImgSrc = $rawImg;
                                                          } else {
                                                              $cleanImg = ltrim($rawImg, '/');
+                                                             @chmod(__DIR__ . '/../uploads/' . $cleanImg, 0777);
+                                                             @chmod(__DIR__ . '/../uploads/attendance/' . $cleanImg, 0777);
                                                              if (strpos($cleanImg, 'uploads/') === 0) {
                                                                  $finalImgSrc = '../' . $cleanImg;
                                                              } elseif (strpos($cleanImg, 'attendance/') === 0) {
