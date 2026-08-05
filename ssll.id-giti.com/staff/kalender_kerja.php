@@ -5,6 +5,18 @@ if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadm
     header('Location: index.php');
     exit();
 }
+include '../conn.php';
+
+// Cek siapa yang berulang tahun hari ini (Month-Day match)
+$today_md = date('m-d');
+$birthday_employees = [];
+$res_bday = $conn->query("SELECT nama, pas_photo, tanggal_lahir, jabatan, TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) AS umur FROM karyawan WHERE DATE_FORMAT(tanggal_lahir, '%m-%d') = '$today_md' AND status_karyawan = 'aktif' AND deleted_at IS NULL");
+if ($res_bday) {
+    while ($rb = $res_bday->fetch_assoc()) {
+        $birthday_employees[] = $rb;
+    }
+}
+
 $asset_version = time();
 ?>
 <!DOCTYPE html>
@@ -63,6 +75,62 @@ $asset_version = time();
             font-size: 1.65rem !important;
             letter-spacing: -0.5px;
             color: #ffffff !important;
+        }
+
+        /* Birthday Celebration Banner 3D */
+        .birthday-banner-3d {
+            position: relative;
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #ec4899 100%) !important;
+            border-radius: var(--card-radius-lg) !important;
+            padding: 1.5rem 1.75rem !important;
+            box-shadow: 0 20px 40px -10px rgba(124, 58, 237, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
+            overflow: hidden;
+            animation: pulseBdayGlow 3s infinite alternate;
+        }
+
+        @keyframes pulseBdayGlow {
+            0% { box-shadow: 0 15px 35px -10px rgba(124, 58, 237, 0.4); }
+            100% { box-shadow: 0 25px 50px -5px rgba(236, 72, 153, 0.6); }
+        }
+
+        .bday-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            animation: bdayBounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bdayBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(8deg); }
+        }
+
+        .bday-card-item {
+            background: rgba(255, 255, 255, 0.18) !important;
+            backdrop-filter: blur(15px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            border-radius: 18px !important;
+            padding: 8px 16px 8px 10px !important;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .bday-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         /* 3D Main Card Container */
@@ -229,6 +297,40 @@ $asset_version = time();
 
         <div class="dashboard-content px-0">
             <div class="container-fluid px-lg-4">
+
+                <!-- Animated Birthday Celebration Banner -->
+                <?php if (!empty($birthday_employees)): ?>
+                <div class="birthday-banner-3d mb-4 no-print">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 position-relative z-1">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bday-icon-wrapper">
+                                <span class="fs-2">🎂</span>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge text-dark font-black px-2 py-1 rounded-pill text-uppercase" style="font-size: 0.7rem; background: #fbbf24;"><i class="fa-solid fa-crown me-1"></i>HARI INI BERULANG TAHUN!</span>
+                                </div>
+                                <h4 class="fw-extrabold text-white mb-0 mt-1" style="letter-spacing: -0.5px;">
+                                    🎉 Selamat Ulang Tahun Kepada:
+                                </h4>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                            <?php foreach ($birthday_employees as $bemp): ?>
+                            <div class="bday-card-item">
+                                <img src="../uploads/<?php echo htmlspecialchars($bemp['pas_photo'] ?: 'default.png'); ?>" class="bday-avatar" onerror="this.onerror=null; this.src='https://via.placeholder.com/50/003c9c/ffffff?Text=<?php echo strtoupper(substr($bemp['nama'], 0, 1)); ?>';">
+                                <div>
+                                    <div class="fw-bold text-white fs-6" style="text-transform: capitalize;"><?php echo htmlspecialchars($bemp['nama']); ?></div>
+                                    <div class="text-white-50 small" style="font-size: 0.75rem;"><?php echo htmlspecialchars($bemp['jabatan'] ?: 'Karyawan'); ?> <?php if ($bemp['umur']) echo "• " . $bemp['umur'] . " Thn"; ?></div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <!-- Main Calendar Card -->
                 <div class="main-calendar-card">
                     <!-- Legend Bar 3D -->
@@ -307,9 +409,20 @@ $asset_version = time();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/id.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        <?php if (!empty($birthday_employees)): ?>
+        if (typeof confetti === 'function') {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+        <?php endif; ?>
+
         const calendarEl = document.getElementById('calendar');
         const eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
         const eventForm = document.getElementById('eventForm');
