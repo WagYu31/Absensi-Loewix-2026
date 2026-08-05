@@ -83,6 +83,17 @@ if (
     $verif_status = 'Pending';
 }
 
+// Auto-approve test mode attendances so they sync immediately to report tables
+$sql_check_test = "SELECT shifting FROM shift_req WHERE nip = '$session_nip' AND CURDATE() BETWEEN tgl_mulai AND tgl_selesai LIMIT 1";
+$res_check_test = $conn->query($sql_check_test);
+$user_shift_code = '';
+if ($res_check_test && $res_check_test->num_rows > 0) {
+    $user_shift_code = $res_check_test->fetch_assoc()['shifting'];
+}
+if ($user_shift_code === 'TEST' || $session_nip === 'TEST001') {
+    $verif_status = 'Yes';
+}
+
 $stmt_karyawan = $conn->prepare("SELECT nama, nik FROM karyawan WHERE nip = ?");
 if (!$stmt_karyawan) {
     sendJsonResponse(false, 'Kesalahan koneksi database: ' . $conn->error);

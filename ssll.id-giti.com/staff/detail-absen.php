@@ -207,21 +207,40 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                             $tgl_scan_dt = new DateTime($dataRow['tgl_in']);
                                             $tgl_out_dt = new DateTime($dataRow['tgl_out']);
                                             $pinK = $dataRow['pin'];
+
+                                            $current_shifting = $shiftingKaryawan;
+                                            $query_req_shift = "SELECT shifting FROM shift_req WHERE nip = ? AND ? BETWEEN tgl_mulai AND tgl_selesai LIMIT 1";
+                                            $stmt_req = $conn->prepare($query_req_shift);
+                                            if ($stmt_req) { 
+                                                $stmt_req->bind_param("ss", $pinK, $currentDateStr); 
+                                                $stmt_req->execute(); 
+                                                $result_req = $stmt_req->get_result();
+                                                if ($result_req->num_rows > 0) { 
+                                                    $row_req = $result_req->fetch_assoc(); 
+                                                    $current_shifting = $row_req['shifting']; 
+                                                }
+                                                $stmt_req->close();
+                                            }
+
                                             $jam_masuk_display = $tgl_scan_dt->format('H:i');
                                             $jam_pulang_display = ($tgl_out_dt != $tgl_scan_dt) ? $tgl_out_dt->format('H:i') : "-";
 
-                                            if ($tgl_out_dt == $tgl_scan_dt) {
-                                                if (strtotime($jam_masuk_display) >= strtotime("12:00")) {
-                                                    $jam_pulang_display = $jam_masuk_display;
-                                                    $jam_masuk_display = "<span class='text-danger'>Tidak Absen Masuk</span>";
-                                                    $jumlah_tidak_absen_masuk++;
-                                                } else {
-                                                    $jam_pulang_display = "<span class='text-danger'>Tidak Absen Pulang</span>";
-                                                    $jumlah_tidak_absen_pulang++;
-                                                }
+                                            if ($current_shifting === 'TEST' || $nik_to_display === '999001') {
+                                                // TEST mode override: do not penalize time boundaries
                                             } else {
-                                                if (strtotime($jam_masuk_display) > strtotime("13:00")) { $jam_masuk_display = "<span class='text-danger'>Tidak Absen Masuk</span>"; $jumlah_tidak_absen_masuk++; }
-                                                if (strtotime($jam_pulang_display) < strtotime("11:00")) { $jam_pulang_display = "<span class='text-danger'>Tidak Absen Pulang</span>"; $jumlah_tidak_absen_pulang++; }
+                                                if ($tgl_out_dt == $tgl_scan_dt) {
+                                                    if (strtotime($jam_masuk_display) >= strtotime("12:00")) {
+                                                        $jam_pulang_display = $jam_masuk_display;
+                                                        $jam_masuk_display = "<span class='text-danger'>Tidak Absen Masuk</span>";
+                                                        $jumlah_tidak_absen_masuk++;
+                                                    } else {
+                                                        $jam_pulang_display = "<span class='text-danger'>Tidak Absen Pulang</span>";
+                                                        $jumlah_tidak_absen_pulang++;
+                                                    }
+                                                } else {
+                                                    if (strtotime($jam_masuk_display) > strtotime("13:00")) { $jam_masuk_display = "<span class='text-danger'>Tidak Absen Masuk</span>"; $jumlah_tidak_absen_masuk++; }
+                                                    if (strtotime($jam_pulang_display) < strtotime("11:00")) { $jam_pulang_display = "<span class='text-danger'>Tidak Absen Pulang</span>"; $jumlah_tidak_absen_pulang++; }
+                                                }
                                             }
 
                                             $total_hari_kerja_efektif++;
@@ -236,15 +255,8 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                                 }
                                             }
 
-                                            $current_shifting = $shiftingKaryawan;
-                                            $query_req_shift = "SELECT shifting FROM shift_req WHERE nip = ? AND ? BETWEEN tgl_mulai AND tgl_selesai LIMIT 1";
-                                            $stmt_req = $conn->prepare($query_req_shift);
-                                            if ($stmt_req) { $stmt_req->bind_param("ss", $pinK, $currentDateStr); $stmt_req->execute(); $result_req = $stmt_req->get_result();
-                                                if ($result_req->num_rows > 0) { $row_req = $result_req->fetch_assoc(); $current_shifting = $row_req['shifting']; }
-                                                $stmt_req->close();
-                                            }
                                             if ($dayNameEng == "Saturday") $current_shifting = ($current_shifting == "T") ? "TW" : "W";
-                                            $shift_display_map = ["P" => ["S1", "P"], "M" => ["S2", "M"], "N" => ["S3", "N"], "S" => ["S4", "S"], "T" => ["HC", "T"], "W" => ["Sbt", "W"], "TW" => ["HS", "TW"]];
+                                            $shift_display_map = ["P" => ["S1", "P"], "M" => ["S2", "M"], "N" => ["S3", "N"], "S" => ["S4", "S"], "T" => ["HC", "T"], "W" => ["Sbt", "W"], "TW" => ["HS", "TW"], "TEST" => ["TST", "TEST"]];
                                             $shift_info = $shift_display_map[$current_shifting] ?? [$current_shifting, ""];
 
                                             $keterlambatan_menit_hari_ini = 0;
