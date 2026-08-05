@@ -5,176 +5,215 @@ if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadm
     header('Location: index.php');
     exit();
 }
+$asset_version = time();
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalender Kerja - Grav-Tech</title>
+    <title>Kalender Kerja 3D - Gravitti Tech</title>
     
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a97d5963a4.js" crossorigin="anonymous"></script>
     
-    <link rel="stylesheet" href="../assets/css/main-styles.css">
-    <link rel="stylesheet" href="../assets/css/sidebar.css">
+    <link rel="stylesheet" href="../assets/css/main-styles.css?v=<?php echo $asset_version; ?>">
+    <link rel="stylesheet" href="../assets/css/sidebar.css?v=<?php echo $asset_version; ?>">
 
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
     
     <style>
-        .fc-event { 
-            cursor: pointer; 
-            color: white !important; /* Agar teks event selalu putih */
-            font-weight: 500;
-            padding: 5px;
-            font-size: 0.8rem;
+        :root {
+            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%);
+            --card-radius-lg: 24px;
+            --primary-3d: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
+            --success-3d: linear-gradient(135deg, #059669 0%, #10b981 50%, #047857 100%);
+            --danger-3d: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #b91c1c 100%);
         }
-        /* Definisi warna untuk setiap jenis event */
-        .event-libur-merah   { background-color: #dc3545 !important; border-color: #b02a37 !important; }
-        .event-spesial-kuning { background-color: #ffc107 !important; border-color: #d39e00 !important; color: #333 !important; } /* Teks hitam agar terbaca */
-        .event-ultah-biru    { background-color: #0d6efd !important; border-color: #0a58ca !important; }
-        .fc-daygrid-day.fc-day-today { background-color: rgba(13, 110, 253, 0.1) !important; }
-        .list-group-item strong { color: #333; }
-    /* ==========================================================================
-       1. Gaya Umum & Kontainer Kalender
-       ========================================================================== */
-    #calendar {
-        font-family: 'Poppins', sans-serif;
-        font-size: 0.8rem;
-    }
 
-    /* ==========================================================================
-       2. Header Toolbar (Tombol & Judul)
-       ========================================================================== */
-    .fc .fc-toolbar.fc-header-toolbar {
-        margin-bottom: 1.5rem;
-        flex-wrap: wrap;
-    }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+            background: #f1f5f9 !important;
+        }
 
-    .fc .fc-toolbar-title {
-        font-size: 1.75rem;
-        font-weight: 600;
-        color: #333;
-    }
+        .main-content-wrapper {
+            background: #f1f5f9;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%) !important;
+            min-height: 100vh;
+        }
 
-    /* Menyesuaikan tombol FullCalendar agar terlihat seperti tombol Bootstrap */
-    .fc .fc-button {
-        background: var(--bs-light) !important;
-        border: 1px solid var(--bs-border-color) !important;
-        color: var(--bs-body-color) !important;
-        text-transform: capitalize;
-        box-shadow: none !important;
-        padding: 0.375rem 0.75rem;
-        transition: all 0.2s ease-in-out;
-    }
-    
-    .fc .fc-button:hover {
-        background: var(--bs-secondary-bg) !important;
-    }
+        /* 3D Header Banner */
+        .page-specific-header {
+            background: var(--header-gradient) !important;
+            color: #ffffff;
+            padding: 2.25rem 0 4.5rem 0 !important;
+            margin-bottom: -50px !important;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.25) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-    /* Tombol yang sedang aktif (seperti 'Bulan' atau 'Minggu') */
-    .fc .fc-button-primary:not(:disabled).fc-button-active,
-    .fc .fc-button-primary:not(:disabled):active {
-        background-color: var(--bs-primary) !important;
-        border-color: var(--bs-primary) !important;
-        color: white !important;
-    }
+        .page-specific-header h1 {
+            font-weight: 800 !important;
+            font-size: 1.65rem !important;
+            letter-spacing: -0.5px;
+            color: #ffffff !important;
+        }
 
-    /* Tombol 'today' */
-    .fc .fc-today-button {
-        background-color: var(--bs-primary-bg-subtle) !important;
-        color: var(--bs-primary-text-emphasis) !important;
-        border-color: var(--bs-primary-border-subtle) !important;
-        font-weight: 500;
-    }
-    .fc .fc-today-button:hover {
-         background-color: var(--bs-primary) !important;
-         color: white !important;
-    }
-    .fc .fc-today-button:disabled {
-        background: var(--bs-light) !important;
-    }
+        /* 3D Main Card Container */
+        .main-calendar-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            border-radius: var(--card-radius-lg) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 
+                0 25px 50px -12px rgba(15, 23, 42, 0.12),
+                0 12px 24px -12px rgba(15, 23, 42, 0.08) !important;
+            padding: 1.5rem !important;
+            margin-bottom: 2rem !important;
+        }
 
+        /* FullCalendar Custom 3D Theme */
+        #calendar {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
 
-    /* ==========================================================================
-       3. Tampilan Grid (Bulanan) & List (Mingguan)
-       ========================================================================== */
+        .fc .fc-toolbar.fc-header-toolbar {
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
 
-    /* Header Hari (Sen, Sel, Rab, ...) */
-    .fc-theme-standard .fc-scrollgrid {
-        border: 1px solid var(--bs-border-color);
-    }
-    .fc .fc-col-header-cell {
-        background-color: var(--bs-light);
-        font-weight: 600;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid var(--bs-border-color);
-    }
+        .fc .fc-toolbar-title {
+            font-size: 1.5rem !important;
+            font-weight: 800 !important;
+            color: #1e293b !important;
+            letter-spacing: -0.5px;
+        }
 
-    /* Kotak tanggal */
-    .fc .fc-daygrid-day-frame {
-        min-height: 120px; /* Memberi ruang lebih di setiap kotak tanggal */
-    }
-    .fc .fc-daygrid-day.fc-day-today {
-        background-color: rgba(13, 110, 253, 0.08) !important; /* Warna biru muda untuk hari ini */
-    }
-    .fc .fc-daygrid-day-number {
-        padding: 0.5rem;
-        font-weight: 500;
-    }
-    
-    /* Tampilan Daftar (untuk mobile) */
-    .fc-theme-standard .fc-list, .fc-theme-standard .fc-list-day {
-        border: none;
-    }
-    .fc-theme-standard .fc-list-day-cushion {
-        background-color: var(--bs-light);
-    }
-    .fc .fc-list-event-title a {
-        color: var(--bs-body-color);
-        text-decoration: none;
-    }
-    .fc .fc-list-event:hover td {
-        background-color: rgba(0,0,0,0.03);
-    }
+        .fc .fc-button {
+            background: #ffffff !important;
+            border: 1.5px solid #cbd5e1 !important;
+            color: #475569 !important;
+            font-weight: 700 !important;
+            font-size: 0.85rem !important;
+            border-radius: 12px !important;
+            padding: 6px 14px !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03), 0 2px 0 #cbd5e1 !important;
+            transition: all 0.15s ease-out !important;
+            text-transform: capitalize !important;
+        }
 
+        .fc .fc-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), 0 3px 0 #94a3b8 !important;
+            color: #1e293b !important;
+        }
 
-    /* ==========================================================================
-       4. Tampilan Acara (Event)
-       ========================================================================== */
-    .fc-event {
-        border-radius: 5px !important;
-        padding: 5px 8px !important;
-        font-size: 0.8rem !important;
-        font-weight: 500 !important;
-        color: white !important;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .fc-event:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
+        .fc .fc-button-primary:not(:disabled).fc-button-active,
+        .fc .fc-button-primary:not(:disabled):active {
+            background: var(--primary-3d) !important;
+            border-color: #2563eb !important;
+            color: #ffffff !important;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35), 0 3px 0 #1d4ed8 !important;
+        }
 
-    /* Definisi warna untuk setiap jenis event dengan gradien */
-    .event-libur-merah {
-        background-image: linear-gradient(45deg, #e74c3c, #c0392b) !important;
-        border: none !important;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-    }
-    .event-spesial-kuning {
-        background-image: linear-gradient(45deg, #f1c40f, #f39c12) !important;
-        border: none !important;
-        color: #333 !important; /* Teks gelap tetap dipertahankan agar mudah dibaca */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-    }
-    .event-ultah-biru {
-        /* Gradien diagonal dari biru ke ungu/indigo */
-        background-image: linear-gradient(45deg, #0d6efd, #6f42c1) !important; 
-        border: none !important; /* Hapus border agar lebih mulus */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Tambahkan sedikit bayangan */
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Tambahkan bayangan pada teks agar lebih terbaca */
-    }
+        .fc .fc-today-button {
+            background: rgba(37, 99, 235, 0.1) !important;
+            color: #2563eb !important;
+            border-color: rgba(37, 99, 235, 0.25) !important;
+        }
+
+        .fc-theme-standard .fc-scrollgrid {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 16px !important;
+            overflow: hidden;
+        }
+
+        .fc .fc-col-header-cell {
+            background: #f8fafc !important;
+            font-weight: 800 !important;
+            color: #475569 !important;
+            padding: 0.85rem 0 !important;
+            font-size: 0.85rem !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0 !important;
+        }
+
+        .fc .fc-daygrid-day-frame {
+            min-height: 115px !important;
+            padding: 4px;
+        }
+
+        .fc .fc-daygrid-day.fc-day-today {
+            background-color: rgba(37, 99, 235, 0.06) !important;
+        }
+
+        .fc .fc-daygrid-day-number {
+            padding: 0.4rem 0.6rem !important;
+            font-weight: 800 !important;
+            color: #334155 !important;
+            font-size: 0.85rem;
+        }
+
+        /* 3D Event Chips */
+        .fc-event {
+            border-radius: 10px !important;
+            padding: 5px 10px !important;
+            font-size: 0.78rem !important;
+            font-weight: 700 !important;
+            color: #ffffff !important;
+            border: none !important;
+            margin-top: 3px !important;
+            transition: all 0.2s ease;
+        }
+
+        .fc-event:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25) !important;
+        }
+
+        .event-libur-merah {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3), 0 2px 0 #991b1b !important;
+        }
+
+        .event-spesial-kuning {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3), 0 2px 0 #b45309 !important;
+        }
+
+        .event-ultah-biru {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3), 0 2px 0 #1d4ed8 !important;
+        }
+
+        /* Modal Styles */
+        .modal-content-3d {
+            border-radius: var(--card-radius-lg) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
+            overflow: hidden;
+        }
+
+        .modal-content-3d .modal-header {
+            background: #ffffff !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            padding: 1.25rem 1.5rem !important;
+        }
+
+        .modal-content-3d .modal-title {
+            font-weight: 800 !important;
+            color: #1e293b !important;
+        }
     </style>
 </head>
 <body>
@@ -183,69 +222,57 @@ if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadm
     <div class="main-content-wrapper p-0">
         <div class="header-banner page-specific-header no-print">
             <div class="container-fluid px-lg-4">
-                <h1>Kalender Kerja Perusahaan</h1>
-                <p>Kelola hari libur, acara perusahaan, dan lihat ulang tahun karyawan.</p>
+                <h1><i class="fa-solid fa-calendar-days me-2 text-primary-light"></i>Kalender Kerja Perusahaan</h1>
+                <p class="small mb-0 opacity-80">Kelola hari libur, acara khusus perusahaan, dan jadwal ulang tahun karyawan.</p>
             </div>
         </div>
 
-        <div class="dashboard-content">
+        <div class="dashboard-content px-0">
             <div class="container-fluid px-lg-4">
-                <div class="card shadow-sm">
-                    <div class="card-body p-lg-4">
-                        <div id='calendar'></div>
-                    </div>
+                <div class="main-calendar-card">
+                    <div id='calendar'></div>
                 </div>
-
-                <!--<div class="card shadow-sm mt-4">-->
-                <!--    <div class="card-header bg-light">-->
-                <!--        <h5 class="mb-0" id="event-list-title">Keterangan Acara & Ulang Tahun</h5>-->
-                <!--    </div>-->
-                <!--    <div class="card-body">-->
-                <!--        <ul class="list-group list-group-flush" id="event-list">-->
-                <!--           <li class="list-group-item text-muted">Memuat daftar acara...</li>-->
-                <!--        </ul>-->
-                <!--    </div>-->
-                <!--</div>-->
             </div>
         </div>
     </div>
 
+    <!-- Modal Event -->
     <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-3d">
                 <form id="eventForm">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="eventModalLabel"></h5>
+                        <h5 class="modal-title" id="eventModalLabel">Tambah Acara Baru</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body p-4">
                         <input type="hidden" id="eventId" name="id">
                         <div class="mb-3">
-                            <label for="eventDate" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" id="eventDate" name="tanggal_merah" readonly required>
+                            <label for="eventDate" class="form-label fw-bold small text-secondary">Tanggal</label>
+                            <input type="date" class="form-control rounded-3" id="eventDate" name="tanggal_merah" readonly required>
                         </div>
                         <div class="mb-3">
-                            <label for="eventDescription" class="form-label">Keterangan Acara</label>
-                            <input type="text" class="form-control" id="eventDescription" name="keterangan" required placeholder="Contoh: Libur Hari Raya Idul Fitri">
+                            <label for="eventDescription" class="form-label fw-bold small text-secondary">Keterangan Acara</label>
+                            <input type="text" class="form-control rounded-3" id="eventDescription" name="keterangan" required placeholder="Contoh: Libur Hari Raya Idul Fitri">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Status Hari</label>
-                            <div>
-                                <div class="form-check form-check-inline">
+                            <label class="form-label fw-bold small text-secondary">Status Hari</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
                                     <input class="form-check-input" type="radio" name="libur" id="liburYes" value="yes" checked>
-                                    <label class="form-check-label" for="liburYes">Hari Libur (Merah)</label>
+                                    <label class="form-check-label fw-semibold text-danger" for="liburYes">Hari Libur (Merah)</label>
                                 </div>
-                                <div class="form-check form-check-inline">
+                                <div class="form-check">
                                     <input class="form-check-input" type="radio" name="libur" id="liburNo" value="no">
-                                    <label class="form-check-label" for="liburNo">Acara Spesial (Kuning)</label>
+                                    <label class="form-check-label fw-semibold text-warning" for="liburNo">Acara Spesial (Oranye)</label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger me-auto" id="deleteEventBtn">Hapus</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary" id="saveEventBtn">Simpan</button>
+                    <div class="modal-footer bg-light p-3">
+                        <button type="button" class="btn btn-danger btn-sm rounded-3 fw-bold me-auto" id="deleteEventBtn"><i class="fa-solid fa-trash me-1"></i>Hapus</button>
+                        <button type="button" class="btn btn-secondary btn-sm rounded-3" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary btn-sm rounded-3 fw-bold" id="saveEventBtn"><i class="fa-solid fa-floppy-disk me-1"></i>Simpan</button>
                     </div>
                 </form>
             </div>
@@ -263,62 +290,11 @@ if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadm
         const eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
         const eventForm = document.getElementById('eventForm');
 
-        function updateEventList(events, view) {
-            const eventListEl = document.getElementById('event-list');
-            const eventListTitle = document.getElementById('event-list-title');
-            
-            eventListTitle.innerText = 'Keterangan Acara: ' + view.title;
-            eventListEl.innerHTML = ''; // Selalu kosongkan list sebelum diisi ulang
-
-            // Cara filter yang lebih andal menggunakan perbandingan timestamp
-            const eventsInView = events.filter(e => {
-                if (!e.start) return false; // Keamanan jika ada event tanpa tanggal
-                const eventTime = e.start.getTime(); // Waktu event dalam milidetik
-                const viewStartTime = view.activeStart.getTime(); // Waktu awal bulan yang terlihat
-                const viewEndTime = view.activeEnd.getTime(); // Waktu akhir bulan yang terlihat
-                
-                // Cek apakah waktu event berada di dalam rentang waktu yang terlihat
-                return eventTime >= viewStartTime && eventTime < viewEndTime;
-            });
-            
-            if (eventsInView.length === 0) {
-                eventListEl.innerHTML = `<li class="list-group-item text-muted">Tidak ada acara pada bulan ${view.title}.</li>`;
-                return;
-            }
-
-            // Urutkan acara berdasarkan tanggal
-            eventsInView.sort((a, b) => a.start.getTime() - b.start.getTime());
-
-            // Tampilkan setiap acara ke dalam list
-            eventsInView.forEach(event => {
-                let date = new Date(event.startStr + 'T00:00:00');
-                let formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'long' });
-                let badgeClass = '', badgeText = '';
-
-                if(event.classNames.includes('event-libur-merah')) { [badgeClass, badgeText] = ['bg-danger', 'Hari Libur']; }
-                else if (event.classNames.includes('event-spesial-kuning')) { [badgeClass, badgeText] = ['bg-warning text-dark', 'Acara Spesial']; }
-                else if (event.classNames.includes('event-ultah-biru')) { [badgeClass, badgeText] = ['bg-primary', 'Ulang Tahun']; }
-
-                eventListEl.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div><strong>${formattedDate}:</strong> ${event.title}</div>
-                    <span class="badge ${badgeClass} rounded-pill">${badgeText}</span>
-                </li>`;
-            });
-        }
-
         const calendar = new FullCalendar.Calendar(calendarEl, {
             locale: 'id',
             initialView: 'dayGridMonth',
             headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,listWeek' },
             events: 'api_get_events.php',
-            
-            eventsSet: function(info) {
-                try {
-                    updateEventList(info.events, calendar.view);
-                } catch(e) {
-                    console.error("Error saat memperbarui daftar acara:", e);
-                }
-            },
             
             dateClick: function(info) {
                 eventForm.reset();
@@ -371,6 +347,5 @@ if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadm
         });
     });
     </script>
-   
 </body>
 </html>
