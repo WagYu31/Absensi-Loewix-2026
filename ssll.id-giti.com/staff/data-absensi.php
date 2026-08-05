@@ -31,7 +31,6 @@ function getDistanceBetweenPoints($latitude1, $longitude1, $latitude2, $longitud
 $targetLat = -6.130189784035325;
 $targetLon = 106.75142085117402;
 
-// Fetch list of active employees for filter dropdown
 $list_karyawan = [];
 $res_kar = $conn->query("SELECT nip, nik, nama FROM karyawan WHERE status_karyawan = 'aktif' AND deleted_at IS NULL ORDER BY nama ASC");
 if ($res_kar) {
@@ -88,7 +87,6 @@ if ($currentMonthYear && isWorkingDay($today, $holidays)) {
 
 $selectedDate = $_GET['tgl'] ?? $defaultDate;
 
-// Build Dynamic SQL Query based on filters
 $sql = "SELECT am.*, k.nama, k.nik, k.pas_photo 
         FROM absen_manual am
         JOIN karyawan k ON am.nip = k.nip
@@ -124,7 +122,6 @@ $groupedData = [
 ];
 
 while ($row = $result->fetch_assoc()) {
-    // Location Filter Logic
     $isAtOffice = false;
     if (!empty($row['lokasi_koordinat']) && $row['lokasi_koordinat'] !== "Koordinat tidak valid/tersedia") {
         $coords = explode(',', $row['lokasi_koordinat']);
@@ -190,6 +187,22 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
         .abs-header-flex { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px; }
         .badge-group { display: flex; gap: 4px; align-items: center; }
         
+        .btn-edit-time {
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-edit-time:hover {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
         .filter-section-card {
             background: #ffffff;
             border-radius: 14px;
@@ -388,7 +401,12 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
                                                     <div class="abs-content mt-0">
                                                         <img src="../uploads/attendance/<?php echo htmlspecialchars($item['image']); ?>" class="abs-photo" onclick="previewImage(this.src)">
                                                         <div class="abs-details">
-                                                            <div class="fw-bold text-primary mb-1"><i class="fa-solid fa-clock me-1"></i><?php echo date('H:i:s', strtotime($item['tgl_absen'])); ?></div>
+                                                            <div class="fw-bold text-primary mb-1 d-flex align-items-center justify-content-between">
+                                                                <span><i class="fa-solid fa-clock me-1"></i><?php echo date('H:i:s', strtotime($item['tgl_absen'])); ?></span>
+                                                                <button class="btn-edit-time" title="Edit Jam Absen Ini" onclick="openEditTimeModal(<?php echo $item['id']; ?>, '<?php echo date('H:i:s', strtotime($item['tgl_absen'])); ?>', '<?php echo htmlspecialchars(addslashes($data['details']['nama'])); ?>', '<?php echo strtoupper($type); ?>')">
+                                                                    <i class="fa-solid fa-pen-to-square me-1"></i>Edit Jam
+                                                                </button>
+                                                            </div>
                                                             <div class="text-muted" style="white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
                                                                 <i class="fa-solid fa-map-marker-alt me-1 text-danger"></i>
                                                                 <?php if (!empty($item['lokasi_koordinat']) && $item['lokasi_koordinat'] !== "Koordinat tidak valid/tersedia"): ?>
@@ -423,11 +441,36 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
         </div>
     </div>
 
+    <!-- Image Preview Modal -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 bg-transparent shadow-none">
                 <div class="modal-body p-0 d-flex justify-content-center">
                     <img src="" id="modalImg" class="modal-img-preview shadow-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Time Modal -->
+    <div class="modal fade" id="editTimeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header py-2 bg-light">
+                    <h6 class="modal-title fw-bold text-dark mb-0"><i class="fa-solid fa-clock me-2 text-primary"></i>Edit Jam Absen</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <input type="hidden" id="editTimeId">
+                    <p class="small text-muted mb-2" id="editTimeEmployeeLabel"></p>
+                    <div class="form-group mb-1">
+                        <label class="small fw-bold mb-1">Pilih Jam Baru (HH:MM:SS):</label>
+                        <input type="time" step="1" class="form-control form-control-lg fw-bold text-center text-primary" id="editTimeInput">
+                    </div>
+                </div>
+                <div class="modal-footer py-2 bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary btn-sm fw-bold" onclick="saveEditedTime()"><i class="fa-solid fa-floppy-disk me-1"></i>Simpan</button>
                 </div>
             </div>
         </div>
@@ -452,6 +495,43 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
     function previewImage(src) {
         $('#modalImg').attr('src', src);
         new bootstrap.Modal(document.getElementById('imageModal')).show();
+    }
+
+    function openEditTimeModal(id, currentTime, employeeName, typeName) {
+        $('#editTimeId').val(id);
+        $('#editTimeInput').val(currentTime);
+        $('#editTimeEmployeeLabel').html(`Karyawan: <strong>${employeeName}</strong><br>Absen: <strong>${typeName}</strong>`);
+        new bootstrap.Modal(document.getElementById('editTimeModal')).show();
+    }
+
+    function saveEditedTime() {
+        const id = $('#editTimeId').val();
+        const newTime = $('#editTimeInput').val();
+        if (!newTime) {
+            alert('Silakan pilih jam baru terlebih dahulu.');
+            return;
+        }
+
+        $('#fullScreenLoader').removeClass('d-none');
+        $.ajax({
+            url: 'edit_jam_absen.php',
+            type: 'POST',
+            data: { id_absen: id, jam_baru: newTime },
+            dataType: 'json',
+            success: function(res) {
+                $('#fullScreenLoader').addClass('d-none');
+                if (res.success) {
+                    alert(res.message);
+                    location.reload();
+                } else {
+                    alert(res.message);
+                }
+            },
+            error: function() {
+                $('#fullScreenLoader').addClass('d-none');
+                alert('Terjadi kesalahan koneksi.');
+            }
+        });
     }
 
     function validateAttendance(id, status, button) {
