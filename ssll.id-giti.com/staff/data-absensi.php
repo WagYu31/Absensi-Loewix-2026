@@ -10,6 +10,10 @@ include '../conn.php';
 
 $bulan = $_GET['bulan'] ?? date('m');
 $tahun = $_GET['tahun'] ?? date('Y');
+$filter_karyawan = $_GET['karyawan'] ?? '';
+$filter_lokasi = $_GET['lokasi'] ?? '';
+$filter_tipe = $_GET['tipe'] ?? '';
+
 $bulanNames = ['01'=>'Januari','02'=>'Februari','03'=>'Maret','04'=>'April','05'=>'Mei','06'=>'Juni','07'=>'Juli','08'=>'Agustus','09'=>'September','10'=>'Oktober','11'=>'November','12'=>'Desember'];
 
 function getDistanceBetweenPoints($latitude1, $longitude1, $latitude2, $longitude2) {
@@ -26,6 +30,15 @@ function getDistanceBetweenPoints($latitude1, $longitude1, $latitude2, $longitud
 
 $targetLat = -6.130189784035325;
 $targetLon = 106.75142085117402;
+
+// Fetch list of active employees for filter dropdown
+$list_karyawan = [];
+$res_kar = $conn->query("SELECT nip, nik, nama FROM karyawan WHERE status_karyawan = 'aktif' AND deleted_at IS NULL ORDER BY nama ASC");
+if ($res_kar) {
+    while($rk = $res_kar->fetch_assoc()) {
+        $list_karyawan[] = $rk;
+    }
+}
 
 $holidays = [];
 $sql_holidays = "SELECT tanggal_merah FROM kalender_kerja WHERE libur = 'yes' AND MONTH(tanggal_merah) = ? AND YEAR(tanggal_merah) = ?";
@@ -75,13 +88,32 @@ if ($currentMonthYear && isWorkingDay($today, $holidays)) {
 
 $selectedDate = $_GET['tgl'] ?? $defaultDate;
 
+// Build Dynamic SQL Query based on filters
 $sql = "SELECT am.*, k.nama, k.nik, k.pas_photo 
         FROM absen_manual am
         JOIN karyawan k ON am.nip = k.nip
-        WHERE DATE(am.tgl_absen) = ? AND k.deleted_at IS NULL
-        ORDER BY am.tgl_absen ASC";
+        WHERE DATE(am.tgl_absen) = ? AND k.deleted_at IS NULL";
+
+$params = [$selectedDate];
+$types = "s";
+
+if (!empty($filter_karyawan)) {
+    $sql .= " AND (k.nip = ? OR k.nik = ?)";
+    $params[] = $filter_karyawan;
+    $params[] = $filter_karyawan;
+    $types .= "ss";
+}
+
+if (!empty($filter_tipe) && in_array($filter_tipe, ['masuk', 'pulang'])) {
+    $sql .= " AND am.tipe_absen = ?";
+    $params[] = $filter_tipe;
+    $types .= "s";
+}
+
+$sql .= " ORDER BY am.tgl_absen ASC";
+
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $selectedDate);
+$stmt->bind_param($types, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -92,6 +124,19 @@ $groupedData = [
 ];
 
 while ($row = $result->fetch_assoc()) {
+    // Location Filter Logic
+    $isAtOffice = false;
+    if (!empty($row['lokasi_koordinat']) && $row['lokasi_koordinat'] !== "Koordinat tidak valid/tersedia") {
+        $coords = explode(',', $row['lokasi_koordinat']);
+        if (count($coords) == 2) {
+            $dist = getDistanceBetweenPoints($coords[0], $coords[1], $targetLat, $targetLon);
+            if ($dist <= 150) $isAtOffice = true;
+        }
+    }
+
+    if ($filter_lokasi === 'kantor' && !$isAtOffice) continue;
+    if ($filter_lokasi === 'luar' && $isAtOffice) continue;
+
     $statusKey = 'Verification';
     if ($row['verif'] === 'Yes') {
         $statusKey = 'Approved';
@@ -116,7 +161,7 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Validasi Absensi - Grav-Tech</title>
+    <title>Validasi Absensi - Gravitti Tech</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a97d5963a4.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../assets/css/main-styles.css">
@@ -145,6 +190,15 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
         .abs-header-flex { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px; }
         .badge-group { display: flex; gap: 4px; align-items: center; }
         
+        .filter-section-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.7); z-index: 9999;
@@ -168,64 +222,128 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
     <div class="main-content-wrapper p-0">
         <div class="header-banner page-specific-header no-print">
             <div class="container-fluid px-lg-4">
-                <h1 class="fs-4">Validasi Absensi Manual</h1>
+                <h1 class="fs-4 fw-bold">Validasi Absensi Manual</h1>
                 <p class="small opacity-75 mb-0">Verifikasi kehadiran foto harian karyawan</p>
             </div>
         </div>
         <div class="dashboard-content">
             <div class="container-fluid px-lg-4">
-                <div class="card shadow-sm mb-3">
-                    <div class="card-body py-2">
-                        <form method="GET" class="row g-2 align-items-end mb-2">
-                            <div class="col-6 col-md-3">
-                                <label class="small fw-bold">Bulan</label>
-                                <select name="bulan" class="form-select form-select-sm">
-                                    <?php foreach ($bulanNames as $num => $name): ?>
-                                        <option value="<?php echo $num; ?>" <?php if ($num == $bulan) echo 'selected'; ?>><?php echo $name; ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-6 col-md-2">
-                                <label class="small fw-bold">Tahun</label>
-                                <select name="tahun" class="form-select form-select-sm">
-                                    <?php for ($i = date('Y'); $i >= date('Y') - 3; $i--): ?>
-                                        <option value="<?php echo $i; ?>" <?php if ($i == $tahun) echo 'selected'; ?>><?php echo $i; ?></option>
-                                    <?php endfor; ?>
-                                </select>
-                            </div>
-                            <div class="col-12 col-md-2">
-                                <button type="submit" class="btn btn-primary btn-sm w-100">Tampilkan</button>
-                            </div>
-                        </form>
-                        <div class="date-wrapper">
-                            <?php foreach ($dateChunks as $chunk): ?>
-                            <div class="date-row">
-                                <?php foreach ($chunk as $wd): ?>
-                                    <a href="?bulan=<?php echo $bulan; ?>&tahun=<?php echo $tahun; ?>&tgl=<?php echo $wd['date']; ?>" class="date-btn <?php echo ($selectedDate === $wd['date']) ? 'active' : ''; ?>">
-                                        <span class="day-num"><?php echo $wd['day']; ?></span>
-                                        <span class="day-name"><?php echo $nama_hari_map[$wd['dayName']]; ?></span>
-                                    </a>
+                
+                <!-- Expanded Multi-Filter Card -->
+                <div class="filter-section-card mb-3">
+                    <form method="GET" id="filterForm" class="row g-2 align-items-end mb-2">
+                        <input type="hidden" name="tgl" value="<?php echo htmlspecialchars($selectedDate); ?>">
+                        
+                        <div class="col-6 col-md-2">
+                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-calendar me-1"></i>Bulan</label>
+                            <select name="bulan" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <?php foreach ($bulanNames as $num => $name): ?>
+                                    <option value="<?php echo $num; ?>" <?php if ($num == $bulan) echo 'selected'; ?>><?php echo $name; ?></option>
                                 <?php endforeach; ?>
+                            </select>
+                        </div>
+                        
+                        <div class="col-6 col-md-2">
+                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-calendar-days me-1"></i>Tahun</label>
+                            <select name="tahun" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <?php for ($i = date('Y'); $i >= date('Y') - 3; $i--): ?>
+                                    <option value="<?php echo $i; ?>" <?php if ($i == $tahun) echo 'selected'; ?>><?php echo $i; ?></option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-user me-1"></i>Karyawan</label>
+                            <select name="karyawan" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="">-- Semua Karyawan --</option>
+                                <?php foreach ($list_karyawan as $kar): ?>
+                                    <option value="<?php echo htmlspecialchars($kar['nip']); ?>" <?php if ($filter_karyawan == $kar['nip']) echo 'selected'; ?>>
+                                        <?php echo htmlspecialchars($kar['nama']) . ' (NIK: ' . htmlspecialchars($kar['nik']) . ')'; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-location-dot me-1"></i>Lokasi Absen</label>
+                            <select name="lokasi" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="">Semua Lokasi</option>
+                                <option value="kantor" <?php if ($filter_lokasi == 'kantor') echo 'selected'; ?>>Di Kantor (&le;150m)</option>
+                                <option value="luar" <?php if ($filter_lokasi == 'luar') echo 'selected'; ?>>Luar Kantor (&gt;150m)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-md-2">
+                            <label class="small fw-bold text-secondary mb-1"><i class="fa-solid fa-clock me-1"></i>Tipe Absen</label>
+                            <select name="tipe" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="">Semua Tipe</option>
+                                <option value="masuk" <?php if ($filter_tipe == 'masuk') echo 'selected'; ?>>Hanya Masuk</option>
+                                <option value="pulang" <?php if ($filter_tipe == 'pulang') echo 'selected'; ?>>Hanya Pulang</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-1">
+                            <a href="data-absensi.php" class="btn btn-outline-secondary btn-sm w-100" title="Reset Filter"><i class="fa-solid fa-rotate-left"></i> Reset</a>
+                        </div>
+                    </form>
+
+                    <!-- Realtime Search Input -->
+                    <div class="row g-2 mt-1">
+                        <div class="col-12">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                <input type="text" id="liveSearchInput" class="form-control form-control-sm" placeholder="Cari nama karyawan atau NIK secara cepat..." onkeyup="filterLiveCards()">
                             </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-2 text-muted opacity-25">
+
+                    <!-- Working Days Picker -->
+                    <div class="date-wrapper mt-2">
+                        <?php foreach ($dateChunks as $chunk): ?>
+                        <div class="date-row">
+                            <?php foreach ($chunk as $wd): ?>
+                                <a href="?bulan=<?php echo $bulan; ?>&tahun=<?php echo $tahun; ?>&karyawan=<?php echo urlencode($filter_karyawan); ?>&lokasi=<?php echo urlencode($filter_lokasi); ?>&tipe=<?php echo urlencode($filter_tipe); ?>&tgl=<?php echo $wd['date']; ?>" class="date-btn <?php echo ($selectedDate === $wd['date']) ? 'active' : ''; ?>">
+                                    <span class="day-num"><?php echo $wd['day']; ?></span>
+                                    <span class="day-name"><?php echo $nama_hari_map[$wd['dayName']]; ?></span>
+                                </a>
                             <?php endforeach; ?>
                         </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
+                <!-- Status Nav Tabs -->
                 <ul class="nav nav-tabs mb-4" id="absTab" role="tablist">
-                    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#verification">Verification (<?php echo count($groupedData['Verification']); ?>)</button></li>
-                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#approved">Approved (<?php echo count($groupedData['Approved']); ?>)</button></li>
-                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#rejected">Rejected (<?php echo count($groupedData['Rejected']); ?>)</button></li>
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#verification">
+                            <i class="fa-solid fa-hourglass-half me-1"></i>Verification (<?php echo count($groupedData['Verification']); ?>)
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#approved">
+                            <i class="fa-solid fa-circle-check me-1 text-success"></i>Approved (<?php echo count($groupedData['Approved']); ?>)
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rejected">
+                            <i class="fa-solid fa-circle-xmark me-1 text-danger"></i>Rejected (<?php echo count($groupedData['Rejected']); ?>)
+                        </button>
+                    </li>
                 </ul>
 
                 <div class="tab-content">
                     <?php foreach (['Verification', 'Approved', 'Rejected'] as $statusTab): ?>
                     <div class="tab-pane fade <?php echo ($statusTab === 'Verification') ? 'show active' : ''; ?>" id="<?php echo strtolower($statusTab); ?>">
                         <?php if (empty($groupedData[$statusTab])): ?>
-                            <div class="text-center py-5 text-muted small">Tidak ada data absensi untuk kategori ini pada tanggal <?php echo date('d/m/Y', strtotime($selectedDate)); ?>.</div>
+                            <div class="text-center py-5 text-muted small bg-white rounded shadow-sm">
+                                <i class="fa-solid fa-clipboard-check fa-2x mb-2 text-muted opacity-50"></i><br>
+                                Tidak ada data absensi untuk kategori ini pada tanggal <?php echo date('d/m/Y', strtotime($selectedDate)); ?>.
+                            </div>
                         <?php else: ?>
                             <?php foreach ($groupedData[$statusTab] as $nip => $data): ?>
-                            <div class="card employee-card">
+                            <div class="card employee-card search-target-card" data-employee-name="<?php echo htmlspecialchars(strtolower($data['details']['nama'])); ?>" data-employee-nik="<?php echo htmlspecialchars(strtolower($data['details']['nik'])); ?>">
                                 <div class="card-header bg-white py-2 border-0">
                                     <div class="profile-info">
                                         <img src="../uploads/<?php echo htmlspecialchars($data['details']['pas_photo'] ?: 'default.png'); ?>" class="prof-img">
@@ -318,6 +436,19 @@ $dateChunks = array_chunk($workingDays, ceil(count($workingDays) / 2));
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+    function filterLiveCards() {
+        const query = $('#liveSearchInput').val().toLowerCase().trim();
+        $('.search-target-card').each(function() {
+            const name = $(this).attr('data-employee-name') || '';
+            const nik = $(this).attr('data-employee-nik') || '';
+            if (name.includes(query) || nik.includes(query)) {
+                $(this).removeClass('d-none');
+            } else {
+                $(this).addClass('d-none');
+            }
+        });
+    }
+
     function previewImage(src) {
         $('#modalImg').attr('src', src);
         new bootstrap.Modal(document.getElementById('imageModal')).show();
