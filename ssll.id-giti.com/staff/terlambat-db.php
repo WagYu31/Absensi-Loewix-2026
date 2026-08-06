@@ -190,15 +190,37 @@ $jumlah_kejadian_tidak_absen = $total_tidak_absen_masuk + $total_tidak_absen_pul
 $denda_tidak_absen_rp = $jumlah_kejadian_tidak_absen * $gabsen;
 $grand_total_rp = $denda_terlambat_rp + $denda_tidak_absen_rp;
 
-echo "<td>" . $total_menit_terlambat . "</td>";
-echo "<td>Rp " . number_format($denda_terlambat_rp, 0, ',', '.') . "</td>";
-echo "<td>" . $jumlah_kejadian_tidak_absen . "</td>";
-echo "<td>Rp " . number_format($denda_tidak_absen_rp, 0, ',', '.') . "</td>";
-echo "<td>" . $total_hadir . "</td>";
-echo "<td>" . $total_cuti . "</td>";
-$bg_alfa = ($total_alfa > 0) ? "style='background: rgba(255, 0, 0, 0.2);'" : "";
-echo "<td $bg_alfa>" . $total_alfa . "</td>";
-echo "<td style='background:#e9ecef;'><strong>Rp " . number_format($grand_total_rp, 0, ',', '.') . "</strong></td>";
+// Modern Badges Output
+$menit_badge = ($total_menit_terlambat > 0) 
+    ? "<span class='badge bg-warning-subtle text-dark border border-warning fw-bold px-2 py-1'>" . $total_menit_terlambat . " m</span>" 
+    : "<span class='text-muted'>0</span>";
+
+$tidak_absen_badge = ($jumlah_kejadian_tidak_absen > 0) 
+    ? "<span class='badge bg-danger-subtle text-danger border border-danger-subtle fw-bold px-2 py-1'>" . $jumlah_kejadian_tidak_absen . "</span>" 
+    : "<span class='text-muted'>0</span>";
+
+$hadir_badge = "<span class='badge bg-success-subtle text-success border border-success-subtle fw-bold px-2 py-1'>" . $total_hadir . "</span>";
+
+$cuti_badge = ($total_cuti > 0) 
+    ? "<span class='badge bg-info-subtle text-info border border-info-subtle fw-bold px-2 py-1'>" . $total_cuti . "</span>" 
+    : "<span class='text-muted'>0</span>";
+
+$alfa_badge = ($total_alfa > 0) 
+    ? "<span class='badge bg-danger text-white fw-bold px-2 py-1'>" . $total_alfa . "</span>" 
+    : "<span class='text-muted'>0</span>";
+
+$total_denda_display = ($grand_total_rp > 0) 
+    ? "<span class='badge bg-danger-subtle text-danger border border-danger-subtle fw-bold px-2.5 py-1 fs-6'>Rp " . number_format($grand_total_rp, 0, ',', '.') . "</span>" 
+    : "<span class='text-muted font-monospace'>Rp 0</span>";
+
+echo "<td>" . $menit_badge . "</td>";
+echo "<td class='fw-medium text-secondary'>Rp " . number_format($denda_terlambat_rp, 0, ',', '.') . "</td>";
+echo "<td>" . $tidak_absen_badge . "</td>";
+echo "<td class='fw-medium text-secondary'>Rp " . number_format($denda_tidak_absen_rp, 0, ',', '.') . "</td>";
+echo "<td>" . $hadir_badge . "</td>";
+echo "<td>" . $cuti_badge . "</td>";
+echo "<td>" . $alfa_badge . "</td>";
+echo "<td style='background: rgba(241, 245, 249, 0.7);'>" . $total_denda_display . "</td>";
 
 unset($attendanceData, $holidays, $approvedLeaves);
 ?>
