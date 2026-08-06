@@ -309,15 +309,21 @@ $nama_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "
             overflow: hidden;
             border: 1px solid #cbd5e1;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            margin-top: 10px;
+            margin-top: 8px;
+            background: #f1f5f9;
         }
 
         .mobile-photo-img {
             width: 100%;
-            height: 160px;
+            height: 130px;
             object-fit: cover !important;
-            object-position: center top !important; /* Perfect face framing */
+            object-position: center 35% !important; /* Perfect human face focal alignment */
             display: block;
+            transition: transform 0.2s ease;
+        }
+
+        .mobile-photo-img:active {
+            transform: scale(0.97);
         }
 
         .status-pill {
@@ -328,6 +334,30 @@ $nama_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "
             display: inline-flex;
             align-items: center;
             gap: 4px;
+        }
+
+        @media (max-width: 767.98px) {
+            .main-content-wrapper {
+                padding-bottom: 110px !important; /* Prevents floating bottom nav from overlapping cards */
+            }
+            .dashboard-content {
+                padding-bottom: 30px !important;
+            }
+            .kpi-summary-row {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+            }
+            .kpi-summary-card {
+                padding: 10px 12px !important;
+            }
+            .kpi-value {
+                font-size: 1.15rem !important;
+            }
+            .kpi-icon-box {
+                width: 36px !important;
+                height: 36px !important;
+                font-size: 0.95rem !important;
+            }
         }
     </style>
 </head>
