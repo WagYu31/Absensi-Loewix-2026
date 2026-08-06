@@ -158,44 +158,53 @@ if ($hour < 11) {
             gap: 10px;
         }
 
-        /* Attendance Metrics Grid */
+        /* Executive Metric Box Styles */
         .metric-item-card {
-            background: #ffffff;
-            border: 1.5px solid #f1f5f9;
-            border-radius: 16px;
-            padding: 16px;
-            transition: all 0.2s ease;
+            border-radius: 18px;
+            transition: all 0.25s ease;
             position: relative;
         }
 
         .metric-item-card:hover {
-            border-color: #e2e8f0;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
         }
 
-        .metric-indicator-top {
-            position: absolute;
-            top: 0;
-            left: 20px;
-            right: 20px;
-            height: 3px;
-            border-radius: 0 0 4px 4px;
+        .metric-box-blue {
+            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%) !important;
+            border: 1.5px solid #bfdbfe !important;
         }
 
-        .metric-val {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #0f172a;
-            line-height: 1.1;
-            margin-top: 4px;
-            margin-bottom: 2px;
+        .metric-box-green {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%) !important;
+            border: 1.5px solid #bbf7d0 !important;
+        }
+
+        .metric-box-amber {
+            background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%) !important;
+            border: 1.5px solid #fde68a !important;
+        }
+
+        .metric-box-rose {
+            background: linear-gradient(135deg, #fff1f2 0%, #ffffff 100%) !important;
+            border: 1.5px solid #fecdd3 !important;
+        }
+
+        .metric-icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
         }
 
         .metric-lbl {
-            font-size: 0.73rem;
-            font-weight: 700;
-            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -225,7 +234,7 @@ if ($hour < 11) {
             pointer-events: none;
         }
 
-        /* Quick Action Grid (Desktop vs Mobile Responsive) */
+        /* Quick Action Grid */
         .qa-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -288,7 +297,6 @@ if ($hour < 11) {
             font-weight: 500;
         }
 
-        /* Distinct Icon Styles */
         .icon-blue { background: #eff6ff; color: #2563eb; }
         .icon-green { background: #f0fdf4; color: #16a34a; }
         .icon-amber { background: #fffbeb; color: #d97706; }
@@ -362,41 +370,59 @@ if ($hour < 11) {
 
                         <div class="p-4">
                             <div class="row g-3 mb-3">
+                                
                                 <div class="col-6 col-sm-3">
-                                    <div class="metric-item-card">
-                                        <div class="metric-indicator-top bg-primary"></div>
-                                        <div class="metric-lbl">Hari Kerja</div>
-                                        <div class="metric-val text-primary"><?php echo $total_hari_kerja_dash; ?></div>
-                                        <span class="small text-muted" style="font-size: 0.7rem;">Efektif</span>
+                                    <div class="metric-item-card metric-box-blue p-3 h-100 d-flex flex-column justify-content-between">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <div class="metric-lbl text-primary">Hari Kerja</div>
+                                            <div class="metric-icon-box bg-primary text-white"><i class="fa-solid fa-calendar-check"></i></div>
+                                        </div>
+                                        <div>
+                                            <div class="text-primary mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $total_hari_kerja_dash; ?> <span class="fs-6 text-muted fw-normal">Hari</span></div>
+                                            <span class="badge bg-primary-subtle text-primary fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Efektif Bulan Ini</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col-6 col-sm-3">
-                                    <div class="metric-item-card">
-                                        <div class="metric-indicator-top bg-success"></div>
-                                        <div class="metric-lbl">Kehadiran</div>
-                                        <div class="metric-val text-success"><?php echo $jumlah_hadir_dash; ?></div>
-                                        <span class="small text-muted" style="font-size: 0.7rem;">Total Hadir</span>
+                                    <div class="metric-item-card metric-box-green p-3 h-100 d-flex flex-column justify-content-between">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <div class="metric-lbl text-success">Kehadiran</div>
+                                            <div class="metric-icon-box bg-success text-white"><i class="fa-solid fa-user-check"></i></div>
+                                        </div>
+                                        <div>
+                                            <div class="text-success mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $jumlah_hadir_dash; ?> <span class="fs-6 text-muted fw-normal">Hari</span></div>
+                                            <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Total Hadir</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col-6 col-sm-3">
-                                    <div class="metric-item-card">
-                                        <div class="metric-indicator-top bg-warning"></div>
-                                        <div class="metric-lbl">Cuti / Izin</div>
-                                        <div class="metric-val text-warning"><?php echo $jumlah_izin_sakit_dash; ?></div>
-                                        <span class="small text-muted" style="font-size: 0.7rem;">Disetujui</span>
+                                    <div class="metric-item-card metric-box-amber p-3 h-100 d-flex flex-column justify-content-between">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <div class="metric-lbl text-warning" style="color: #b45309;">Cuti / Izin</div>
+                                            <div class="metric-icon-box bg-warning text-white"><i class="fa-solid fa-umbrella-beach"></i></div>
+                                        </div>
+                                        <div>
+                                            <div class="text-warning mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $jumlah_izin_sakit_dash; ?> <span class="fs-6 text-muted fw-normal">Hari</span></div>
+                                            <span class="badge bg-warning-subtle text-warning-emphasis fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Izin Disetujui</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col-6 col-sm-3">
-                                    <div class="metric-item-card">
-                                        <div class="metric-indicator-top bg-danger"></div>
-                                        <div class="metric-lbl">Terlambat</div>
-                                        <div class="metric-val text-danger"><?php echo $total_menit_terlambat_dash; ?></div>
-                                        <span class="small text-muted" style="font-size: 0.7rem;">Menit akumulasi</span>
+                                    <div class="metric-item-card metric-box-rose p-3 h-100 d-flex flex-column justify-content-between">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <div class="metric-lbl text-danger">Terlambat</div>
+                                            <div class="metric-icon-box bg-danger text-white"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                                        </div>
+                                        <div>
+                                            <div class="text-danger mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $total_menit_terlambat_dash; ?> <span class="fs-6 text-muted fw-normal">Mnt</span></div>
+                                            <span class="badge bg-danger-subtle text-danger fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Akumulasi Menit</span>
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
 
                             <div class="text-end">
@@ -440,7 +466,7 @@ if ($hour < 11) {
                 </div>
             </div>
 
-            <!-- 3. QUICK ACTION MENU GRID (DESKTOP 4-COL vs MOBILE 2-COL) -->
+            <!-- 3. QUICK ACTION MENU GRID -->
             <div class="mb-4">
                 <h6 class="fw-extrabold text-dark mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>Akses Cepat Menu Karyawan</h6>
                 <div class="qa-grid">
