@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Cek apakah pengguna telah login
 if (!isset($_SESSION['nip']) || $_SESSION['role'] !== 'karyawan') {
     header('Location: ../index.php');
     exit();
@@ -14,7 +13,20 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
 $asset_version = time();
 
 $words = explode(' ', trim($nama));
+$firstName = htmlspecialchars($words[0]);
 $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
+
+// Time-based greeting
+$hour = date('H');
+if ($hour < 11) {
+    $greeting = "Selamat Pagi";
+} elseif ($hour < 15) {
+    $greeting = "Selamat Siang";
+} elseif ($hour < 18) {
+    $greeting = "Selamat Sore";
+} else {
+    $greeting = "Selamat Malam";
+}
 ?>
 
 <!DOCTYPE html>
@@ -25,9 +37,7 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Karyawan - Gravitti Tech</title>
-    <meta name="description" content="Dashboard profesional untuk karyawan Gravitti Tech" />
-
-    <!-- Google Fonts: Plus Jakarta Sans -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
@@ -41,223 +51,252 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
 
     <style>
         :root {
-            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0284c7 100%);
-            --card-radius-lg: 24px;
-            --primary-3d: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
-            --success-3d: linear-gradient(135deg, #059669 0%, #10b981 50%, #047857 100%);
+            --bg-canvas: #f8fafc;
+            --card-radius: 20px;
+            --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            --hero-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #0369a1 100%);
+            --salary-gradient: linear-gradient(135deg, #064e3b 0%, #047857 60%, #0f766e 100%);
         }
 
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
-            background: #f1f5f9 !important;
+            background-color: var(--bg-canvas) !important;
             color: #0f172a;
         }
 
         .main-content-wrapper {
-            background: #f1f5f9;
+            background-color: var(--bg-canvas);
             background-image: 
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%) !important;
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 50%) !important;
             min-height: 100vh;
-            padding-bottom: 120px !important;
+            padding-bottom: 110px !important;
         }
 
-        /* Hero Header Banner */
-        .page-specific-header {
-            background: var(--header-gradient) !important;
+        /* Hero Profile Banner Container */
+        .hero-banner-container {
+            background: var(--hero-gradient);
+            border-radius: 28px;
+            padding: 2.25rem;
             color: #ffffff;
-            padding: 2.25rem 0 4.5rem 0 !important;
-            margin-bottom: -50px !important;
-            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.25) !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.3);
+            margin-bottom: 2rem;
         }
 
-        .page-specific-header h1 {
-            font-weight: 800 !important;
-            font-size: 1.65rem !important;
-            letter-spacing: -0.5px;
-            color: #ffffff !important;
+        .hero-banner-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        /* Glassmorphic Cards */
-        .card-3d-modern {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(20px) saturate(180%) !important;
-            border-radius: var(--card-radius-lg) !important;
-            border: 1px solid rgba(226, 232, 240, 0.9) !important;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04) !important;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-        }
-
-        .card-3d-modern:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 16px 35px rgba(37, 99, 235, 0.1) !important;
-        }
-
-        /* Avatar Box */
-        .avatar-circle-dash {
-            width: 75px;
-            height: 75px;
+        .avatar-circle-hero {
+            width: 82px;
+            height: 82px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3.5px solid #ffffff;
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+            border: 3.5px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: #ffffff;
             font-weight: 800;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
 
-        .btn-3d-edit {
-            background: var(--primary-3d) !important;
-            color: #ffffff !important;
-            border: none !important;
-            font-weight: 800 !important;
-            font-size: 0.82rem !important;
-            border-radius: 12px !important;
-            padding: 9px 20px !important;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
-            transition: all 0.2s ease !important;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none !important;
+        .hero-pill-badge {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #f8fafc;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 50px;
         }
 
-        .btn-3d-edit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4) !important;
-            color: #ffffff !important;
-        }
-
-        /* Stat Grid */
-        .stat-grid-3d {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .stat-mini-card-3d {
+        /* Modern Executive Card */
+        .exec-card {
             background: #ffffff;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 18px;
-            padding: 14px;
-            transition: all 0.2s ease;
-        }
-
-        .stat-mini-card-3d:hover {
-            transform: translateY(-2px);
-            border-color: #3b82f6;
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.1);
-        }
-
-        .stat-icon-badge {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-        }
-
-        .stat-val-3d {
-            font-size: 1.4rem;
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 2px;
-        }
-
-        .stat-lbl-3d {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        /* Salary Card */
-        .salary-card-3d {
-            background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #065f46 100%) !important;
-            color: #ffffff !important;
-            box-shadow: 0 15px 35px rgba(5, 150, 105, 0.25) !important;
-            position: relative;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
         }
 
-        /* Quick Action Grid */
-        .quick-action-grid-3d {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+        .exec-card:hover {
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+            border-color: #cbd5e1;
         }
 
-        @media (max-width: 768px) {
-            .quick-action-grid-3d {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 10px;
+        .card-header-clean {
+            padding: 18px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+        }
+
+        .card-title-clean {
+            font-size: 0.98rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Attendance Metrics Grid */
+        .metric-item-card {
+            background: #ffffff;
+            border: 1.5px solid #f1f5f9;
+            border-radius: 16px;
+            padding: 16px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .metric-item-card:hover {
+            border-color: #e2e8f0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+        }
+
+        .metric-indicator-top {
+            position: absolute;
+            top: 0;
+            left: 20px;
+            right: 20px;
+            height: 3px;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .metric-val {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.1;
+            margin-top: 4px;
+            margin-bottom: 2px;
+        }
+
+        .metric-lbl {
+            font-size: 0.73rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Salary Card Executive */
+        .salary-exec-card {
+            background: var(--salary-gradient);
+            border-radius: var(--card-radius);
+            color: #ffffff;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px -10px rgba(4, 120, 87, 0.35);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .salary-exec-card::after {
+            content: '';
+            position: absolute;
+            bottom: -40%;
+            right: -20%;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(52, 211, 153, 0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Quick Action Grid (Desktop vs Mobile Responsive) */
+        .qa-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 991.98px) {
+            .qa-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
             }
         }
 
-        .quick-action-card-3d {
+        .qa-card-item {
             background: #ffffff;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 20px;
-            padding: 1rem 0.5rem;
-            text-align: center;
-            text-decoration: none !important;
-            color: #334155 !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 16px 18px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
+            gap: 14px;
+            text-decoration: none !important;
+            color: #0f172a !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
 
-        .quick-action-card-3d:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.15);
+        .qa-card-item:hover {
+            transform: translateY(-3px);
             border-color: #3b82f6;
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.12);
             color: #2563eb !important;
         }
 
-        .quick-action-icon-3d {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
+        .qa-icon-wrapper {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-            transition: all 0.2s ease;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
         }
 
-        .quick-action-card-3d:hover .quick-action-icon-3d {
+        .qa-card-item:hover .qa-icon-wrapper {
             transform: scale(1.08);
         }
 
-        .qa-text-3d {
-            font-size: 0.75rem;
-            font-weight: 800;
+        .qa-text-title {
+            font-size: 0.88rem;
+            font-weight: 700;
             line-height: 1.2;
         }
 
-        .qa-icon-profile { background: linear-gradient(135deg, #dbeafe, #eff6ff); color: #2563eb; }
-        .qa-icon-absen { background: linear-gradient(135deg, #dcfce7, #f0fdf4); color: #16a34a; }
-        .qa-icon-gaji { background: linear-gradient(135deg, #fef3c7, #fffbeb); color: #d97706; }
-        .qa-icon-cuti { background: linear-gradient(135deg, #f3e8ff, #faf5ff); color: #9333ea; }
-        .qa-icon-kalender { background: linear-gradient(135deg, #ffe4e6, #fff1f2); color: #e11d48; }
-        .qa-icon-kinerja { background: linear-gradient(135deg, #ccfbf1, #f0fdfa); color: #0d9488; }
-        .qa-icon-help { background: linear-gradient(135deg, #e0f2fe, #f0f9ff); color: #0284c7; }
-        .qa-icon-install { background: linear-gradient(135deg, #d1fae5, #ecfdf5); color: #059669; }
+        .qa-text-sub {
+            font-size: 0.73rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Distinct Icon Styles */
+        .icon-blue { background: #eff6ff; color: #2563eb; }
+        .icon-green { background: #f0fdf4; color: #16a34a; }
+        .icon-amber { background: #fffbeb; color: #d97706; }
+        .icon-purple { background: #faf5ff; color: #9333ea; }
+        .icon-rose { background: #fff1f2; color: #e11d48; }
+        .icon-teal { background: #f0fdfa; color: #0d9488; }
+        .icon-sky { background: #f0f9ff; color: #0284c7; }
+        .icon-emerald { background: #ecfdf5; color: #059669; }
     </style>
 </head>
 
@@ -266,209 +305,251 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
     <?php include 'nav/sidebar.php'; ?>
 
     <div class="main-content-wrapper p-0">
-        <!-- Header Banner -->
-        <div class="header-banner page-specific-header no-print">
-            <div class="container-fluid px-lg-4">
-                <h1><i class="fa-solid fa-hand me-2 text-warning"></i>Selamat Datang, <?php echo htmlspecialchars(explode(' ', $nama)[0]); ?>!</h1>
-                <p class="small mb-0 opacity-80">Semoga harimu produktif dan menyenangkan di Gravitti Technology.</p>
-            </div>
-        </div>
+        <div class="container-fluid px-3 px-lg-4 pt-4">
 
-        <div class="dashboard-content px-0 pt-2">
-            <div class="container-fluid px-lg-4">
-
-                <!-- 1. Profile Hero Executive Card -->
-                <div class="card card-3d-modern p-3 mb-4">
-                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                        <div class="d-flex align-items-center gap-3" style="min-width: 0;">
+            <!-- 1. HERO PROFILE EXECUTIVE BANNER -->
+            <div class="hero-banner-container">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center gap-3.5">
                             <?php if (!empty($photo) && file_exists('../uploads/' . $photo)): ?>
-                                <img src="../uploads/<?php echo htmlspecialchars($photo); ?>" alt="Foto Profil" class="avatar-circle-dash">
+                                <img src="../uploads/<?php echo htmlspecialchars($photo); ?>" alt="Foto Profil" class="avatar-circle-hero">
                             <?php else: ?>
-                                <div class="avatar-circle-dash"><?php echo $initials; ?></div>
+                                <div class="avatar-circle-hero"><?php echo $initials; ?></div>
                             <?php endif; ?>
-                            
-                            <div style="min-width: 0;">
-                                <h5 class="fw-extrabold text-dark mb-1 fs-5" style="letter-spacing: -0.5px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+
+                            <div>
+                                <div class="small text-white-50 font-mono fw-semibold mb-1">
+                                    <i class="fa-regular fa-sun me-1 text-warning"></i><?php echo $greeting; ?>,
+                                </div>
+                                <h2 class="fw-extrabold text-white mb-2" style="font-size: 1.75rem; letter-spacing: -0.5px;">
                                     <?php echo htmlspecialchars($nama); ?>
-                                </h5>
-                                <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                                    <span class="badge bg-light text-dark border font-mono small">NIK: <?php echo htmlspecialchars($nik); ?></span>
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold small"><?php echo htmlspecialchars($jabatan); ?></span>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold small"><i class="fa-solid fa-circle me-1" style="font-size: 0.5rem;"></i>Aktif</span>
+                                </h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <span class="hero-pill-badge"><i class="fa-solid fa-id-card me-1.5 opacity-75"></i>NIK: <?php echo htmlspecialchars($nik); ?></span>
+                                    <span class="hero-pill-badge"><i class="fa-solid fa-briefcase me-1.5 opacity-75"></i><?php echo htmlspecialchars($jabatan); ?></span>
+                                    <span class="badge bg-success border border-success-subtle rounded-pill px-3 py-1.5 fw-bold" style="font-size: 0.78rem;">
+                                        <i class="fa-solid fa-circle-check me-1"></i>AKTIF
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <a href="profile.php" class="btn btn-3d-edit">
-                                <i class="fa-solid fa-user-gear"></i>Edit Profil
-                            </a>
-                        </div>
+                    </div>
+
+                    <div class="col-lg-4 text-lg-end">
+                        <a href="absen.php?nik=<?php echo htmlspecialchars($nik); ?>#form-absen" class="btn btn-light rounded-pill px-4 py-2.5 fw-extrabold text-primary shadow-sm">
+                            <i class="fa-solid fa-camera me-2"></i>Absen Sekarang
+                        </a>
                     </div>
                 </div>
+            </div>
 
-                <?php include "data.php"; ?>
+            <?php include "data.php"; ?>
 
-                <!-- 2. Ringkasan Absensi Grid & Info Gaji -->
-                <div class="row g-3 mb-4">
-                    <!-- Ringkasan Absensi 4-Grid Cards -->
-                    <div class="col-lg-7">
-                        <div class="card card-3d-modern h-100 p-3">
-                            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-                                <h6 class="fw-extrabold text-dark mb-0 fs-6">
-                                    <i class="fa-solid fa-chart-line text-primary me-2"></i>Ringkasan Absensi Anda
-                                </h6>
-                                <span class="badge bg-light text-secondary border fw-bold rounded-pill px-3 py-1"><?php echo htmlspecialchars($periode_absensi_display_dash); ?></span>
-                            </div>
-
-                            <div class="stat-grid-3d mb-3">
-                                <div class="stat-mini-card-3d">
-                                    <div class="stat-icon-badge bg-primary-subtle text-primary"><i class="fa-solid fa-calendar-check"></i></div>
-                                    <div class="stat-val-3d text-dark"><?php echo $total_hari_kerja_dash; ?> <small class="fs-7 fw-normal text-muted">Hari</small></div>
-                                    <div class="stat-lbl-3d">Hari Kerja Efektif</div>
-                                </div>
-
-                                <div class="stat-mini-card-3d">
-                                    <div class="stat-icon-badge bg-success-subtle text-success"><i class="fa-solid fa-user-check"></i></div>
-                                    <div class="stat-val-3d text-success"><?php echo $jumlah_hadir_dash; ?> <small class="fs-7 fw-normal text-muted">Hari</small></div>
-                                    <div class="stat-lbl-3d">Total Hadir</div>
-                                </div>
-
-                                <div class="stat-mini-card-3d">
-                                    <div class="stat-icon-badge bg-warning-subtle text-warning"><i class="fa-solid fa-umbrella-beach"></i></div>
-                                    <div class="stat-val-3d text-warning"><?php echo $jumlah_izin_sakit_dash; ?> <small class="fs-7 fw-normal text-muted">Hari</small></div>
-                                    <div class="stat-lbl-3d">Cuti (Disetujui)</div>
-                                </div>
-
-                                <div class="stat-mini-card-3d">
-                                    <div class="stat-icon-badge bg-danger-subtle text-danger"><i class="fa-solid fa-clock"></i></div>
-                                    <div class="stat-val-3d text-danger"><?php echo $total_menit_terlambat_dash; ?> <small class="fs-7 fw-normal text-muted">m</small></div>
-                                    <div class="stat-lbl-3d">Total Terlambat</div>
-                                </div>
-                            </div>
-
-                            <div class="text-end">
-                                <a href="<?php echo $link_ke_detail_absen_dash; ?>" class="fw-extrabold text-primary text-decoration-none small">
-                                    Lihat Detail Absensi <i class="fa-solid fa-arrow-right ms-1"></i>
-                                </a>
-                            </div>
+            <!-- 2. MAIN DASHBOARD METRICS & SALARY (ROW 1) -->
+            <div class="row g-4 mb-4">
+                <!-- Attendance Metrics (Col 7) -->
+                <div class="col-lg-7">
+                    <div class="exec-card h-100">
+                        <div class="card-header-clean">
+                            <h6 class="card-title-clean">
+                                <i class="fa-solid fa-chart-pie text-primary"></i>Ringkasan Kehadiran
+                            </h6>
+                            <span class="badge bg-slate-100 text-secondary border fw-bold rounded-pill px-3 py-1" style="font-size: 0.75rem;">
+                                <?php echo htmlspecialchars($periode_absensi_display_dash); ?>
+                            </span>
                         </div>
-                    </div>
 
-                    <!-- Info Gaji Bulan Ini 3D Hero Card -->
-                    <div class="col-lg-5">
-                        <div class="card card-3d-modern salary-card-3d h-100 p-4 d-flex flex-column justify-content-between">
-                            <div>
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <span class="badge bg-white text-dark fw-bold rounded-pill px-3 py-1 small opacity-90"><i class="fa-solid fa-wallet me-1 text-success"></i>Info Gaji Bulan Ini</span>
-                                    <span class="small text-white-50 fw-semibold"><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['periode']); ?></span>
+                        <div class="p-4">
+                            <div class="row g-3 mb-3">
+                                <div class="col-6 col-sm-3">
+                                    <div class="metric-item-card">
+                                        <div class="metric-indicator-top bg-primary"></div>
+                                        <div class="metric-lbl">Hari Kerja</div>
+                                        <div class="metric-val text-primary"><?php echo $total_hari_kerja_dash; ?></div>
+                                        <span class="small text-muted" style="font-size: 0.7rem;">Efektif</span>
+                                    </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <div class="small text-white-50 fw-semibold text-uppercase letter-spacing-1 mb-1">Perkiraan Gaji Bersih</div>
-                                    <div class="fw-extrabold text-white display-6" style="font-size: 1.85rem; letter-spacing: -0.5px;">
-                                        <?php echo htmlspecialchars($info_gaji_bulan_ini_dash['gaji_bersih_rp']); ?>
+                                <div class="col-6 col-sm-3">
+                                    <div class="metric-item-card">
+                                        <div class="metric-indicator-top bg-success"></div>
+                                        <div class="metric-lbl">Kehadiran</div>
+                                        <div class="metric-val text-success"><?php echo $jumlah_hadir_dash; ?></div>
+                                        <span class="small text-muted" style="font-size: 0.7rem;">Total Hadir</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-sm-3">
+                                    <div class="metric-item-card">
+                                        <div class="metric-indicator-top bg-warning"></div>
+                                        <div class="metric-lbl">Cuti / Izin</div>
+                                        <div class="metric-val text-warning"><?php echo $jumlah_izin_sakit_dash; ?></div>
+                                        <span class="small text-muted" style="font-size: 0.7rem;">Disetujui</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-sm-3">
+                                    <div class="metric-item-card">
+                                        <div class="metric-indicator-top bg-danger"></div>
+                                        <div class="metric-lbl">Terlambat</div>
+                                        <div class="metric-val text-danger"><?php echo $total_menit_terlambat_dash; ?></div>
+                                        <span class="small text-muted" style="font-size: 0.7rem;">Menit akumulasi</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="pt-3 border-top border-white border-opacity-25 d-flex align-items-center justify-content-between">
-                                <div>
-                                    <div class="small text-white-50" style="font-size: 0.75rem;">Estimasi Tgl. Bayar</div>
-                                    <div class="fw-bold text-white small"><i class="fa-regular fa-calendar-check me-1"></i><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['tanggal_bayar']); ?></div>
-                                </div>
-                                <a href="<?php echo $link_ke_riwayat_gaji_dash; ?>" class="btn btn-light btn-sm rounded-pill px-3 py-1.5 fw-bold text-success shadow-sm">
-                                    Riwayat Gaji <i class="fa-solid fa-arrow-right ms-1"></i>
+                            <div class="text-end">
+                                <a href="<?php echo $link_ke_detail_absen_dash; ?>" class="fw-bold text-primary text-decoration-none small">
+                                    Lihat Histori Absen Lengkap <i class="fa-solid fa-arrow-right ms-1"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. Akses Cepat Menu Karyawan Grid -->
-                <div class="mb-4">
-                    <h6 class="fw-extrabold text-dark mb-3"><i class="fa-solid fa-bolt me-2 text-warning"></i>Akses Cepat Menu Karyawan</h6>
-                    <div class="quick-action-grid-3d">
-                        <a href="profile.php" class="quick-action-card-3d">
-                            <div class="quick-action-icon-3d qa-icon-profile">
-                                <i class="fa-solid fa-address-card"></i>
+                <!-- Salary Executive Hero Card (Col 5) -->
+                <div class="col-lg-5">
+                    <div class="salary-exec-card h-100">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <span class="badge bg-white text-emerald-900 fw-bold rounded-pill px-3 py-1.5 small shadow-sm">
+                                    <i class="fa-solid fa-wallet me-1.5 text-success"></i>Info Gaji Bulan Ini
+                                </span>
+                                <span class="small text-white-50 font-mono fw-semibold"><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['periode']); ?></span>
                             </div>
-                            <span class="qa-text-3d">Profil Saya</span>
-                        </a>
 
-                        <a href="absen.php?nik=<?php echo htmlspecialchars($nik); ?>#form-absen" class="quick-action-card-3d">
-                            <div class="quick-action-icon-3d qa-icon-absen">
-                                <i class="fa-solid fa-user-check"></i>
+                            <div class="my-3">
+                                <div class="small text-emerald-200 fw-bold text-uppercase letter-spacing-1 mb-1" style="font-size: 0.75rem;">Estimasi Gaji Bersih</div>
+                                <div class="fw-extrabold text-white display-6" style="font-size: 2.1rem; letter-spacing: -1px;">
+                                    <?php echo htmlspecialchars($info_gaji_bulan_ini_dash['gaji_bersih_rp']); ?>
+                                </div>
                             </div>
-                            <span class="qa-text-3d">Absen Masuk</span>
-                        </a>
+                        </div>
 
-                        <a href="riwayat-gaji.php" class="quick-action-card-3d">
-                            <div class="quick-action-icon-3d qa-icon-gaji">
-                                <i class="fa-solid fa-receipt"></i>
+                        <div class="pt-3 border-top border-white border-opacity-20 d-flex align-items-center justify-content-between mt-3">
+                            <div>
+                                <div class="small text-white-50" style="font-size: 0.73rem;">Estimasi Tgl. Bayar</div>
+                                <div class="fw-bold text-white small"><i class="fa-regular fa-calendar-check me-1.5 text-emerald-300"></i><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['tanggal_bayar']); ?></div>
                             </div>
-                            <span class="qa-text-3d">Lihat Gaji</span>
-                        </a>
-
-                        <a href="cuti.php" class="quick-action-card-3d">
-                            <div class="quick-action-icon-3d qa-icon-cuti">
-                                <i class="fa-solid fa-person-walking-luggage"></i>
-                            </div>
-                            <span class="qa-text-3d">Ajukan Cuti</span>
-                        </a>
-
-                        <a href="kalender_kerja.php" class="quick-action-card-3d">
-                            <div class="quick-action-icon-3d qa-icon-kalender">
-                                <i class="fa-solid fa-calendar-check"></i>
-                            </div>
-                            <span class="qa-text-3d">Kalender Kerja</span>
-                        </a>
-
-                        <a href="peringkat-kinerja.php" class="quick-action-card-3d">
-                            <div class="quick-action-icon-3d qa-icon-kinerja">
-                                <i class="fa-solid fa-chart-line"></i>
-                            </div>
-                            <span class="qa-text-3d">Kinerja Saya</span>
-                        </a>
-
-                        <a href="help.php" class="quick-action-card-3d">
-                            <div class="quick-action-icon-3d qa-icon-help">
-                                <i class="fa-solid fa-headset"></i>
-                            </div>
-                            <span class="qa-text-3d">Pusat Bantuan</span>
-                        </a>
-
-                        <a href="profile.php" class="quick-action-card-3d" onclick="triggerPWAInstall(); return false;">
-                            <div class="quick-action-icon-3d qa-icon-install">
-                                <i class="fa-solid fa-mobile-screen-button"></i>
-                            </div>
-                            <span class="qa-text-3d">Install HP</span>
-                        </a>
+                            <a href="<?php echo $link_ke_riwayat_gaji_dash; ?>" class="btn btn-light rounded-pill px-3.5 py-1.5 fw-bold text-success shadow-sm btn-sm">
+                                Slip Gaji <i class="fa-solid fa-chevron-right ms-1"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
-
-                <!-- 4. Pengumuman Terbaru Card -->
-                <div class="card card-3d-modern p-4 mb-4">
-                    <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-                        <h6 class="fw-extrabold text-dark mb-0">
-                            <i class="fa-solid fa-bullhorn text-danger me-2"></i>Pengumuman Terbaru
-                        </h6>
-                        <a href="pengumuman.php" class="small fw-bold text-primary text-decoration-none">
-                            Lihat Semua <i class="fa-solid fa-angle-right ms-1"></i>
-                        </a>
-                    </div>
-
-                    <div class="text-center py-3 text-muted">
-                        <i class="fa-solid fa-bell-slash text-light-emphasis fs-3 mb-2 d-block"></i>
-                        <p class="mb-0 small">Tidak ada pengumuman terbaru saat ini.</p>
-                    </div>
-                </div>
-
-                <div class="footer text-center my-4 text-muted small">
-                    Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>. All Rights Reserved.
-                    <br><small>Version 1.1.0</small>
-                </div>
-
             </div>
+
+            <!-- 3. QUICK ACTION MENU GRID (DESKTOP 4-COL vs MOBILE 2-COL) -->
+            <div class="mb-4">
+                <h6 class="fw-extrabold text-dark mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>Akses Cepat Menu Karyawan</h6>
+                <div class="qa-grid">
+                    
+                    <a href="profile.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-blue">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Profil Saya</div>
+                            <div class="qa-text-sub">Data & Kepegawaian</div>
+                        </div>
+                    </a>
+
+                    <a href="absen.php?nik=<?php echo htmlspecialchars($nik); ?>#form-absen" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-green">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Absen Masuk</div>
+                            <div class="qa-text-sub">Kamera Presensi</div>
+                        </div>
+                    </a>
+
+                    <a href="riwayat-gaji.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-amber">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Riwayat Gaji</div>
+                            <div class="qa-text-sub">Slip & Rincian</div>
+                        </div>
+                    </a>
+
+                    <a href="cuti.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-purple">
+                            <i class="fa-solid fa-calendar-minus"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Ajukan Cuti</div>
+                            <div class="qa-text-sub">Izin & Sakit</div>
+                        </div>
+                    </a>
+
+                    <a href="kalender_kerja.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-rose">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Kalender Kerja</div>
+                            <div class="qa-text-sub">Libur & Agenda</div>
+                        </div>
+                    </a>
+
+                    <a href="peringkat-kinerja.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-teal">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Kinerja Saya</div>
+                            <div class="qa-text-sub">Performa & Skor</div>
+                        </div>
+                    </a>
+
+                    <a href="help.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-sky">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Pusat Bantuan</div>
+                            <div class="qa-text-sub">Panduan & CS</div>
+                        </div>
+                    </a>
+
+                    <a href="profile.php" class="qa-card-item" onclick="triggerPWAInstall(); return false;">
+                        <div class="qa-icon-wrapper icon-emerald">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Install HP</div>
+                            <div class="qa-text-sub">Aplikasi PWA</div>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- 4. PENGUMUMAN WIDGET -->
+            <div class="exec-card p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                    <h6 class="fw-extrabold text-dark mb-0">
+                        <i class="fa-solid fa-bullhorn text-danger me-2"></i>Pengumuman Terbaru
+                    </h6>
+                    <a href="pengumuman.php" class="small fw-bold text-primary text-decoration-none">
+                        Lihat Semua <i class="fa-solid fa-chevron-right ms-1"></i>
+                    </a>
+                </div>
+
+                <div class="text-center py-3 text-muted">
+                    <i class="fa-solid fa-bell-slash text-slate-300 fs-3 mb-2 d-block"></i>
+                    <p class="mb-0 small fw-medium">Tidak ada pengumuman terbaru saat ini.</p>
+                </div>
+            </div>
+
+            <div class="footer text-center my-4 text-muted small">
+                Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>. All Rights Reserved.
+                <br><small>Version 1.1.0</small>
+            </div>
+
         </div>
     </div>
 
