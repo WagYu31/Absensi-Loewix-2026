@@ -425,7 +425,11 @@ $asset_version = time();
                                             <td class="fw-bold text-secondary"><?php echo htmlspecialchars($karyawan['nik']); ?></td>
                                             <td>
                                                 <div class="d-flex align-items-center gap-2">
-                                                    <img src="../uploads/<?php echo htmlspecialchars($karyawan['pas_photo'] ?: 'default.png'); ?>" class="avatar-circle-sm" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/003c9c/ffffff?Text=<?php echo strtoupper(substr($karyawan['nama'], 0, 1)); ?>';">
+                                                    <?php
+                                                    $kar_initial = strtoupper(substr($karyawan['nama'], 0, 1));
+                                                    $kar_svg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><rect width='40' height='40' rx='20' fill='%23003c9c'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='16' font-weight='bold'>{$kar_initial}</text></svg>";
+                                                    ?>
+                                                    <img src="../uploads/<?php echo htmlspecialchars($karyawan['pas_photo'] ?: 'default.png'); ?>" class="avatar-circle-sm" onerror="this.onerror=null; this.src='<?php echo $kar_svg; ?>';">
                                                     <div>
                                                         <div class="fw-bold text-dark" style="text-transform:capitalize;"><?php echo htmlspecialchars($karyawan['nama']); ?></div>
                                                         <small class="text-muted" style="font-size: 0.75rem;">NIP: <?php echo htmlspecialchars($karyawan['nip']); ?></small>

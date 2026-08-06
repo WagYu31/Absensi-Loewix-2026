@@ -161,9 +161,15 @@ $filter_tahun = isset($_GET['tahun']) ? $_GET['tahun'] : date('Y');
                 </div>
                 <div class="employee-info-presensi card card-body mx-1 rounded-4 border-0" style="box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
                     <div class="d-flex align-items-center">
-                        <img src="../uploads/<?php echo htmlspecialchars($photo); ?>"
+                        <?php
+                        $user_photo_src = (!empty($photo) && file_exists('../uploads/' . $photo)) ? '../uploads/' . htmlspecialchars($photo) : '';
+                        $first_letter = strtoupper(substr($nama, 0, 1));
+                        $avatar_svg_fallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><rect width='60' height='60' rx='30' fill='%232563eb'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='24' font-weight='bold'>{$first_letter}</text></svg>";
+                        ?>
+                        <img src="<?php echo !empty($user_photo_src) ? $user_photo_src : $avatar_svg_fallback; ?>"
                             alt="Foto Profil" class="employee-photo-presensi me-3 rounded-circle shadow-sm"
-                            onerror="this.onerror=null; this.src='https://via.placeholder.com/60/003c9c/ffffff?Text=<?php echo strtoupper(substr($nama, 0, 1)); ?>';">
+                            style="width: 54px; height: 54px; object-fit: cover;"
+                            onerror="this.onerror=null; this.src='<?php echo $avatar_svg_fallback; ?>';">
                         <div>
                             <h6 class="mb-0 fw-bold text-white"><?php echo htmlspecialchars($nama); ?></h6>
                             <small class="text-white"><?php echo htmlspecialchars($jabatan); ?> - NIK: <?php echo htmlspecialchars($nik); ?></small>
@@ -343,12 +349,25 @@ $filter_tahun = isset($_GET['tahun']) ? $_GET['tahun'] : date('Y');
                                                             <?php endif; ?>
                                                         </div>
                                                         
-                                                        <?php if (!empty($record['image'])): ?>
+                                                        <?php if (!empty($record['image'])): 
+                                                            $att_img_src = '';
+                                                            $img_filename = $record['image'];
+                                                            if (file_exists('../uploads/attendance/' . $img_filename)) {
+                                                                $att_img_src = '../uploads/attendance/' . htmlspecialchars($img_filename);
+                                                            } elseif (file_exists('../uploads/' . $img_filename)) {
+                                                                $att_img_src = '../uploads/' . htmlspecialchars($img_filename);
+                                                            } else {
+                                                                $att_img_src = '../uploads/attendance/' . htmlspecialchars($img_filename);
+                                                            }
+                                                            $svg_photo_fallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='180' viewBox='0 0 300 180'><rect width='300' height='180' rx='12' fill='%23f1f5f9'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2394a3b8' font-family='sans-serif' font-size='13' font-weight='bold'>Foto Tidak Ditemukan</text></svg>";
+                                                        ?>
                                                             <div class="mt-auto">
-                                                                <img src="../uploads/attendance/<?php echo htmlspecialchars($record['image']); ?>" 
+                                                                <img src="<?php echo $att_img_src; ?>" 
                                                                      alt="Foto <?php echo ucfirst($tipe_presensi); ?>" 
                                                                      class="foto-presensi shadow-sm" 
-                                                                     style="cursor: pointer;"
+                                                                     style="cursor: pointer; min-height: 110px; background: #f1f5f9;"
+                                                                     loading="lazy"
+                                                                     onerror="this.onerror=null; this.src='<?php echo $svg_photo_fallback; ?>';"
                                                                      data-bs-toggle="modal" 
                                                                      data-bs-target="#imagePreviewModal" 
                                                                      onclick="previewImage(this.src)">

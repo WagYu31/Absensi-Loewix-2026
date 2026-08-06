@@ -485,7 +485,15 @@ $asset_version = '2026.08.06.2';
                 </div>
                 <div class="employee-info-presensi card card-body shadow-sm mx-1">
                     <div class="d-flex align-items-center">
-                        <img src="../uploads/<?php echo htmlspecialchars($photo); ?>" alt="Foto Profil" class="employee-photo-presensi me-3" onerror="this.onerror=null; this.src='https://via.placeholder.com/60/003c9c/ffffff?Text=<?php echo strtoupper(substr($nama, 0, 1)); ?>';">
+                        <?php
+                        $user_photo_src = (!empty($photo) && file_exists('../uploads/' . $photo)) ? '../uploads/' . htmlspecialchars($photo) : '';
+                        $first_letter = strtoupper(substr($nama, 0, 1));
+                        $avatar_svg_fallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><rect width='60' height='60' rx='30' fill='%232563eb'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='24' font-weight='bold'>{$first_letter}</text></svg>";
+                        ?>
+                        <img src="<?php echo !empty($user_photo_src) ? $user_photo_src : $avatar_svg_fallback; ?>"
+                            alt="Foto Profil" class="employee-photo-presensi me-3 rounded-circle shadow-sm"
+                            style="width: 50px; height: 50px; object-fit: cover;"
+                            onerror="this.onerror=null; this.src='<?php echo $avatar_svg_fallback; ?>';">
                         <div>
                             <h6 class="mb-0 employee-name-presensi"><?php echo htmlspecialchars($nama); ?></h6>
                             <small class="employee-details-presensi"><?php echo htmlspecialchars($jabatan); ?> &bull; NIK: <?php echo htmlspecialchars($nik); ?></small>

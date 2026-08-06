@@ -546,12 +546,14 @@ $asset_version = time();
                 <div>
                     <?php $rank = 1; foreach ($list_performance as $p): 
                         $badge_class = ($rank == 1) ? 'rank-1-3d' : (($rank == 2) ? 'rank-2-3d' : (($rank == 3) ? 'rank-3-3d' : 'rank-other-3d'));
-                        $photo_url = $p['photo'] ? "../uploads/".$p['photo'] : "https://via.placeholder.com/50/2563eb/ffffff?Text=".substr($p['nama'], 0, 1);
+                        $p_initial = strtoupper(substr($p['nama'], 0, 1));
+                        $p_svg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'><rect width='50' height='50' rx='25' fill='%232563eb'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='20' font-weight='bold'>{$p_initial}</text></svg>";
+                        $photo_url = (!empty($p['photo']) && file_exists('../uploads/'.$p['photo'])) ? "../uploads/".$p['photo'] : $p_svg;
                     ?>
                     <div class="rank-item-card">
                         <div class="d-flex align-items-center gap-3" style="min-width: 0;">
                             <div class="rank-badge-3d <?php echo $badge_class; ?>"><?php echo $rank; ?></div>
-                            <img src="<?php echo $photo_url; ?>" class="user-avatar-ring" onerror="this.onerror=null; this.src='https://via.placeholder.com/50/2563eb/ffffff?Text=👤';">
+                            <img src="<?php echo $photo_url; ?>" class="user-avatar-ring" onerror="this.onerror=null; this.src='<?php echo $p_svg; ?>';">
                             <div style="min-width: 0;">
                                 <div class="fw-bold text-dark fs-6" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?php echo htmlspecialchars($p['nama']); ?></div>
                                 <div class="text-muted small" style="font-size: 0.75rem;">
@@ -584,12 +586,14 @@ $asset_version = time();
                 <div>
                     <?php $rank = 1; foreach ($list_discipline as $d): 
                         $badge_class = ($rank <= 3) ? 'bg-danger text-white border-0 shadow-sm' : 'rank-other-3d';
-                        $photo_url = $d['photo'] ? "../uploads/".$d['photo'] : "https://via.placeholder.com/50/dc2626/ffffff?Text=".substr($d['nama'], 0, 1);
+                        $d_initial = strtoupper(substr($d['nama'], 0, 1));
+                        $d_svg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'><rect width='50' height='50' rx='25' fill='%23dc2626'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='20' font-weight='bold'>{$d_initial}</text></svg>";
+                        $photo_url = (!empty($d['photo']) && file_exists('../uploads/'.$d['photo'])) ? "../uploads/".$d['photo'] : $d_svg;
                     ?>
                     <div class="rank-item-card">
                         <div class="d-flex align-items-center gap-3" style="min-width: 0;">
                             <div class="rank-badge-3d <?php echo $badge_class; ?>"><?php echo $rank; ?></div>
-                            <img src="<?php echo $photo_url; ?>" class="user-avatar-ring" onerror="this.onerror=null; this.src='https://via.placeholder.com/50/dc2626/ffffff?Text=👤';">
+                            <img src="<?php echo $photo_url; ?>" class="user-avatar-ring" onerror="this.onerror=null; this.src='<?php echo $d_svg; ?>';">
                             <div style="min-width: 0;">
                                 <div class="fw-bold text-dark fs-6" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?php echo htmlspecialchars($d['nama']); ?></div>
                                 <div class="text-muted small" style="font-size: 0.75rem;">
@@ -611,12 +615,14 @@ $asset_version = time();
                 <div>
                     <?php $rank = 1; foreach ($list_cuti as $c): 
                         $badge_class = ($rank <= 3) ? 'bg-primary text-white border-0 shadow-sm' : 'rank-other-3d';
-                        $photo_url = $c['photo'] ? "../uploads/".$c['photo'] : "https://via.placeholder.com/50/2563eb/ffffff?Text=".substr($c['nama'], 0, 1);
+                        $c_initial = strtoupper(substr($c['nama'], 0, 1));
+                        $c_svg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'><rect width='50' height='50' rx='25' fill='%232563eb'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='20' font-weight='bold'>{$c_initial}</text></svg>";
+                        $photo_url = (!empty($c['photo']) && file_exists('../uploads/'.$c['photo'])) ? "../uploads/".$c['photo'] : $c_svg;
                     ?>
                     <div class="rank-item-card">
                         <div class="d-flex align-items-center gap-3" style="min-width: 0;">
                             <div class="rank-badge-3d <?php echo $badge_class; ?>"><?php echo $rank; ?></div>
-                            <img src="<?php echo $photo_url; ?>" class="user-avatar-ring" onerror="this.onerror=null; this.src='https://via.placeholder.com/50/2563eb/ffffff?Text=👤';">
+                            <img src="<?php echo $photo_url; ?>" class="user-avatar-ring" onerror="this.onerror=null; this.src='<?php echo $c_svg; ?>';">
                             <div style="min-width: 0;">
                                 <div class="fw-bold text-dark fs-6" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?php echo htmlspecialchars($c['nama']); ?></div>
                                 <div class="text-muted small" style="font-size: 0.75rem;">NIK: <?php echo $c['nik']; ?></div>

@@ -553,7 +553,11 @@ $asset_version = time();
                             <div class="bday-card-item">
                                 <div class="d-flex align-items-center gap-3" style="min-width: 0;">
                                     <div class="bday-avatar-ring">
-                                        <img src="../uploads/<?php echo htmlspecialchars($bemp['pas_photo'] ?: 'default.png'); ?>" class="bday-avatar" onerror="this.onerror=null; this.src='https://via.placeholder.com/50/003c9c/ffffff?Text=<?php echo strtoupper(substr($bemp['nama'], 0, 1)); ?>';">
+                                        <?php
+                                        $bemp_initial = strtoupper(substr($bemp['nama'], 0, 1));
+                                        $bemp_svg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'><rect width='50' height='50' rx='25' fill='%23003c9c'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='20' font-weight='bold'>{$bemp_initial}</text></svg>";
+                                        ?>
+                                        <img src="../uploads/<?php echo htmlspecialchars($bemp['pas_photo'] ?: 'default.png'); ?>" class="bday-avatar" onerror="this.onerror=null; this.src='<?php echo $bemp_svg; ?>';">
                                     </div>
                                     <div style="min-width: 0;">
                                         <div class="fw-bold text-white fs-6" style="text-transform: capitalize; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?php echo htmlspecialchars($bemp['nama']); ?></div>
@@ -778,7 +782,8 @@ $asset_version = time();
                     }
                     let html = '';
                     res.wishes.forEach(w => {
-                        const photoSrc = w.photo_pengirim ? `../uploads/${w.photo_pengirim}` : 'https://via.placeholder.com/40/2563eb/ffffff?Text=👤';
+                        const avatarSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><rect width='40' height='40' rx='20' fill='%232563eb'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='16' font-weight='bold'>👤</text></svg>";
+                        const photoSrc = w.photo_pengirim ? `../uploads/${w.photo_pengirim}` : avatarSvg;
                         html += `
                         <div class="wish-feed-item">
                             <div class="d-flex align-items-center justify-content-between mb-1">

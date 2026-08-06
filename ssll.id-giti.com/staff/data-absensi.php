@@ -558,7 +558,11 @@ $asset_version = time();
                             <div class="card employee-card-3d search-target-card" data-employee-name="<?php echo htmlspecialchars(strtolower($data['details']['nama'])); ?>" data-employee-nik="<?php echo htmlspecialchars(strtolower($data['details']['nik'])); ?>">
                                 <div class="card-header bg-white py-2 border-0">
                                     <div class="d-flex align-items-center gap-3">
-                                        <img src="../uploads/<?php echo htmlspecialchars($data['details']['pas_photo'] ?: 'default.png'); ?>" class="prof-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/003c9c/ffffff?Text=<?php echo strtoupper(substr($data['details']['nama'], 0, 1)); ?>';">
+                                        <?php
+                                        $d_initial = strtoupper(substr($data['details']['nama'], 0, 1));
+                                        $d_svg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><rect width='40' height='40' rx='20' fill='%23003c9c'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='16' font-weight='bold'>{$d_initial}</text></svg>";
+                                        ?>
+                                        <img src="../uploads/<?php echo htmlspecialchars($data['details']['pas_photo'] ?: 'default.png'); ?>" class="prof-img" onerror="this.onerror=null; this.src='<?php echo $d_svg; ?>';">
                                         <div>
                                             <div class="fw-bold text-dark fs-6" style="text-transform:capitalize;"><?php echo htmlspecialchars($data['details']['nama']); ?></div>
                                             <small class="text-muted" style="font-size: 0.75rem;">NIK: <?php echo htmlspecialchars($data['details']['nik']); ?></small>
@@ -617,7 +621,8 @@ $asset_version = time();
                                                              }
                                                          }
                                                          ?>
-                                                         <img src="<?php echo htmlspecialchars($finalImgSrc); ?>" class="abs-photo" onclick="previewImage(this.src)" onerror="if(this.src.indexOf('/uploads/attendance/')!=-1){this.src=this.src.replace('/uploads/attendance/','/uploads/');}else if(this.src.indexOf('/uploads/')!=-1){this.src=this.src.replace('/uploads/','/uploads/attendance/');}else{this.onerror=null;this.src='https://via.placeholder.com/150/0f172a/ffffff?text=Foto+Absen';}">
+                                                         <?php $svg_abs_fallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'><rect width='150' height='150' rx='10' fill='%23f1f5f9'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2394a3b8' font-family='sans-serif' font-size='12' font-weight='bold'>Foto Absen</text></svg>"; ?>
+                                                         <img src="<?php echo htmlspecialchars($finalImgSrc); ?>" class="abs-photo" onclick="previewImage(this.src)" onerror="if(this.src.indexOf('/uploads/attendance/')!=-1){this.src=this.src.replace('/uploads/attendance/','/uploads/');}else if(this.src.indexOf('/uploads/')!=-1){this.src=this.src.replace('/uploads/','/uploads/attendance/');}else{this.onerror=null;this.src='<?php echo $svg_abs_fallback; ?>';}">
                                                         <div class="flex-grow-1 min-w-0" style="font-size: 0.85rem;">
                                                             <div class="fw-bold text-primary mb-1 d-flex align-items-center justify-content-between">
                                                                 <span><i class="fa-solid fa-clock me-1"></i><?php echo date('H:i:s', strtotime($item['tgl_absen'])); ?></span>
