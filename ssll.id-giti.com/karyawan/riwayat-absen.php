@@ -162,7 +162,7 @@ $filter_tahun = isset($_GET['tahun']) ? $_GET['tahun'] : date('Y');
                 <div class="employee-info-presensi card card-body mx-1 rounded-4 border-0" style="box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
                     <div class="d-flex align-items-center">
                         <?php
-                        $user_photo_src = (!empty($photo) && file_exists('../uploads/' . $photo)) ? '../uploads/' . htmlspecialchars($photo) : '';
+                        $user_photo_src = (!empty($photo) && file_exists(__DIR__ . '/../uploads/' . $photo)) ? '../uploads/' . htmlspecialchars($photo) : '';
                         $first_letter = strtoupper(substr($nama, 0, 1));
                         $avatar_svg_fallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><rect width='60' height='60' rx='30' fill='%232563eb'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='24' font-weight='bold'>{$first_letter}</text></svg>";
                         ?>
@@ -352,9 +352,9 @@ $filter_tahun = isset($_GET['tahun']) ? $_GET['tahun'] : date('Y');
                                                         <?php if (!empty($record['image'])): 
                                                             $att_img_src = '';
                                                             $img_filename = $record['image'];
-                                                            if (file_exists('../uploads/attendance/' . $img_filename)) {
+                                                            if (file_exists(__DIR__ . '/../uploads/attendance/' . $img_filename)) {
                                                                 $att_img_src = '../uploads/attendance/' . htmlspecialchars($img_filename);
-                                                            } elseif (file_exists('../uploads/' . $img_filename)) {
+                                                            } elseif (file_exists(__DIR__ . '/../uploads/' . $img_filename)) {
                                                                 $att_img_src = '../uploads/' . htmlspecialchars($img_filename);
                                                             } else {
                                                                 $att_img_src = '../uploads/attendance/' . htmlspecialchars($img_filename);
@@ -367,7 +367,7 @@ $filter_tahun = isset($_GET['tahun']) ? $_GET['tahun'] : date('Y');
                                                                      class="foto-presensi shadow-sm" 
                                                                      style="cursor: pointer; min-height: 110px; background: #f1f5f9;"
                                                                      loading="lazy"
-                                                                     onerror="this.onerror=null; this.src='<?php echo $svg_photo_fallback; ?>';"
+                                                                     onerror="if(this.src.indexOf('/uploads/attendance/')!=-1){this.src=this.src.replace('/uploads/attendance/','/uploads/');}else if(this.src.indexOf('/uploads/')!=-1){this.src=this.src.replace('/uploads/','/uploads/attendance/');}else{this.onerror=null;this.src='<?php echo $svg_photo_fallback; ?>';}"
                                                                      data-bs-toggle="modal" 
                                                                      data-bs-target="#imagePreviewModal" 
                                                                      onclick="previewImage(this.src)">
