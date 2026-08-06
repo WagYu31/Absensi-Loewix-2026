@@ -154,18 +154,16 @@ $user_role = $_SESSION['role'] ?? 'guest';
     font-weight: 600 !important;
 }
 
-.sidebar-nav-item .nav-icon,
-.sidebar a i,
-.sidebar-menu i {
+.nav-icon {
     width: 22px !important;
     text-align: center !important;
-    font-size: 1.05rem !important;
+    font-size: 1.1rem !important;
     margin-right: 12px !important;
     flex-shrink: 0 !important;
     transition: transform 0.2s ease !important;
 }
 
-.sidebar-nav-item .chevron-arrow {
+.chevron-arrow {
     font-size: 0.75rem !important;
     transition: transform 0.25s ease !important;
     margin-right: 0 !important;
@@ -183,6 +181,7 @@ $user_role = $_SESSION['role'] ?? 'guest';
     font-size: 0.84rem !important;
     color: #9ca3af !important;
     background-color: transparent !important;
+    justify-content: flex-start !important;
 }
 
 .sidebar .collapse a:hover,
@@ -197,14 +196,14 @@ $user_role = $_SESSION['role'] ?? 'guest';
     color: #60a5fa !important;
 }
 
-/* Desktop Collapsed State */
+/* Desktop Collapsed Mini Mode (70px) */
 body.sidebar-collapsed .sidebar {
     width: var(--sb-mini-width) !important;
 }
 
-body.sidebar-collapsed .sidebar-brand span,
+body.sidebar-collapsed .brand-text,
 body.sidebar-collapsed .sidebar-group-title,
-body.sidebar-collapsed .sidebar-nav-item span:not(.nav-icon),
+body.sidebar-collapsed .nav-text,
 body.sidebar-collapsed .chevron-arrow,
 body.sidebar-collapsed .sidebar-submenu,
 body.sidebar-collapsed .sidebar .collapse {
@@ -217,10 +216,18 @@ body.sidebar-collapsed .sidebar a {
     padding: 12px 0 !important;
 }
 
-body.sidebar-collapsed .sidebar-nav-item .nav-icon,
-body.sidebar-collapsed .sidebar a i {
+body.sidebar-collapsed .nav-icon {
     margin-right: 0 !important;
-    font-size: 1.2rem !important;
+    font-size: 1.25rem !important;
+}
+
+body.sidebar-collapsed .sidebar-header {
+    justify-content: center !important;
+    padding: 0 !important;
+}
+
+body.sidebar-collapsed #desktopHamburgerBtn {
+    display: none !important;
 }
 
 body.sidebar-collapsed .main-content-wrapper {
@@ -309,7 +316,7 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
     <div class="sidebar-header">
         <a href="grafik-kinerja.php" class="sidebar-brand">
             <div class="brand-icon-box">G</div>
-            <span>Gravitti Tech</span>
+            <span class="brand-text">Gravitti Tech</span>
         </a>
         <button class="hamburger-toggle-btn d-none d-lg-flex" id="desktopHamburgerBtn" title="Buka / Tutup Sidebar">
             <i class="fa-solid fa-bars"></i>
@@ -319,51 +326,69 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
     <!-- Sidebar Menu List -->
     <div class="sidebar-menu-body">
         <div class="sidebar-group-title">Utama</div>
-        <a href="grafik-kinerja.php" class="sidebar-nav-item">
-            <span><i class="fa-solid fa-chart-pie nav-icon"></i> <span>Dashboard</span></span>
+        <a href="grafik-kinerja.php" class="sidebar-nav-item" title="Dashboard">
+            <span class="d-flex align-items-center">
+                <i class="fa-solid fa-chart-pie nav-icon"></i>
+                <span class="nav-text">Dashboard</span>
+            </span>
         </a>
 
         <div class="sidebar-group-title">Manajemen</div>
-        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKepegawaian" role="button" aria-expanded="false">
-            <span><i class="fa-solid fa-users nav-icon"></i> <span>Kepegawaian</span></span>
+        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKepegawaian" role="button" aria-expanded="false" title="Kepegawaian">
+            <span class="d-flex align-items-center">
+                <i class="fa-solid fa-users nav-icon"></i>
+                <span class="nav-text">Kepegawaian</span>
+            </span>
             <i class="fa-solid fa-chevron-down chevron-arrow"></i>
         </a>
         <div class="collapse sidebar-submenu" id="menuKepegawaian">
-            <a href="data-karyawan.php">Data Karyawan</a>
-            <a href="kalender_kerja.php">Kalender Kerja</a>
+            <a href="data-karyawan.php"><span class="nav-text">Data Karyawan</span></a>
+            <a href="kalender_kerja.php"><span class="nav-text">Kalender Kerja</span></a>
         </div>
 
-        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKehadiran" role="button" aria-expanded="false">
-            <span><i class="fa-solid fa-clock nav-icon"></i> <span>Kehadiran</span></span>
+        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKehadiran" role="button" aria-expanded="false" title="Kehadiran">
+            <span class="d-flex align-items-center">
+                <i class="fa-solid fa-clock nav-icon"></i>
+                <span class="nav-text">Kehadiran</span>
+            </span>
             <i class="fa-solid fa-chevron-down chevron-arrow"></i>
         </a>
         <div class="collapse sidebar-submenu" id="menuKehadiran">
-            <a href="absen.php">Data Absensi</a>
-            <a href="data-absensi.php">Validasi Absen Manual</a>
-            <a href="shifting.php">Jadwal Shifting</a>
-            <a href="kelola_jatah_cuti.php">Kelola Jatah Cuti</a>
-            <a href="cuti-karyawan.php">Pengajuan Cuti</a>
+            <a href="absen.php"><span class="nav-text">Data Absensi</span></a>
+            <a href="data-absensi.php"><span class="nav-text">Validasi Absen Manual</span></a>
+            <a href="shifting.php"><span class="nav-text">Jadwal Shifting</span></a>
+            <a href="kelola_jatah_cuti.php"><span class="nav-text">Kelola Jatah Cuti</span></a>
+            <a href="cuti-karyawan.php"><span class="nav-text">Pengajuan Cuti</span></a>
         </div>
 
-        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKeuangan" role="button" aria-expanded="false">
-            <span><i class="fa-solid fa-wallet nav-icon"></i> <span>Keuangan</span></span>
+        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKeuangan" role="button" aria-expanded="false" title="Keuangan">
+            <span class="d-flex align-items-center">
+                <i class="fa-solid fa-wallet nav-icon"></i>
+                <span class="nav-text">Keuangan</span>
+            </span>
             <i class="fa-solid fa-chevron-down chevron-arrow"></i>
         </a>
         <div class="collapse sidebar-submenu" id="menuKeuangan">
-            <a href="tunjangan-karyawan.php">Biaya Pengganti</a>
-            <a href="denda.php">Denda Karyawan</a>
+            <a href="tunjangan-karyawan.php"><span class="nav-text">Biaya Pengganti</span></a>
+            <a href="denda.php"><span class="nav-text">Denda Karyawan</span></a>
             <?php if ($user_role === 'superadmin'): ?>
-            <a href="cashbon.php">Cashbon</a>
-            <a href="penggajian.php">Penggajian</a>
+            <a href="cashbon.php"><span class="nav-text">Cashbon</span></a>
+            <a href="penggajian.php"><span class="nav-text">Penggajian</span></a>
             <?php endif; ?>
         </div>
 
         <div class="sidebar-group-title">Pengaturan</div>
-        <a href="profile.php" class="sidebar-nav-item">
-            <span><i class="fa-solid fa-user-tie nav-icon"></i> <span>Profil Saya</span></span>
+        <a href="profile.php" class="sidebar-nav-item" title="Profil Saya">
+            <span class="d-flex align-items-center">
+                <i class="fa-solid fa-user-tie nav-icon"></i>
+                <span class="nav-text">Profil Saya</span>
+            </span>
         </a>
-        <a href="../logout.php" class="sidebar-nav-item text-danger mt-2">
-            <span><i class="fa-solid fa-arrow-right-from-bracket nav-icon"></i> <span>Log Out</span></span>
+        <a href="../logout.php" class="sidebar-nav-item text-danger mt-2" title="Log Out">
+            <span class="d-flex align-items-center">
+                <i class="fa-solid fa-arrow-right-from-bracket nav-icon text-danger"></i>
+                <span class="nav-text text-danger">Log Out</span>
+            </span>
         </a>
     </div>
 </aside>
@@ -428,13 +453,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const desktopBtn = document.getElementById("desktopHamburgerBtn");
     const mobileBtn = document.getElementById("mobileHamburgerBtn");
     const overlay = document.getElementById("sidebarOverlay");
+    const brandBox = document.querySelector(".sidebar-brand");
     const body = document.body;
 
-    // Restore desktop collapsed state from localStorage
-    if (localStorage.getItem("gravitti_sidebar_collapsed") === "true" && window.innerWidth >= 992) {
-        body.classList.add("sidebar-collapsed");
-    }
-
+    // Toggle Desktop Mini Sidebar (70px icon-only)
     if (desktopBtn) {
         desktopBtn.addEventListener("click", function() {
             body.classList.toggle("sidebar-collapsed");
@@ -442,6 +464,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    // Toggle Mobile Drawer
     if (mobileBtn) {
         mobileBtn.addEventListener("click", function() {
             body.classList.toggle("sidebar-mobile-open");
