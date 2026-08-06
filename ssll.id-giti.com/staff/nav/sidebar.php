@@ -291,22 +291,41 @@ body.sidebar-collapsed .floating-hamburger-btn {
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    height: 54px !important;
-    background: rgba(17, 24, 39, 0.95) !important;
-    backdrop-filter: blur(10px) !important;
+    height: 56px !important;
+    background: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(16px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: space-between !important;
     padding: 0 16px !important;
     z-index: 1020 !important;
-    border-bottom: 1px solid var(--sb-border) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
 }
 
 .mobile-top-bar #mobileHamburgerBtn {
-    position: absolute !important;
-    right: 16px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
+    position: relative !important;
+    right: auto !important;
+    top: auto !important;
+    transform: none !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    color: #ffffff !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.1rem !important;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.mobile-top-bar #mobileHamburgerBtn:active {
+    transform: scale(0.92) !important;
+    background: rgba(37, 99, 235, 0.4) !important;
 }
 
 @media (min-width: 992px) {
