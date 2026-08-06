@@ -311,8 +311,8 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
 <!-- Mobile Top Floating Bar -->
 <div class="mobile-top-bar">
     <div class="d-flex align-items-center gap-2">
-        <div class="brand-icon-box" style="width:28px; height:28px; font-size:0.85rem;">G</div>
-        <span class="fw-bold text-white" style="font-size: 0.95rem;">Gravitti Tech</span>
+        <img src="../img/giti.png" alt="Gravitti Tech Logo" style="height: 32px; width: auto; max-width: 130px; object-fit: contain;" onerror="this.style.display='none'; document.getElementById('mob-staff-brand-text').style.display='inline-block';">
+        <span class="fw-bold text-white" id="mob-staff-brand-text" style="font-size: 0.95rem; display: none;">Gravitti Tech</span>
     </div>
     <button class="hamburger-toggle-btn" id="mobileHamburgerBtn" aria-label="Toggle Navigation">
         <i class="fa-solid fa-bars"></i>
@@ -327,8 +327,8 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
     <!-- Sidebar Header -->
     <div class="sidebar-header">
         <a href="grafik-kinerja.php" class="sidebar-brand">
-            <div class="brand-icon-box">G</div>
-            <span class="brand-text">Gravitti Tech</span>
+            <img src="../img/giti.png" alt="Gravitti Tech Logo" style="height: 36px; width: auto; max-width: 140px; object-fit: contain;" onerror="this.style.display='none'; document.getElementById('sb-staff-brand-text').style.display='inline-block';">
+            <span class="brand-text" id="sb-staff-brand-text" style="display: none;">Gravitti Tech</span>
         </a>
         <button class="hamburger-toggle-btn d-none d-lg-flex" id="desktopHamburgerBtn" title="Tutup Sidebar">
             <i class="fa-solid fa-bars"></i>
