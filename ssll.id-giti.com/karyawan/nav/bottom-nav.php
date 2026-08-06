@@ -10,12 +10,12 @@ $nip_session = $_SESSION['nip'] ?? '';
 <div class="custom-mobile-nav-wrapper d-lg-none">
     <nav class="custom-mobile-nav">
         <a href="home.php" class="custom-nav__link <?php echo ($current_page_basename == 'home.php') ? 'active' : ''; ?>">
-            <i class="fa-solid fa-house-chimney-user"></i>
+            <div class="custom-nav__icon-box"><i class="fa-solid fa-house-chimney-user"></i></div>
             <span class="custom-nav__text">Home</span>
         </a>
 
         <a href="riwayat-absen.php" class="custom-nav__link <?php echo ($current_page_basename == 'riwayat-absen.php') ? 'active' : ''; ?>">
-            <i class="fa-solid fa-clock"></i>
+            <div class="custom-nav__icon-box"><i class="fa-solid fa-clock"></i></div>
             <span class="custom-nav__text">Absen</span>
         </a>
 
@@ -28,12 +28,12 @@ $nip_session = $_SESSION['nip'] ?? '';
         </a>
 
         <a href="riwayat-gaji.php" class="custom-nav__link <?php echo ($current_page_basename == 'riwayat-gaji.php') ? 'active' : ''; ?>">
-            <i class="fa-solid fa-file-invoice-dollar"></i>
+            <div class="custom-nav__icon-box"><i class="fa-solid fa-file-invoice-dollar"></i></div>
             <span class="custom-nav__text">Gaji</span>
         </a>
 
         <a href="profile.php" class="custom-nav__link <?php echo ($current_page_basename == 'profile.php' || $current_page_basename == 'edit-profile.php') ? 'active' : ''; ?>">
-            <i class="fa-solid fa-id-card-clip"></i>
+            <div class="custom-nav__icon-box"><i class="fa-solid fa-id-card-clip"></i></div>
             <span class="custom-nav__text">Profil</span>
         </a>
     </nav>
