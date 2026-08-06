@@ -601,8 +601,6 @@ $asset_version = '2026.08.06.2';
             const now = new Date();
             const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             $('#realTimeClockDisplay').text(timeString);
-            checkLateStatus(); 
-            checkAbsenConditions(); 
         }
 
         function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
@@ -636,7 +634,7 @@ $asset_version = '2026.08.06.2';
                 
                 checkAbsenConditions();
             } else {
-                locationStatusEl.html('<i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi instan...');
+                locationStatusEl.html('<i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi...');
             }
 
             if (!navigator.geolocation) {
@@ -720,7 +718,7 @@ $asset_version = '2026.08.06.2';
             const [thresholdHour, thresholdMinute] = lateThresholdJS.split(':').map(Number);
             let isLate = false;
             if (currentHour > thresholdHour || (currentHour === thresholdHour && currentMinute > thresholdMinute)) { isLate = true; }
-            const hasAlreadyCheckedIn = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='masuk' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
+            const hasAlreadyCheckedIn = <?php echo !empty($today_absen_data['masuk']) ? 'true' : 'false'; ?>;
             if (isLate && !hasAlreadyCheckedIn) {
                 $('#lateWarning').removeClass('d-none');
                 $('#lateMessage').text('Anda terlambat!');
@@ -730,8 +728,8 @@ $asset_version = '2026.08.06.2';
         function checkAbsenConditions() {
             const isTestMode = <?php echo ($final_shifting === 'TEST') ? 'true' : 'false'; ?>;
             const isLocationActive = (userLat !== null && userLng !== null);
-            const hasCheckedInToday = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='masuk' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
-            const hasCheckedOutToday = <?php echo mysqli_num_rows(mysqli_query($conn, "SELECT 1 FROM absen_manual WHERE nip='$nip' AND tipe_absen='pulang' AND DATE(tgl_absen)='" . date('Y-m-d') . "' LIMIT 1")) > 0 ? 'true' : 'false'; ?>;
+            const hasCheckedInToday = <?php echo !empty($today_absen_data['masuk']) ? 'true' : 'false'; ?>;
+            const hasCheckedOutToday = <?php echo !empty($today_absen_data['pulang']) ? 'true' : 'false'; ?>;
 
             if (isTestMode) {
                 $('#btnCheckIn').prop('disabled', !isLocationActive);
@@ -1046,20 +1044,11 @@ $asset_version = '2026.08.06.2';
                     setTimeout(() => { card.style.transition = 'transform 0.15s ease-out'; }, 400);
                 }
 
-                document.addEventListener('mousemove', (e) => {
+                card.addEventListener('mousemove', (e) => {
                     apply3DTilt(e.clientX, e.clientY);
                 });
 
-                document.addEventListener('mouseleave', reset3DTilt);
-
-                card.addEventListener('touchmove', (e) => {
-                    if (e.touches.length > 0) {
-                        const touch = e.touches[0];
-                        apply3DTilt(touch.clientX, touch.clientY);
-                    }
-                }, { passive: true });
-
-                card.addEventListener('touchend', reset3DTilt);
+                card.addEventListener('mouseleave', reset3DTilt);
             }
 
             var currentPath = "<?php echo $current_page_basename; ?>";
