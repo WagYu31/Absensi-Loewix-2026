@@ -385,6 +385,29 @@ if ($hour < 11) {
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
         }
 
+        .btn-toggle-salary-eye {
+            background: rgba(255, 255, 255, 0.12) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            color: #ffffff !important;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-toggle-salary-eye:hover {
+            background: rgba(255, 255, 255, 0.28) !important;
+            color: #ffffff !important;
+            transform: scale(1.08);
+        }
+
         /* Quick Action Grid */
         .qa-grid {
             display: grid;
@@ -604,8 +627,13 @@ if ($hour < 11) {
 
                             <!-- Net Salary Amount -->
                             <div class="my-3">
-                                <div class="small text-emerald-200 fw-bold text-uppercase letter-spacing-1 mb-1" style="font-size: 0.75rem;">Estimasi Gaji Bersih (Take Home Pay)</div>
-                                <div class="fw-extrabold text-white" style="font-size: 2.15rem; letter-spacing: -1px; text-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <div class="small text-emerald-200 fw-bold text-uppercase letter-spacing-1" style="font-size: 0.75rem;">Estimasi Gaji Bersih (Take Home Pay)</div>
+                                    <button type="button" class="btn-toggle-salary-eye" id="toggleSalaryEye" title="Sembunyikan / Tampilkan Nominal Gaji">
+                                        <i class="fa-solid fa-eye" id="salaryEyeIcon"></i>
+                                    </button>
+                                </div>
+                                <div class="fw-extrabold text-white" id="salaryDisplayAmount" style="font-size: 2.15rem; letter-spacing: -1px; text-shadow: 0 4px 15px rgba(0,0,0,0.3);" data-real-amount="<?php echo htmlspecialchars($info_gaji_bulan_ini_dash['gaji_bersih_rp']); ?>">
                                     <?php echo htmlspecialchars($info_gaji_bulan_ini_dash['gaji_bersih_rp']); ?>
                                 </div>
                             </div>
@@ -618,7 +646,7 @@ if ($hour < 11) {
                                 </div>
                                 <div class="text-end">
                                     <div class="small text-white-50 fw-semibold" style="font-size: 0.7rem;">GAJI POKOK</div>
-                                    <div class="fw-bold text-white small">Rp <?php echo number_format($kar['gaji_pokok'] ?? 5500000, 0, ',', '.'); ?></div>
+                                    <div class="fw-bold text-white small" id="salaryPokokAmount" data-real-amount="Rp <?php echo number_format($kar['gaji_pokok'] ?? 5500000, 0, ',', '.'); ?>">Rp <?php echo number_format($kar['gaji_pokok'] ?? 5500000, 0, ',', '.'); ?></div>
                                 </div>
                             </div>
                         </div>
@@ -758,6 +786,41 @@ if ($hour < 11) {
         function triggerPWAInstall() {
             alert("Aplikasi web siap diinstall di HP Anda. Silakan gunakan menu 'Add to Home Screen' pada browser Anda.");
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const eyeBtn = document.getElementById("toggleSalaryEye");
+            const eyeIcon = document.getElementById("salaryEyeIcon");
+            const salaryDisplay = document.getElementById("salaryDisplayAmount");
+            const salaryPokok = document.getElementById("salaryPokokAmount");
+
+            if (eyeBtn && salaryDisplay) {
+                let isHidden = localStorage.getItem("gravitti_salary_hidden") === "true";
+
+                function updateSalaryVisibility() {
+                    if (isHidden) {
+                        salaryDisplay.textContent = "Rp •••••••••";
+                        if (salaryPokok) salaryPokok.textContent = "Rp •••••••••";
+                        eyeIcon.className = "fa-solid fa-eye-slash text-warning";
+                        eyeBtn.setAttribute("title", "Tampilkan Nominal Gaji");
+                    } else {
+                        salaryDisplay.textContent = salaryDisplay.getAttribute("data-real-amount");
+                        if (salaryPokok) salaryPokok.textContent = salaryPokok.getAttribute("data-real-amount");
+                        eyeIcon.className = "fa-solid fa-eye";
+                        eyeBtn.setAttribute("title", "Sembunyikan Nominal Gaji");
+                    }
+                }
+
+                updateSalaryVisibility();
+
+                eyeBtn.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isHidden = !isHidden;
+                    localStorage.setItem("gravitti_salary_hidden", isHidden);
+                    updateSalaryVisibility();
+                });
+            }
+        });
     </script>
 </body>
 
