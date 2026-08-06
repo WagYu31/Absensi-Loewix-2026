@@ -259,10 +259,17 @@ body.sidebar-collapsed .floating-hamburger-btn {
     backdrop-filter: blur(10px) !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
+    justify-content: center !important;
     padding: 0 16px !important;
     z-index: 1020 !important;
     border-bottom: 1px solid var(--sb-border) !important;
+}
+
+.mobile-top-bar #mobileHamburgerBtn {
+    position: absolute !important;
+    right: 16px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
 }
 
 @media (min-width: 992px) {
