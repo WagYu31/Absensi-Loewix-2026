@@ -54,7 +54,6 @@ if ($hour < 11) {
             --bg-canvas: #f8fafc;
             --card-radius: 20px;
             --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            --hero-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #0369a1 100%);
             --salary-gradient: linear-gradient(135deg, #064e3b 0%, #047857 60%, #0f766e 100%);
         }
 
@@ -73,55 +72,146 @@ if ($hour < 11) {
             padding-bottom: 110px !important;
         }
 
-        /* Hero Profile Banner Container */
+        /* Executive Hero Card Styling */
         .hero-banner-container {
-            background: var(--hero-gradient);
-            border-radius: 28px;
-            padding: 2.25rem;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f2b48 100%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 1.75rem 2rem;
             color: #ffffff;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.3);
-            margin-bottom: 2rem;
+            box-shadow: 0 15px 35px -10px rgba(15, 23, 42, 0.25);
+            margin-bottom: 1.75rem;
         }
 
-        .hero-banner-container::before {
+        .hero-banner-container::after {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
+            top: -40%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
             pointer-events: none;
         }
 
         .avatar-circle-hero {
-            width: 82px;
-            height: 82px;
+            width: 72px;
+            height: 72px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3.5px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: #ffffff;
             font-weight: 800;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .status-indicator-dot {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 16px;
+            height: 16px;
+            background: #10b981;
+            border: 2.5px solid #0f172a;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+        }
+
+        .greeting-subtitle {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 2px;
+        }
+
+        .hero-user-name {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .hero-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .meta-chip {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e2e8f0;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .meta-chip-status {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .hero-action-wrapper {
             flex-shrink: 0;
         }
 
-        .hero-pill-badge {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #f8fafc;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 6px 14px;
-            border-radius: 50px;
+        @media (max-width: 767.98px) {
+            .hero-action-wrapper {
+                width: 100%;
+                margin-top: 6px;
+            }
+        }
+
+        .btn-absen-hero {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%) !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            font-size: 0.9rem !important;
+            padding: 12px 26px !important;
+            border-radius: 14px !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35) !important;
+            transition: all 0.2s ease !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none !important;
+        }
+
+        @media (max-width: 767.98px) {
+            .btn-absen-hero {
+                width: 100%;
+                padding: 13px 20px !important;
+            }
+        }
+
+        .btn-absen-hero:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.5) !important;
+            color: #ffffff !important;
         }
 
         /* Modern Executive Card */
@@ -317,36 +407,36 @@ if ($hour < 11) {
 
             <!-- 1. HERO PROFILE EXECUTIVE BANNER -->
             <div class="hero-banner-container">
-                <div class="row align-items-center g-3">
-                    <div class="col-lg-8">
-                        <div class="d-flex align-items-center gap-3.5">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                    <div class="d-flex align-items-center gap-3" style="min-width: 0;">
+                        <div class="position-relative flex-shrink-0">
                             <?php if (!empty($photo) && file_exists('../uploads/' . $photo)): ?>
                                 <img src="../uploads/<?php echo htmlspecialchars($photo); ?>" alt="Foto Profil" class="avatar-circle-hero">
                             <?php else: ?>
                                 <div class="avatar-circle-hero"><?php echo $initials; ?></div>
                             <?php endif; ?>
+                            <span class="status-indicator-dot" title="Status Aktif"></span>
+                        </div>
 
-                            <div>
-                                <div class="small text-white-50 font-mono fw-semibold mb-1">
-                                    <i class="fa-regular fa-sun me-1 text-warning"></i><?php echo $greeting; ?>,
-                                </div>
-                                <h2 class="fw-extrabold text-white mb-2" style="font-size: 1.75rem; letter-spacing: -0.5px;">
-                                    <?php echo htmlspecialchars($nama); ?>
-                                </h2>
-                                <div class="d-flex align-items-center gap-2 flex-wrap">
-                                    <span class="hero-pill-badge"><i class="fa-solid fa-id-card me-1.5 opacity-75"></i>NIK: <?php echo htmlspecialchars($nik); ?></span>
-                                    <span class="hero-pill-badge"><i class="fa-solid fa-briefcase me-1.5 opacity-75"></i><?php echo htmlspecialchars($jabatan); ?></span>
-                                    <span class="badge bg-success border border-success-subtle rounded-pill px-3 py-1.5 fw-bold" style="font-size: 0.78rem;">
-                                        <i class="fa-solid fa-circle-check me-1"></i>AKTIF
-                                    </span>
-                                </div>
+                        <div style="min-width: 0;">
+                            <div class="greeting-subtitle">
+                                <i class="fa-regular fa-sun text-warning me-1.5"></i><?php echo $greeting; ?>,
+                            </div>
+                            <h3 class="hero-user-name">
+                                <?php echo htmlspecialchars($nama); ?>
+                            </h3>
+                            <div class="hero-meta-row">
+                                <span class="meta-chip"><i class="fa-solid fa-address-card opacity-75"></i>NIK: <?php echo htmlspecialchars($nik); ?></span>
+                                <span class="meta-chip"><i class="fa-solid fa-briefcase opacity-75"></i><?php echo htmlspecialchars($jabatan); ?></span>
+                                <span class="meta-chip-status"><i class="fa-solid fa-circle-check me-1"></i>AKTIF</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 text-lg-end">
-                        <a href="absen.php?nik=<?php echo htmlspecialchars($nik); ?>#form-absen" class="btn btn-light rounded-pill px-4 py-2.5 fw-extrabold text-primary shadow-sm">
-                            <i class="fa-solid fa-camera me-2"></i>Absen Sekarang
+                    <div class="hero-action-wrapper">
+                        <a href="absen.php?nik=<?php echo htmlspecialchars($nik); ?>#form-absen" class="btn-absen-hero">
+                            <i class="fa-solid fa-camera"></i>
+                            <span>Absen Masuk Sekarang</span>
                         </a>
                     </div>
                 </div>
