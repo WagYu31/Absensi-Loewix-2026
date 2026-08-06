@@ -470,61 +470,72 @@ if ($hour < 11) {
 
         .qa-card-item {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 18px;
+            border: 1.5px solid #e2e8f0;
+            border-bottom: 4px solid #cbd5e1 !important;
+            border-radius: 20px;
             padding: 16px 18px;
             display: flex;
             align-items: center;
             gap: 14px;
             text-decoration: none !important;
             color: #0f172a !important;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+            position: relative;
         }
 
         .qa-card-item:hover {
-            transform: translateY(-3px);
-            border-color: #3b82f6;
-            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.12);
-            color: #2563eb !important;
+            transform: translateY(-5px) scale(1.02);
+            border-color: #93c5fd;
+            border-bottom-color: #2563eb !important;
+            box-shadow: 0 16px 32px -6px rgba(37, 99, 235, 0.2), 0 6px 14px -2px rgba(15, 23, 42, 0.08) !important;
+            color: #1d4ed8 !important;
+        }
+
+        .qa-card-item:active {
+            transform: translateY(2px) scale(0.97);
+            border-bottom-width: 2px !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
         }
 
         .qa-icon-wrapper {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.15rem;
+            font-size: 1.25rem;
             flex-shrink: 0;
-            transition: transform 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
         .qa-card-item:hover .qa-icon-wrapper {
-            transform: scale(1.08);
+            transform: scale(1.12) rotate(-4deg);
         }
 
         .qa-text-title {
-            font-size: 0.88rem;
-            font-weight: 700;
+            font-size: 0.9rem;
+            font-weight: 800;
             line-height: 1.2;
+            color: #0f172a;
         }
 
         .qa-text-sub {
             font-size: 0.73rem;
             color: #64748b;
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        .icon-blue { background: #eff6ff; color: #2563eb; }
-        .icon-green { background: #f0fdf4; color: #16a34a; }
-        .icon-amber { background: #fffbeb; color: #d97706; }
-        .icon-purple { background: #faf5ff; color: #9333ea; }
-        .icon-rose { background: #fff1f2; color: #e11d48; }
-        .icon-teal { background: #f0fdfa; color: #0d9488; }
-        .icon-sky { background: #f0f9ff; color: #0284c7; }
-        .icon-emerald { background: #ecfdf5; color: #059669; }
+        .icon-blue { background: linear-gradient(135deg, #2563eb, #3b82f6) !important; color: #ffffff !important; box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35) !important; }
+        .icon-green { background: linear-gradient(135deg, #059669, #10b981) !important; color: #ffffff !important; box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35) !important; }
+        .icon-amber { background: linear-gradient(135deg, #d97706, #f59e0b) !important; color: #ffffff !important; box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35) !important; }
+        .icon-purple { background: linear-gradient(135deg, #7c3aed, #8b5cf6) !important; color: #ffffff !important; box-shadow: 0 6px 16px rgba(139, 92, 246, 0.35) !important; }
+        .icon-rose { background: linear-gradient(135deg, #e11d48, #f43f5e) !important; color: #ffffff !important; box-shadow: 0 6px 16px rgba(244, 63, 94, 0.35) !important; }
+        .icon-teal { background: linear-gradient(135deg, #0d9488, #14b8a6) !important; color: #ffffff !important; box-shadow: 0 6px 16px rgba(20, 184, 166, 0.35) !important; }
+        .icon-sky { background: linear-gradient(135deg, #0284c7, #38bdf8) !important; color: #ffffff !important; box-shadow: 0 6px 16px rgba(56, 189, 248, 0.35) !important; }
+        .icon-emerald { background: linear-gradient(135deg, #0f172a, #334155) !important; color: #ffffff !important; box-shadow: 0 6px 16px rgba(15, 23, 42, 0.35) !important; }
     </style>
 </head>
 
