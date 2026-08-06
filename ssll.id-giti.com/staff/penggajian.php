@@ -615,16 +615,16 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Memproses...';
                 btn.disabled = true;
 
+                var bln = '<?php echo $bulan_gaji; ?>';
+                var thn = '<?php echo $tahun_gaji; ?>';
+
                 $.ajax({
                     url: 'sa-generate-cashbon-otomatis.php',
                     type: 'POST',
-                    data: { bulan: '<?php echo $bulan_gaji; ?>', tahun: '<?php echo $tahun_gaji; ?>' },
+                    data: { bulan: bln, tahun: thn },
                     dataType: 'json',
-                    success: function(response) {
-                        window.location.href = "proses-generate-gaji.php?bulan=<?php echo $bulan_gaji; ?>&tahun=<?php echo $tahun_gaji; ?>";
-                    },
-                    error: function() {
-                        window.location.href = "proses-generate-gaji.php?bulan=<?php echo $bulan_gaji; ?>&tahun=<?php echo $tahun_gaji; ?>";
+                    complete: function() {
+                        window.location.href = "generate-data.php?bulan=" + bln + "&tahun=" + thn;
                     }
                 });
             }
