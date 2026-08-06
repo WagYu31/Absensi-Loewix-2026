@@ -348,6 +348,7 @@ if ($hour < 11) {
             font-size: 0.78rem !important;
             padding: 6px 14px !important;
             border-radius: 50px !important;
+            white-space: nowrap !important;
         }
 
         .salary-breakdown-row {
@@ -376,6 +377,7 @@ if ($hour < 11) {
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
         }
 
         .btn-slip-gaji:hover {
@@ -400,6 +402,7 @@ if ($hour < 11) {
             transition: all 0.2s ease;
             outline: none;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
         }
 
         .btn-toggle-salary-eye:hover {
@@ -408,17 +411,60 @@ if ($hour < 11) {
             transform: scale(1.08);
         }
 
-        /* Quick Action Grid */
+        /* Quick Action Grid Responsive Breakpoints */
         .qa-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 14px;
         }
 
-        @media (max-width: 991.98px) {
+        @media (max-width: 575.98px) {
             .qa-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+
+            .hero-banner-container {
+                padding: 1.25rem 1.25rem !important;
+                border-radius: 20px !important;
+            }
+
+            .avatar-circle-hero {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 1.35rem !important;
+            }
+
+            .hero-user-name {
+                font-size: 1.25rem !important;
+            }
+
+            .salary-exec-card {
+                padding: 18px 16px !important;
+                border-radius: 20px !important;
+            }
+
+            .salary-badge-pill {
+                font-size: 0.7rem !important;
+                padding: 4px 10px !important;
+            }
+
+            .salary-chip-icon {
+                width: 32px !important;
+                height: 26px !important;
+                font-size: 0.8rem !important;
+            }
+
+            .btn-slip-gaji {
+                font-size: 0.75rem !important;
+                padding: 6px 14px !important;
+            }
+        }
+
+        @media (min-width: 576px) and (max-width: 991.98px) {
+            .qa-grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 12px !important;
             }
         }
 
