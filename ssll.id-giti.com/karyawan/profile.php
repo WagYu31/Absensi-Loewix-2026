@@ -399,7 +399,7 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                 </div>
 
             </div>
-        </div>
+        <?php include 'nav/bottom-nav.php'; ?>
     </div>
 
     <!-- Popup Upload Photo -->
