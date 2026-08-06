@@ -165,7 +165,30 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
     flex-shrink: 0 !important;
 }
 
-/* Floating Hamburger Button when Sidebar Closed */
+.sidebar-logo-frame {
+    background: #ffffff !important;
+    padding: 6px 14px !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.9) !important;
+    transition: transform 0.2s ease !important;
+}
+
+.sidebar-logo-frame:hover {
+    transform: scale(1.03) !important;
+}
+
+.brand-logo-img {
+    height: 26px !important;
+    width: auto !important;
+    max-width: 130px !important;
+    object-fit: contain !important;
+}
+
+/* Floating Hamburger Button (Appears when sidebar is closed) */
 .floating-hamburger-btn {
     position: fixed !important;
     top: 15px !important;
@@ -273,10 +296,10 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
 
 <!-- Mobile Top Floating Bar -->
 <div class="mobile-top-bar">
-    <div class="d-flex align-items-center gap-2">
-        <img src="../img/giti.png" alt="Gravitti Tech Logo" style="height: 32px; width: auto; max-width: 130px; object-fit: contain;" onerror="this.style.display='none'; document.getElementById('mob-brand-text').style.display='inline-block';">
-        <span class="fw-bold text-white" id="mob-brand-text" style="font-size: 0.95rem; display: none;">Gravitti Tech</span>
-    </div>
+    <a href="home.php" class="sidebar-logo-frame text-decoration-none">
+        <img src="../img/giti.png" alt="Gravitti Tech Logo" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('mob-brand-text').style.display='inline-block';">
+        <span class="fw-bold text-dark" id="mob-brand-text" style="font-size: 0.95rem; display: none;">Gravitti Tech</span>
+    </a>
     <button class="hamburger-toggle-btn" id="mobileHamburgerBtn" aria-label="Toggle Navigation">
         <i class="fa-solid fa-bars"></i>
     </button>
@@ -289,9 +312,9 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
 <aside class="sidebar" id="appSidebar">
     <!-- Sidebar Header -->
     <div class="sidebar-header">
-        <a href="home.php" class="sidebar-brand">
-            <img src="../img/giti.png" alt="Gravitti Tech Logo" style="height: 36px; width: auto; max-width: 140px; object-fit: contain;" onerror="this.style.display='none'; document.getElementById('sb-brand-text').style.display='inline-block';">
-            <span class="fw-bold text-white" id="sb-brand-text" style="font-size: 1.05rem; display: none;">Gravitti Tech</span>
+        <a href="home.php" class="sidebar-logo-frame text-decoration-none">
+            <img src="../img/giti.png" alt="Gravitti Tech Logo" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('sb-brand-text').style.display='inline-block';">
+            <span class="fw-bold text-dark" id="sb-brand-text" style="font-size: 1.05rem; display: none;">Gravitti Tech</span>
         </a>
         <button class="hamburger-toggle-btn d-none d-lg-flex" id="desktopHamburgerBtn" title="Buka / Tutup Sidebar">
             <i class="fa-solid fa-bars"></i>

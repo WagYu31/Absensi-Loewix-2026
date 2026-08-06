@@ -202,6 +202,29 @@ $user_role = $_SESSION['role'] ?? 'guest';
     opacity: 0.85;
 }
 
+.sidebar-logo-frame {
+    background: #ffffff !important;
+    padding: 6px 14px !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.9) !important;
+    transition: transform 0.2s ease !important;
+}
+
+.sidebar-logo-frame:hover {
+    transform: scale(1.03) !important;
+}
+
+.brand-logo-img {
+    height: 26px !important;
+    width: auto !important;
+    max-width: 130px !important;
+    object-fit: contain !important;
+}
+
 /* Floating Hamburger Button when Sidebar Closed */
 .floating-hamburger-btn {
     position: fixed !important;
@@ -310,10 +333,10 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
 
 <!-- Mobile Top Floating Bar -->
 <div class="mobile-top-bar">
-    <div class="d-flex align-items-center gap-2">
-        <img src="../img/giti.png" alt="Gravitti Tech Logo" style="height: 32px; width: auto; max-width: 130px; object-fit: contain;" onerror="this.style.display='none'; document.getElementById('mob-staff-brand-text').style.display='inline-block';">
-        <span class="fw-bold text-white" id="mob-staff-brand-text" style="font-size: 0.95rem; display: none;">Gravitti Tech</span>
-    </div>
+    <a href="grafik-kinerja.php" class="sidebar-logo-frame text-decoration-none">
+        <img src="../img/giti.png" alt="Gravitti Tech Logo" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('mob-staff-brand-text').style.display='inline-block';">
+        <span class="fw-bold text-dark" id="mob-staff-brand-text" style="font-size: 0.95rem; display: none;">Gravitti Tech</span>
+    </a>
     <button class="hamburger-toggle-btn" id="mobileHamburgerBtn" aria-label="Toggle Navigation">
         <i class="fa-solid fa-bars"></i>
     </button>
@@ -326,9 +349,9 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
 <aside class="sidebar" id="appSidebar">
     <!-- Sidebar Header -->
     <div class="sidebar-header">
-        <a href="grafik-kinerja.php" class="sidebar-brand">
-            <img src="../img/giti.png" alt="Gravitti Tech Logo" style="height: 36px; width: auto; max-width: 140px; object-fit: contain;" onerror="this.style.display='none'; document.getElementById('sb-staff-brand-text').style.display='inline-block';">
-            <span class="brand-text" id="sb-staff-brand-text" style="display: none;">Gravitti Tech</span>
+        <a href="grafik-kinerja.php" class="sidebar-logo-frame text-decoration-none">
+            <img src="../img/giti.png" alt="Gravitti Tech Logo" class="brand-logo-img" onerror="this.style.display='none'; document.getElementById('sb-staff-brand-text').style.display='inline-block';">
+            <span class="brand-text text-dark" id="sb-staff-brand-text" style="display: none;">Gravitti Tech</span>
         </a>
         <button class="hamburger-toggle-btn d-none d-lg-flex" id="desktopHamburgerBtn" title="Tutup Sidebar">
             <i class="fa-solid fa-bars"></i>
