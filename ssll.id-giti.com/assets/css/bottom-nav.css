@@ -2,13 +2,14 @@
    ULTRA-SLEEK MOBILE BOTTOM NAVIGATION (iOS / Android Native Feel)
    =================================================== */
 .custom-mobile-nav-wrapper {
-    position: fixed;
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
-    width: calc(100% - 24px);
-    z-index: 1050;
-    pointer-events: none;
+    position: fixed !important;
+    bottom: 12px !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: calc(100% - 24px) !important;
+    z-index: 99999 !important;
+    pointer-events: none !important;
+    transform: none !important;
 }
 
 .custom-mobile-nav {
@@ -151,6 +152,11 @@
 }
 
 /* Smooth Page Load Animation */
+@keyframes smoothPageFadeOnly {
+    from { opacity: 0.2; }
+    to { opacity: 1; }
+}
+
 @keyframes smoothPageFadeIn {
     from {
         opacity: 0.2;
@@ -162,7 +168,10 @@
     }
 }
 
-.main-content-wrapper,
+.main-content-wrapper {
+    animation: smoothPageFadeOnly 0.3s ease forwards;
+}
+
 .dashboard-content {
     animation: smoothPageFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
