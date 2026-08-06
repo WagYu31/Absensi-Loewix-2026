@@ -5,7 +5,7 @@ $user_role = $_SESSION['role'] ?? 'guest';
 
 <style>
 /* ==========================================
-   ULTRA-SLEEK MODERN SAAS SIDEBAR & HAMBURGER
+   ULTRA-SLEEK FULL TOGGLE SIDEBAR (OPEN/CLOSE)
    ========================================== */
 :root {
     --sb-bg: #111827;
@@ -15,7 +15,6 @@ $user_role = $_SESSION['role'] ?? 'guest';
     --sb-active-bg: rgba(59, 130, 246, 0.15);
     --sb-active-color: #60a5fa;
     --sb-width: 250px;
-    --sb-mini-width: 70px;
 }
 
 /* Base Reset & Lock for Sidebar Layout */
@@ -29,8 +28,8 @@ $user_role = $_SESSION['role'] ?? 'guest';
     background-color: var(--sb-bg) !important;
     color: #f3f4f6 !important;
     z-index: 1035 !important;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.2) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.25) !important;
     display: flex !important;
     flex-direction: column !important;
     overflow-x: hidden !important;
@@ -83,8 +82,8 @@ $user_role = $_SESSION['role'] ?? 'guest';
     background: rgba(255, 255, 255, 0.08) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     color: #9ca3af !important;
-    width: 34px !important;
-    height: 34px !important;
+    width: 36px !important;
+    height: 36px !important;
     border-radius: 8px !important;
     display: flex !important;
     align-items: center !important;
@@ -96,7 +95,7 @@ $user_role = $_SESSION['role'] ?? 'guest';
 }
 
 .hamburger-toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.18) !important;
+    background: rgba(255, 255, 255, 0.2) !important;
     color: #ffffff !important;
 }
 
@@ -157,17 +156,14 @@ $user_role = $_SESSION['role'] ?? 'guest';
 .nav-icon {
     width: 22px !important;
     text-align: center !important;
-    font-size: 1.1rem !important;
+    font-size: 1.05rem !important;
     margin-right: 12px !important;
     flex-shrink: 0 !important;
-    transition: transform 0.2s ease !important;
 }
 
 .chevron-arrow {
     font-size: 0.75rem !important;
     transition: transform 0.25s ease !important;
-    margin-right: 0 !important;
-    width: auto !important;
 }
 
 .sidebar-nav-item[aria-expanded="true"] .chevron-arrow {
@@ -196,42 +192,43 @@ $user_role = $_SESSION['role'] ?? 'guest';
     color: #60a5fa !important;
 }
 
-/* Desktop Collapsed Mini Mode (70px) */
-body.sidebar-collapsed .sidebar {
-    width: var(--sb-mini-width) !important;
-}
-
-body.sidebar-collapsed .brand-text,
-body.sidebar-collapsed .sidebar-group-title,
-body.sidebar-collapsed .nav-text,
-body.sidebar-collapsed .chevron-arrow,
-body.sidebar-collapsed .sidebar-submenu,
-body.sidebar-collapsed .sidebar .collapse {
+/* Floating Hamburger Button when Sidebar Closed */
+.floating-hamburger-btn {
+    position: fixed !important;
+    top: 15px !important;
+    left: 18px !important;
+    z-index: 1040 !important;
+    background: #0f172a !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
     display: none !important;
-}
-
-body.sidebar-collapsed .sidebar-nav-item,
-body.sidebar-collapsed .sidebar a {
+    align-items: center !important;
     justify-content: center !important;
-    padding: 12px 0 !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
+    transition: all 0.2s ease !important;
 }
 
-body.sidebar-collapsed .nav-icon {
-    margin-right: 0 !important;
-    font-size: 1.25rem !important;
+.floating-hamburger-btn:hover {
+    background: #1e293b !important;
+    transform: scale(1.05) !important;
 }
 
-body.sidebar-collapsed .sidebar-header {
-    justify-content: center !important;
-    padding: 0 !important;
-}
-
-body.sidebar-collapsed #desktopHamburgerBtn {
-    display: none !important;
+/* Desktop Collapsed State -> Completely Hide Sidebar (-100%) & Expand Main Content (100%) */
+body.sidebar-collapsed .sidebar,
+body.sidebar-collapsed #appSidebar {
+    transform: translateX(-100%) !important;
 }
 
 body.sidebar-collapsed .main-content-wrapper {
-    margin-left: var(--sb-mini-width) !important;
+    margin-left: 0 !important;
+}
+
+body.sidebar-collapsed .floating-hamburger-btn {
+    display: flex !important;
 }
 
 @media (min-width: 992px) {
@@ -296,6 +293,11 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
 }
 </style>
 
+<!-- Floating Hamburger Button (Appears when sidebar is closed) -->
+<button class="floating-hamburger-btn" id="floatingOpenBtn" title="Buka Sidebar Navigasi">
+    <i class="fa-solid fa-bars"></i>
+</button>
+
 <!-- Mobile Top Floating Bar -->
 <div class="mobile-top-bar">
     <div class="d-flex align-items-center gap-2">
@@ -318,7 +320,7 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
             <div class="brand-icon-box">G</div>
             <span class="brand-text">Gravitti Tech</span>
         </a>
-        <button class="hamburger-toggle-btn d-none d-lg-flex" id="desktopHamburgerBtn" title="Buka / Tutup Sidebar">
+        <button class="hamburger-toggle-btn d-none d-lg-flex" id="desktopHamburgerBtn" title="Tutup Sidebar">
             <i class="fa-solid fa-bars"></i>
         </button>
     </div>
@@ -326,7 +328,7 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
     <!-- Sidebar Menu List -->
     <div class="sidebar-menu-body">
         <div class="sidebar-group-title">Utama</div>
-        <a href="grafik-kinerja.php" class="sidebar-nav-item" title="Dashboard">
+        <a href="grafik-kinerja.php" class="sidebar-nav-item">
             <span class="d-flex align-items-center">
                 <i class="fa-solid fa-chart-pie nav-icon"></i>
                 <span class="nav-text">Dashboard</span>
@@ -334,7 +336,7 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
         </a>
 
         <div class="sidebar-group-title">Manajemen</div>
-        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKepegawaian" role="button" aria-expanded="false" title="Kepegawaian">
+        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKepegawaian" role="button" aria-expanded="false">
             <span class="d-flex align-items-center">
                 <i class="fa-solid fa-users nav-icon"></i>
                 <span class="nav-text">Kepegawaian</span>
@@ -346,7 +348,7 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
             <a href="kalender_kerja.php"><span class="nav-text">Kalender Kerja</span></a>
         </div>
 
-        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKehadiran" role="button" aria-expanded="false" title="Kehadiran">
+        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKehadiran" role="button" aria-expanded="false">
             <span class="d-flex align-items-center">
                 <i class="fa-solid fa-clock nav-icon"></i>
                 <span class="nav-text">Kehadiran</span>
@@ -361,7 +363,7 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
             <a href="cuti-karyawan.php"><span class="nav-text">Pengajuan Cuti</span></a>
         </div>
 
-        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKeuangan" role="button" aria-expanded="false" title="Keuangan">
+        <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKeuangan" role="button" aria-expanded="false">
             <span class="d-flex align-items-center">
                 <i class="fa-solid fa-wallet nav-icon"></i>
                 <span class="nav-text">Keuangan</span>
@@ -378,13 +380,13 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
         </div>
 
         <div class="sidebar-group-title">Pengaturan</div>
-        <a href="profile.php" class="sidebar-nav-item" title="Profil Saya">
+        <a href="profile.php" class="sidebar-nav-item">
             <span class="d-flex align-items-center">
                 <i class="fa-solid fa-user-tie nav-icon"></i>
                 <span class="nav-text">Profil Saya</span>
             </span>
         </a>
-        <a href="../logout.php" class="sidebar-nav-item text-danger mt-2" title="Log Out">
+        <a href="../logout.php" class="sidebar-nav-item text-danger mt-2">
             <span class="d-flex align-items-center">
                 <i class="fa-solid fa-arrow-right-from-bracket nav-icon text-danger"></i>
                 <span class="nav-text text-danger">Log Out</span>
@@ -451,17 +453,23 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const desktopBtn = document.getElementById("desktopHamburgerBtn");
+    const floatingBtn = document.getElementById("floatingOpenBtn");
     const mobileBtn = document.getElementById("mobileHamburgerBtn");
     const overlay = document.getElementById("sidebarOverlay");
-    const brandBox = document.querySelector(".sidebar-brand");
     const body = document.body;
 
-    // Toggle Desktop Mini Sidebar (70px icon-only)
+    // Toggle Desktop Sidebar Open/Close Completely
+    function toggleSidebar() {
+        body.classList.toggle("sidebar-collapsed");
+        localStorage.setItem("gravitti_sidebar_collapsed", body.classList.contains("sidebar-collapsed"));
+    }
+
     if (desktopBtn) {
-        desktopBtn.addEventListener("click", function() {
-            body.classList.toggle("sidebar-collapsed");
-            localStorage.setItem("gravitti_sidebar_collapsed", body.classList.contains("sidebar-collapsed"));
-        });
+        desktopBtn.addEventListener("click", toggleSidebar);
+    }
+
+    if (floatingBtn) {
+        floatingBtn.addEventListener("click", toggleSidebar);
     }
 
     // Toggle Mobile Drawer
