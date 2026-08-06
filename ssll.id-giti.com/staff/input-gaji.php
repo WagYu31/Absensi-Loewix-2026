@@ -8,15 +8,17 @@ if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadm
 }
 
 include '../conn.php';
-// include 'get-kar-login-data.php';
 
-// Query yang lebih efisien: hanya ambil karyawan yang gajinya 0 atau NULL
-// dan belum di-soft-delete, serta bukan akun sistem.
+// Query yang efisien: hanya ambil karyawan AKTIF yang gajinya 0 atau NULL,
+// belum di-soft-delete, serta bukan akun sistem / admin / superadmin.
 $query = "SELECT nip, nama, jabatan 
           FROM karyawan 
           WHERE (gaji_pokok = 0 OR gaji_pokok IS NULL) 
             AND deleted_at IS NULL 
+            AND status_karyawan = 'aktif'
+            AND LOWER(nama) NOT LIKE '%admin%'
             AND nip NOT IN ('001', '70326') 
+            AND nip NOT IN (SELECT nip FROM users WHERE role IN ('superadmin', 'admin'))
           ORDER BY nama ASC";
 
 $result = $conn->query($query);
@@ -54,7 +56,7 @@ $karyawan_tanpa_gaji = $result->fetch_all(MYSQLI_ASSOC);
                 <div class="card shadow-sm">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0"><i class="fa-solid fa-file-invoice-dollar title-icon"></i>Daftar Karyawan Tanpa Gaji Pokok</h5>
-                        <a href="sa-data-karyawan.php" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-left me-2"></i>Kembali</a>
+                        <a href="data-karyawan.php" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-left me-2"></i>Kembali</a>
                     </div>
                     <div class="card-body">
                         <?php if (empty($karyawan_tanpa_gaji)): ?>
@@ -65,7 +67,7 @@ $karyawan_tanpa_gaji = $result->fetch_all(MYSQLI_ASSOC);
                         <?php else: ?>
                             <form action="proses_input_gaji.php" method="POST">
                                 <div class="table-responsive">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover align-middle">
                                         <thead class="table-light">
                                             <tr>
                                                 <th scope="col">Nama Karyawan</th>
@@ -77,10 +79,10 @@ $karyawan_tanpa_gaji = $result->fetch_all(MYSQLI_ASSOC);
                                             <?php foreach ($karyawan_tanpa_gaji as $karyawan): ?>
                                             <tr>
                                                 <td>
-                                                    <?php echo htmlspecialchars($karyawan['nama']); ?>
-                                                    <input type="hidden" name="nip[]" value="<?php echo htmlspecialchars($karyawan['nip']); ?>">
+                                                    <strong><?php echo htmlspecialchars($karyawan['nama'] ?? '-'); ?></strong>
+                                                    <input type="hidden" name="nip[]" value="<?php echo htmlspecialchars($karyawan['nip'] ?? ''); ?>">
                                                 </td>
-                                                <td><?php echo htmlspecialchars($karyawan['jabatan']); ?></td>
+                                                <td><?php echo htmlspecialchars($karyawan['jabatan'] ?? '-'); ?></td>
                                                 <td>
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
@@ -108,22 +110,22 @@ $karyawan_tanpa_gaji = $result->fetch_all(MYSQLI_ASSOC);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Fungsi untuk format mata uang saat mengetik
+            // Format mata uang saat mengetik
             $('.currency-input').on('keyup', function(event) {
                 var selection = window.getSelection().toString();
-                if (selection !== '') {
-                    return;
-                }
-                if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
-                    return;
-                }
+                if (selection !== '') return;
+                if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) return;
+                
                 var $this = $(this);
                 var input = $this.val();
-                var input = input.replace(/[\D\s\._\-]+/g, "");
-                input = input ? parseInt(input, 10) : 0;
-                $this.val(function() {
-                    return (input === 0) ? "" : input.toLocaleString("id-ID");
-                });
+                var inputClean = input.replace(/[\D\s\._\-]/g, "");
+                
+                if (inputClean !== "") {
+                    var formatted = parseInt(inputClean, 10).toLocaleString('id-ID');
+                    $this.val(formatted);
+                } else {
+                    $this.val("");
+                }
             });
         });
     </script>
