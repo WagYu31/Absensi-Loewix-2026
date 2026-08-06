@@ -54,7 +54,7 @@ if ($hour < 11) {
             --bg-canvas: #f8fafc;
             --card-radius: 20px;
             --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            --salary-gradient: linear-gradient(135deg, #064e3b 0%, #047857 60%, #0f766e 100%);
+            --salary-gradient: linear-gradient(135deg, #064e3b 0%, #022c22 60%, #0f172a 100%);
         }
 
         body {
@@ -299,29 +299,90 @@ if ($hour < 11) {
             letter-spacing: 0.5px;
         }
 
-        /* Salary Card Executive */
+        /* Salary Card Executive Masterpiece */
         .salary-exec-card {
-            background: var(--salary-gradient);
-            border-radius: var(--card-radius);
-            color: #ffffff;
-            padding: 24px;
+            background: var(--salary-gradient) !important;
+            border: 1px solid rgba(16, 185, 129, 0.3) !important;
+            border-radius: var(--card-radius) !important;
+            color: #ffffff !important;
+            padding: 24px !important;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 15px 35px -10px rgba(4, 120, 87, 0.35);
+            box-shadow: 0 15px 35px -10px rgba(4, 120, 87, 0.35) !important;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        .salary-exec-card::after {
+        .salary-exec-card::before {
             content: '';
             position: absolute;
-            bottom: -40%;
+            top: -50%;
             right: -20%;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(52, 211, 153, 0.2) 0%, transparent 70%);
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(52, 211, 153, 0.25) 0%, transparent 70%);
             pointer-events: none;
+        }
+
+        .salary-chip-icon {
+            width: 40px;
+            height: 30px;
+            border-radius: 7px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .salary-badge-pill {
+            background: rgba(255, 255, 255, 0.12) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            font-size: 0.78rem !important;
+            padding: 6px 14px !important;
+            border-radius: 50px !important;
+        }
+
+        .salary-breakdown-row {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-top: 14px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-slip-gaji {
+            background: #ffffff !important;
+            color: #047857 !important;
+            font-weight: 800 !important;
+            font-size: 0.82rem !important;
+            padding: 8px 18px !important;
+            border-radius: 50px !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
+            transition: all 0.2s ease !important;
+            text-decoration: none !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-slip-gaji:hover {
+            background: #f0fdf4 !important;
+            color: #064e3b !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
         }
 
         /* Quick Action Grid */
@@ -528,28 +589,45 @@ if ($hour < 11) {
                 <div class="col-lg-5">
                     <div class="salary-exec-card h-100">
                         <div>
+                            <!-- Top Card Header Row -->
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <span class="badge bg-white text-emerald-900 fw-bold rounded-pill px-3 py-1.5 small shadow-sm">
-                                    <i class="fa-solid fa-wallet me-1.5 text-success"></i>Info Gaji Bulan Ini
-                                </span>
-                                <span class="small text-white-50 font-mono fw-semibold"><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['periode']); ?></span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="salary-chip-icon"><i class="fa-solid fa-credit-card"></i></div>
+                                    <span class="salary-badge-pill"><i class="fa-solid fa-wallet text-warning me-1.5"></i>Info Gaji Bulan Ini</span>
+                                </div>
+                                <span class="small text-white-50 font-mono fw-bold"><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['periode']); ?></span>
                             </div>
 
+                            <!-- Net Salary Amount -->
                             <div class="my-3">
-                                <div class="small text-emerald-200 fw-bold text-uppercase letter-spacing-1 mb-1" style="font-size: 0.75rem;">Estimasi Gaji Bersih</div>
-                                <div class="fw-extrabold text-white display-6" style="font-size: 2.1rem; letter-spacing: -1px;">
+                                <div class="small text-emerald-200 fw-bold text-uppercase letter-spacing-1 mb-1" style="font-size: 0.75rem;">Estimasi Gaji Bersih (Take Home Pay)</div>
+                                <div class="fw-extrabold text-white" style="font-size: 2.15rem; letter-spacing: -1px; text-shadow: 0 4px 15px rgba(0,0,0,0.3);">
                                     <?php echo htmlspecialchars($info_gaji_bulan_ini_dash['gaji_bersih_rp']); ?>
+                                </div>
+                            </div>
+
+                            <!-- Salary Details Mini Breakdown -->
+                            <div class="salary-breakdown-row">
+                                <div>
+                                    <div class="small text-white-50 fw-semibold" style="font-size: 0.7rem;">STATUS GAJI</div>
+                                    <div class="fw-bold text-emerald-300 small"><i class="fa-solid fa-circle-notch fa-spin me-1"></i>Proses Akumulasi</div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="small text-white-50 fw-semibold" style="font-size: 0.7rem;">GAJI POKOK</div>
+                                    <div class="fw-bold text-white small">Rp <?php echo number_format($kar['gaji_pokok'] ?? 5500000, 0, ',', '.'); ?></div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="pt-3 border-top border-white border-opacity-20 d-flex align-items-center justify-content-between mt-3">
+                        <!-- Footer Payment Date & CTA -->
+                        <div class="pt-2 border-top border-white border-opacity-20 d-flex align-items-center justify-content-between mt-2">
                             <div>
-                                <div class="small text-white-50" style="font-size: 0.73rem;">Estimasi Tgl. Bayar</div>
+                                <div class="small text-white-50" style="font-size: 0.72rem;">Estimasi Tanggal Bayar</div>
                                 <div class="fw-bold text-white small"><i class="fa-regular fa-calendar-check me-1.5 text-emerald-300"></i><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['tanggal_bayar']); ?></div>
                             </div>
-                            <a href="<?php echo $link_ke_riwayat_gaji_dash; ?>" class="btn btn-light rounded-pill px-3.5 py-1.5 fw-bold text-success shadow-sm btn-sm">
-                                Slip Gaji <i class="fa-solid fa-chevron-right ms-1"></i>
+                            <a href="<?php echo $link_ke_riwayat_gaji_dash; ?>" class="btn-slip-gaji">
+                                <span>Detail Slip Gaji</span>
+                                <i class="fa-solid fa-chevron-right"></i>
                             </a>
                         </div>
                     </div>
