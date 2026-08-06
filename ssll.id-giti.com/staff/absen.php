@@ -7,21 +7,28 @@ if (!isset($_SESSION['nip']) || !in_array($_SESSION['role'], ['admin', 'superadm
 include '../conn.php';
 
 $role = $_SESSION['role'];
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $bulan = $_POST["bulan"];
-    $tahun = $_POST["tahun"];
-} else {
-    $currentMonth = date('m');
-    $currentYear = date('Y');
-    $bulan = $currentMonth;
-    $tahun = $currentYear;
-}
+
+$bulan = $_REQUEST['bulan'] ?? date('m');
+$tahun = $_REQUEST['tahun'] ?? date('Y');
+$selected_karyawan = $_REQUEST['karyawan'] ?? '';
+$selected_shift = $_REQUEST['shift'] ?? '';
+$selected_status = $_REQUEST['status_filter'] ?? '';
+
 $bulanNames = [
     '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
     '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
     '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
 ];
-$nama_bulan_terpilih = $bulanNames[$bulan];
+$nama_bulan_terpilih = $bulanNames[$bulan] ?? date('F');
+
+// Fetch active employees list for filter dropdown
+$list_karyawan = [];
+$res_kar_drop = $conn->query("SELECT nik, nip, nama FROM karyawan WHERE status_karyawan = 'aktif' AND deleted_at IS NULL AND nip NOT IN ('001','70326') ORDER BY nama ASC");
+if ($res_kar_drop) {
+    while ($k = $res_kar_drop->fetch_assoc()) {
+        $list_karyawan[] = $k;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -117,7 +124,7 @@ $nama_bulan_terpilih = $bulanNames[$bulan];
             background: #ffffff;
             border: 1px solid rgba(226, 232, 240, 0.8);
             border-radius: 20px;
-            padding: 1.25rem;
+            padding: 1.25rem 1.5rem;
             margin-bottom: 1.5rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
         }
@@ -219,29 +226,64 @@ $nama_bulan_terpilih = $bulanNames[$bulan];
                     </a>
                 </div>
 
-                <!-- Filter Bar -->
+                <!-- Comprehensive Multi-Filter Bar -->
                 <div class="filter-card-modern no-print">
-                    <form method="POST" action="absen.php">
-                        <div class="row g-3 align-items-center">
-                            <div class="col-md-5">
-                                <label for="bulan" class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-calendar-days me-1"></i> Pilih Bulan</label>
+                    <form method="GET" action="absen.php" id="filterForm">
+                        <div class="row g-2.5 align-items-end">
+                            
+                            <!-- Bulan -->
+                            <div class="col-6 col-md-2">
+                                <label for="bulan" class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-calendar me-1 text-primary"></i>Bulan</label>
                                 <select id="bulan" name="bulan" class="form-select rounded-3">
                                     <?php foreach ($bulanNames as $bulanNum => $bulanName): ?>
                                         <option value="<?php echo $bulanNum; ?>" <?php if ($bulanNum == $bulan) echo 'selected'; ?>><?php echo $bulanName; ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-                            <div class="col-md-5">
-                                <label for="tahun" class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-calendar me-1"></i> Pilih Tahun</label>
+
+                            <!-- Tahun -->
+                            <div class="col-6 col-md-2">
+                                <label for="tahun" class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-calendar-days me-1 text-primary"></i>Tahun</label>
                                 <select id="tahun" name="tahun" class="form-select rounded-3">
                                     <?php $tahunSekarang = date('Y'); for ($i = $tahunSekarang; $i >= $tahunSekarang - 10; $i--): ?>
                                         <option value="<?php echo $i; ?>" <?php if ($i == $tahun) echo 'selected'; ?>><?php echo $i; ?></option>
                                     <?php endfor; ?>
                                 </select>
                             </div>
-                            <div class="col-md-2 mt-md-4">
-                                <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold py-2"><i class="fa-solid fa-filter me-1"></i> Tampilkan</button>
+
+                            <!-- Karyawan -->
+                            <div class="col-12 col-md-3">
+                                <label for="karyawan" class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-user me-1 text-primary"></i>Karyawan</label>
+                                <select id="karyawan" name="karyawan" class="form-select rounded-3">
+                                    <option value="">-- Semua Karyawan --</option>
+                                    <?php foreach ($list_karyawan as $kar): ?>
+                                        <option value="<?php echo htmlspecialchars($kar['nik']); ?>" <?php if ($kar['nik'] == $selected_karyawan || $kar['nip'] == $selected_karyawan) echo 'selected'; ?>>
+                                            <?php echo htmlspecialchars($kar['nama']); ?> (NIK: <?php echo htmlspecialchars($kar['nik']); ?>)
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
+
+                            <!-- Shift -->
+                            <div class="col-6 col-md-2">
+                                <label for="shift" class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-clock-rotate-left me-1 text-primary"></i>Shift</label>
+                                <select id="shift" name="shift" class="form-select rounded-3">
+                                    <option value="">-- Semua Shift --</option>
+                                    <option value="P" <?php if ($selected_shift == 'P') echo 'selected'; ?>>Shift P (07:00)</option>
+                                    <option value="M" <?php if ($selected_shift == 'M') echo 'selected'; ?>>Shift M (08:30)</option>
+                                    <option value="N" <?php if ($selected_shift == 'N') echo 'selected'; ?>>Shift N (09:00)</option>
+                                    <option value="S" <?php if ($selected_shift == 'S') echo 'selected'; ?>>Shift S (09:30)</option>
+                                    <option value="T" <?php if ($selected_shift == 'T') echo 'selected'; ?>>Shift T (09:10)</option>
+                                    <option value="TEST" <?php if ($selected_shift == 'TEST') echo 'selected'; ?>>Shift TEST (24 Jam)</option>
+                                </select>
+                            </div>
+
+                            <!-- Tombol Submit & Reset -->
+                            <div class="col-6 col-md-3 d-flex gap-2">
+                                <button type="submit" class="btn btn-primary flex-grow-1 rounded-3 fw-bold py-2"><i class="fa-solid fa-filter me-1"></i> Filter Data</button>
+                                <a href="absen.php" class="btn btn-outline-secondary rounded-3 px-3 py-2" title="Reset Semua Filter"><i class="fa-solid fa-rotate-left"></i> Reset</a>
+                            </div>
+
                         </div>
                     </form>
                 </div>
@@ -259,7 +301,7 @@ $nama_bulan_terpilih = $bulanNames[$bulan];
                         <div class="d-flex align-items-center gap-2">
                             <div class="input-group input-group-sm" style="max-width: 240px;">
                                 <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
-                                <input type="text" id="searchTableInput" class="form-control border-start-0 bg-light" placeholder="Cari nama karyawan...">
+                                <input type="text" id="searchTableInput" class="form-control border-start-0 bg-light" placeholder="Cari nama karyawan / NIK...">
                             </div>
                             <a href="validasi-absen.php?bulan=<?php echo $bulan; ?>&tahun=<?php echo $tahun; ?>" class="btn btn-success btn-sm rounded-3 fw-bold px-3">
                                 <i class="fa-solid fa-check-double me-1.5"></i>Data Ini Sudah Benar
@@ -291,8 +333,18 @@ $nama_bulan_terpilih = $bulanNames[$bulan];
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql = "SELECT * FROM karyawan WHERE nip != '001' AND nip != '70326' AND nik != '114' AND status_karyawan = 'aktif' AND deleted_at IS NULL ORDER BY nama ASC";
+                                    $sql = "SELECT * FROM karyawan WHERE nip != '001' AND nip != '70326' AND nik != '114' AND status_karyawan = 'aktif' AND deleted_at IS NULL";
+                                    
+                                    if (!empty($selected_karyawan)) {
+                                        $sql .= " AND (nik = '$selected_karyawan' OR nip = '$selected_karyawan')";
+                                    }
+                                    if (!empty($selected_shift)) {
+                                        $sql .= " AND shifting = '$selected_shift'";
+                                    }
+                                    
+                                    $sql .= " ORDER BY nama ASC";
                                     $result = $conn->query($sql);
+                                    
                                     if ($result && $result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {
                                             $nik = $row['nik'] ?? '-'; 
@@ -318,7 +370,7 @@ $nama_bulan_terpilih = $bulanNames[$bulan];
                                             echo "</tr>";
                                         }
                                     } else {
-                                        echo "<tr><td colspan='11' class='p-4 text-muted'>Tidak ada data karyawan aktif untuk ditampilkan.</td></tr>";
+                                        echo "<tr><td colspan='11' class='p-4 text-muted'>Tidak ada data karyawan aktif yang memenuhi kriteria filter.</td></tr>";
                                     }
                                     $conn->close();
                                     ?>
