@@ -14,18 +14,18 @@ $nip_session = $_SESSION['nip'] ?? '';
             <span class="custom-nav__text">Home</span>
         </a>
 
-        <a href="riwayat-absen.php" class="custom-nav__link <?php echo ($current_page_basename == 'riwayat-absen.php' || $current_page_basename == 'absensi.php') ? 'active' : ''; ?>">
+        <a href="riwayat-absen.php" class="custom-nav__link <?php echo ($current_page_basename == 'riwayat-absen.php') ? 'active' : ''; ?>">
             <i class="fa-solid fa-clock"></i>
             <span class="custom-nav__text">Absen</span>
         </a>
 
-        <!-- Center Floating FAB Absen Camera Button -->
-        <div class="custom-nav__fab-container">
-            <a href="absen.php?nik=<?php echo htmlspecialchars($nip_session); ?>#form-absen" class="custom-nav__fab-button" title="Absen Masuk">
+        <!-- Center Floating FAB Absen Camera Button (Points to Gambar 2: Presensi Online / absensi.php) -->
+        <a href="absensi.php" class="custom-nav__fab-container text-decoration-none">
+            <div class="custom-nav__fab-button <?php echo ($current_page_basename == 'absensi.php') ? 'active' : ''; ?>" title="Presensi Online">
                 <i class="fa-solid fa-camera"></i>
-            </a>
-            <span class="custom-nav__fab-text">Presensi</span>
-        </div>
+            </div>
+            <span class="custom-nav__fab-text <?php echo ($current_page_basename == 'absensi.php') ? 'active' : ''; ?>">Presensi</span>
+        </a>
 
         <a href="riwayat-gaji.php" class="custom-nav__link <?php echo ($current_page_basename == 'riwayat-gaji.php') ? 'active' : ''; ?>">
             <i class="fa-solid fa-file-invoice-dollar"></i>
