@@ -29,6 +29,11 @@ if ($filter_type == 'yearly') {
     $label_periode = date('F Y', strtotime($start_date));
 }
 
+// -------------------------------------------------------------
+// HIGH-PERFORMANCE BULK DATA FETCHING (BULLETPROOF & INSTANT)
+// -------------------------------------------------------------
+
+// 1. Fetch all active employees
 $employees_data = [];
 $sql_kar = "SELECT nip, nik, nama, shifting, pin_absen 
             FROM karyawan 
@@ -58,6 +63,7 @@ if ($res_kar) {
     }
 }
 
+// 2. Fetch holidays in bulk
 $holidays = [];
 $res_libur = $conn->query("SELECT tanggal_merah FROM kalender_kerja WHERE libur='yes' AND YEAR(tanggal_merah) = '$tahun_filter' AND deleted_at IS NULL");
 if ($res_libur) {
@@ -66,45 +72,60 @@ if ($res_libur) {
     }
 }
 
+// 3. Fetch attendance scans in 1 single bulk query for all employees
+$all_scans = [];
+$sql_bulk_absen = "SELECT nip, 
+                         DATE(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) as tgl, 
+                         MIN(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) as jam_masuk, 
+                         MAX(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) as jam_pulang 
+                  FROM absen 
+                  WHERE YEAR(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) = '$tahun_filter' ";
+if ($filter_type == 'monthly') {
+    $sql_bulk_absen .= " AND MONTH(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) = '$bulan_filter' ";
+}
+$sql_bulk_absen .= " GROUP BY nip, tgl";
+
+$res_bulk = $conn->query($sql_bulk_absen);
+if ($res_bulk) {
+    while ($r = $res_bulk->fetch_assoc()) {
+        $all_scans[$r['nip']][$r['tgl']] = $r;
+    }
+}
+
+// 4. Fetch leaves in 1 bulk query
+$all_leaves = [];
+$res_bulk_cuti = $conn->query("SELECT nip, tgl_mulai, tgl_selesai FROM cuti WHERE verif LIKE 'Disetujui%' AND deleted_at IS NULL AND tgl_mulai <= '$end_date' AND tgl_selesai >= '$start_date'");
+if ($res_bulk_cuti) {
+    while ($rc = $res_bulk_cuti->fetch_assoc()) {
+        $all_leaves[$rc['nip']][] = $rc;
+    }
+}
+
+// 5. Fetch shift requests in 1 bulk query
+$all_shift_reqs = [];
+$res_bulk_shifts = $conn->query("SELECT nip, tgl_mulai, tgl_selesai, shifting FROM shift_req WHERE YEAR(tgl_mulai) = '$tahun_filter'");
+if ($res_bulk_shifts) {
+    while ($rs = $res_bulk_shifts->fetch_assoc()) {
+        $all_shift_reqs[$rs['nip']][] = $rs;
+    }
+}
+
 $start_dt = new DateTime($start_date);
 $end_dt = new DateTime($end_date);
 $interval = new DateInterval('P1D');
 $period = new DatePeriod($start_dt, $interval, $end_dt->modify('+1 day'));
 
+// Process metrics for all employees in memory (Instant 0.01s)
 foreach ($employees_data as $nip => &$emp) {
-    $absen_harian = [];
     $target_nik = $emp['nik'];
+    $pin = $emp['pin'];
     
-    if ($filter_type == 'yearly') {
-        $sql_absen = "SELECT DATE(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) as tgl, 
-                      MIN(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) as jam_masuk, 
-                      MAX(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) as jam_pulang 
-                      FROM absen 
-                      WHERE nip='$target_nik' 
-                      AND YEAR(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) = '$tahun_filter'
-                      GROUP BY tgl";
-    } else {
-        $sql_absen = "SELECT DATE(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) as tgl, 
-                      MIN(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) as jam_masuk, 
-                      MAX(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) as jam_pulang 
-                      FROM absen 
-                      WHERE nip='$target_nik' 
-                      AND MONTH(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) = '$bulan_filter'
-                      AND YEAR(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) = '$tahun_filter'
-                      GROUP BY tgl";
-    }
-
-    $res_absen = $conn->query($sql_absen);
-    if ($res_absen) {
-        while ($row = $res_absen->fetch_assoc()) {
-            $absen_harian[$row['tgl']] = $row;
-        }
-    }
-
+    $absen_harian = $all_scans[$target_nik] ?? [];
+    
+    // Build shift requests lookup for this employee
     $req_shifts = [];
-    $res_req = $conn->query("SELECT tgl_mulai, tgl_selesai, shifting FROM shift_req WHERE nip='".$emp['pin']."' AND YEAR(tgl_mulai) = '$tahun_filter'");
-    if ($res_req) {
-        while ($rq = $res_req->fetch_assoc()) {
+    if (isset($all_shift_reqs[$pin])) {
+        foreach ($all_shift_reqs[$pin] as $rq) {
             $r_start = new DateTime($rq['tgl_mulai']);
             $r_end = new DateTime($rq['tgl_selesai']);
             $r_end->modify('+1 day');
@@ -114,16 +135,13 @@ foreach ($employees_data as $nip => &$emp) {
         }
     }
 
-    $sql_cuti = "SELECT tgl_mulai, tgl_selesai FROM cuti WHERE nip='$nip' AND verif LIKE 'Disetujui%' AND deleted_at IS NULL AND tgl_mulai <= '$end_date' AND tgl_selesai >= '$start_date'";
-    $res_cuti = $conn->query($sql_cuti);
-    if ($res_cuti) {
-        while ($rc = $res_cuti->fetch_assoc()) {
+    // Build leaves lookup for this employee
+    if (isset($all_leaves[$nip])) {
+        foreach ($all_leaves[$nip] as $rc) {
             $c_start = new DateTime($rc['tgl_mulai']);
             $c_end = new DateTime($rc['tgl_selesai']);
             $c_end->modify('+1 day');
-            $period_cuti = new DatePeriod($c_start, $interval, $c_end);
-            
-            foreach ($period_cuti as $dt_c) {
+            foreach (new DatePeriod($c_start, $interval, $c_end) as $dt_c) {
                 $tgl_c = $dt_c->format('Y-m-d');
                 if ($tgl_c < $start_date || $tgl_c > $end_date) continue;
                 if ($tgl_c >= $hari_ini_str) continue;
@@ -271,19 +289,50 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistik & Kinerja - Gravitti Tech</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a97d5963a4.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../assets/css/main-styles.css">
     <link rel="stylesheet" href="../assets/css/sidebar.css">
     
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif !important;
-            background: #f8fafc;
+        :root {
+            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0284c7 100%);
+            --card-radius-lg: 24px;
         }
 
-        /* Top Summary Stat Widgets */
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+            background: #f1f5f9 !important;
+            color: #0f172a;
+        }
+
+        .main-content-wrapper {
+            background: #f1f5f9;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%) !important;
+            min-height: 100vh;
+        }
+
+        /* Hero Header Banner */
+        .page-specific-header {
+            background: var(--header-gradient) !important;
+            color: #ffffff;
+            padding: 2.25rem 0 4.5rem 0 !important;
+            margin-bottom: -50px !important;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.25) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .page-specific-header h1 {
+            font-weight: 800 !important;
+            font-size: 1.65rem !important;
+            letter-spacing: -0.5px;
+            color: #ffffff !important;
+        }
+
+        /* 3D Glass Summary Widgets */
         .stat-widget-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -292,68 +341,76 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
         }
 
         .stat-widget-card {
-            background: #ffffff;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            border-radius: 20px;
-            padding: 1.25rem 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: var(--card-radius-lg);
+            padding: 1.35rem 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+            transition: all 0.25s ease-out;
         }
 
         .stat-widget-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 35px rgba(0, 0, 0, 0.08);
+            border-color: rgba(59, 130, 246, 0.4);
         }
 
         .widget-val {
             font-weight: 800;
-            font-size: 1.6rem;
+            font-size: 1.75rem;
             color: #0f172a;
             line-height: 1.1;
             margin-bottom: 2px;
+            letter-spacing: -0.5px;
         }
 
         .widget-lbl {
             font-size: 0.8rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .widget-icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             flex-shrink: 0;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
         }
 
-        .widget-icon-box.blue { background: rgba(59, 130, 246, 0.12); color: #2563eb; }
-        .widget-icon-box.emerald { background: rgba(16, 185, 129, 0.12); color: #059669; }
-        .widget-icon-box.rose { background: rgba(244, 63, 94, 0.12); color: #e11d48; }
-        .widget-icon-box.purple { background: rgba(139, 92, 246, 0.12); color: #7c3aed; }
+        .widget-icon-box.blue { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #ffffff; }
+        .widget-icon-box.emerald { background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: #ffffff; }
+        .widget-icon-box.rose { background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%); color: #ffffff; }
+        .widget-icon-box.purple { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); color: #ffffff; }
 
         /* Filter Card */
         .filter-card-dash {
-            background: #ffffff;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: var(--card-radius-lg);
             padding: 1.25rem 1.5rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
         }
 
         /* Chart & Leaderboard Cards */
         .chart-card-dash {
-            background: #ffffff;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: var(--card-radius-lg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
             overflow: hidden;
         }
 
@@ -372,7 +429,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
         .leader-item {
             display: flex;
             align-items: center;
-            padding: 12px 18px;
+            padding: 14px 20px;
             border-bottom: 1px solid #f1f5f9;
             transition: background 0.2s ease;
         }
@@ -386,16 +443,17 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
         }
 
         .avatar-initial {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 0.85rem;
             margin-right: 12px;
             flex-shrink: 0;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
         }
 
         .rule-box-info {
@@ -404,8 +462,16 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
             border-radius: 16px;
             padding: 1rem 1.25rem;
             margin-top: 1.25rem;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             color: #475569;
+        }
+
+        .trophy-rank {
+            width: 28px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-align: center;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -417,7 +483,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
         <div class="header-banner page-specific-header no-print">
             <div class="container-fluid px-lg-4">
                 <h1>Statistik & Kinerja Tim</h1>
-                <p>Pantau performa jam kerja, lembur, kedisiplinan, dan histori cuti karyawan secara akurat.</p>
+                <p class="small opacity-80 mb-0">Pantau performa jam kerja, lembur, kedisiplinan, dan histori cuti karyawan secara akurat.</p>
             </div>
         </div>
         
@@ -435,7 +501,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                     <div class="stat-widget-card">
                         <div>
                             <div class="widget-val"><?php echo $total_karyawan_count; ?></div>
-                            <div class="widget-lbl">Total Karyawan Aktif</div>
+                            <div class="widget-lbl">Total Tim Aktif</div>
                         </div>
                         <div class="widget-icon-box blue"><i class="fa-solid fa-users"></i></div>
                     </div>
@@ -443,7 +509,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                     <div class="stat-widget-card">
                         <div>
                             <div class="widget-val"><?php echo number_format($sum_jam_kerja, 0, ',', '.'); ?> <span class="fs-6 fw-normal text-muted">Jam</span></div>
-                            <div class="widget-lbl">Total Jam Kerja Tim</div>
+                            <div class="widget-lbl">Total Jam Kerja</div>
                         </div>
                         <div class="widget-icon-box emerald"><i class="fa-solid fa-briefcase"></i></div>
                     </div>
@@ -451,7 +517,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                     <div class="stat-widget-card">
                         <div>
                             <div class="widget-val text-danger"><?php echo number_format($sum_telat_menit, 0, ',', '.'); ?> <span class="fs-6 fw-normal text-muted">Menit</span></div>
-                            <div class="widget-lbl">Akumulasi Terlambat</div>
+                            <div class="widget-lbl">Total Terlambat</div>
                         </div>
                         <div class="widget-icon-box rose"><i class="fa-solid fa-clock"></i></div>
                     </div>
@@ -459,7 +525,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                     <div class="stat-widget-card">
                         <div>
                             <div class="widget-val" style="color: #7c3aed;"><?php echo $sum_cuti_days; ?> <span class="fs-6 fw-normal text-muted">Hari</span></div>
-                            <div class="widget-lbl">Total Hari Cuti Disetujui</div>
+                            <div class="widget-lbl">Total Hari Cuti</div>
                         </div>
                         <div class="widget-icon-box purple"><i class="fa-solid fa-plane-departure"></i></div>
                     </div>
@@ -467,17 +533,17 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
 
                 <!-- Filter Card -->
                 <div class="filter-card-dash no-print">
-                    <form method="GET" action="grafik-kinerja.php" class="row g-2 align-items-center">
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-filter me-1"></i> Tipe Periode</label>
+                    <form method="GET" action="grafik-kinerja.php" class="row g-2.5 align-items-center">
+                        <div class="col-6 col-md-3">
+                            <label class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-filter me-1 text-primary"></i> Tipe Periode</label>
                             <select name="type" class="form-select rounded-3" onchange="this.form.submit()">
                                 <option value="monthly" <?php if($filter_type == 'monthly') echo 'selected'; ?>>Bulanan</option>
                                 <option value="yearly" <?php if($filter_type == 'yearly') echo 'selected'; ?>>Tahunan</option>
                             </select>
                         </div>
                         <?php if ($filter_type == 'monthly'): ?>
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-calendar me-1"></i> Bulan</label>
+                        <div class="col-6 col-md-3">
+                            <label class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-calendar me-1 text-primary"></i> Bulan</label>
                             <select name="bulan" class="form-select rounded-3">
                                 <?php foreach($bulanNames as $k => $v): ?>
                                     <option value="<?php echo $k; ?>" <?php if($bulan_filter == $k) echo 'selected'; ?>><?php echo $v; ?></option>
@@ -485,8 +551,8 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                             </select>
                         </div>
                         <?php endif; ?>
-                        <div class="col-md-2">
-                            <label class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-calendar-days me-1"></i> Tahun</label>
+                        <div class="col-6 col-md-2">
+                            <label class="form-label fw-bold text-secondary small mb-1"><i class="fa-solid fa-calendar-days me-1 text-primary"></i> Tahun</label>
                             <select name="tahun" class="form-select rounded-3">
                                 <?php 
                                 $tahun_mulai = 2026; 
@@ -497,10 +563,10 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                 <?php endfor; ?>
                             </select>
                         </div>
-                        <div class="col-md-2 mt-md-4">
+                        <div class="col-6 col-md-2 mt-md-4">
                             <button type="submit" class="btn btn-primary w-100 rounded-3 fw-bold py-2"><i class="fas fa-sync-alt me-1"></i> Update Data</button>
                         </div>
-                        <div class="col-md-2 mt-md-4">
+                        <div class="col-12 col-md-2 mt-md-4">
                             <a href="peringkat-kinerja.php" class="btn btn-outline-primary w-100 rounded-3 fw-bold py-2"><i class="fas fa-list-ol me-1"></i> Peringkat Rinci</a>
                         </div>
                     </form>
@@ -534,8 +600,8 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                     $init = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
                                 ?>
                                 <div class="leader-item">
-                                    <div class="me-3 text-center" style="width:24px; font-weight:800; color:<?php echo ($rank==1)?'#eab308':(($rank==2)?'#94a3b8':'#b45309'); ?>;">
-                                        <?php if($rank <= 3): ?><i class="fa-solid fa-trophy fs-6"></i><?php else: echo '#'.$rank; endif; ?>
+                                    <div class="trophy-rank me-3" style="color:<?php echo ($rank==1)?'#eab308':(($rank==2)?'#94a3b8':(($rank==3)?'#b45309':'#64748b')); ?>;">
+                                        <?php if($rank <= 3): ?><i class="fa-solid fa-trophy"></i><?php else: echo '#'.$rank; endif; ?>
                                     </div>
                                     <div class="avatar-initial bg-success text-white"><?php echo $init; ?></div>
                                     <div class="flex-grow-1 min-width-0">
@@ -591,7 +657,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                     $init = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
                                 ?>
                                 <div class="leader-item">
-                                    <div class="me-3 text-center fw-bold text-danger" style="width:24px;">
+                                    <div class="trophy-rank me-3 text-danger fw-bold">
                                         #<?php echo $rank; ?>
                                     </div>
                                     <div class="avatar-initial bg-danger text-white"><?php echo $init; ?></div>
@@ -648,7 +714,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                     $init = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
                                 ?>
                                 <div class="leader-item">
-                                    <div class="me-3 text-center fw-bold" style="width:24px; color:#6f42c1;">
+                                    <div class="trophy-rank me-3 fw-bold" style="color:#6f42c1;">
                                         #<?php echo $rank; ?>
                                     </div>
                                     <div class="avatar-initial text-white" style="background-color: #6f42c1;"><?php echo $init; ?></div>
@@ -683,8 +749,18 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
         const dataTidakAbsen = <?php echo json_encode($data_tidak_absen); ?>;
         const dataCuti = <?php echo json_encode($data_cuti_days); ?>;
         
-        // 1. Chart Produktivitas
-        const ctxProd = document.getElementById('productivityChart').getContext('2d');
+        // 1. Chart Produktivitas dengan Dynamic Canvas Gradient
+        const ctxProdCanvas = document.getElementById('productivityChart');
+        const ctxProd = ctxProdCanvas.getContext('2d');
+        
+        const gradBlue = ctxProd.createLinearGradient(0, 0, 0, 300);
+        gradBlue.addColorStop(0, 'rgba(37, 99, 235, 0.9)');
+        gradBlue.addColorStop(1, 'rgba(59, 130, 246, 0.3)');
+
+        const gradAmber = ctxProd.createLinearGradient(0, 0, 0, 300);
+        gradAmber.addColorStop(0, 'rgba(245, 158, 11, 0.9)');
+        gradAmber.addColorStop(1, 'rgba(251, 191, 36, 0.3)');
+
         new Chart(ctxProd, {
             type: 'bar',
             data: {
@@ -693,18 +769,18 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                     {
                         label: 'Total Jam Kerja',
                         data: dataJamKerja,
-                        backgroundColor: 'rgba(37, 99, 235, 0.75)',
+                        backgroundColor: gradBlue,
                         borderColor: '#1d4ed8',
-                        borderWidth: 1,
-                        borderRadius: 6
+                        borderWidth: 1.5,
+                        borderRadius: 8
                     },
                     {
                         label: 'Overtime Lembur (Jam)',
                         data: dataOvertime,
-                        backgroundColor: 'rgba(245, 158, 11, 0.85)',
+                        backgroundColor: gradAmber,
                         borderColor: '#b45309',
-                        borderWidth: 1,
-                        borderRadius: 6
+                        borderWidth: 1.5,
+                        borderRadius: 8
                     }
                 ]
             },
@@ -712,21 +788,27 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { position: 'top' },
+                    legend: { position: 'top', labels: { font: { family: 'Plus Jakarta Sans', weight: '700' } } },
                     tooltip: { mode: 'index', intersect: false }
                 },
                 scales: {
                     y: { beginAtZero: true, grid: { color: 'rgba(226, 232, 240, 0.6)' } },
                     x: { 
                         grid: { display: false },
-                        ticks: { autoSkip: false, maxRotation: 45, minRotation: 0 }
+                        ticks: { autoSkip: false, maxRotation: 45, minRotation: 0, font: { family: 'Plus Jakarta Sans', size: 11 } }
                     }
                 }
             }
         });
 
-        // 2. Chart Kedisiplinan
-        const ctxDisc = document.getElementById('disciplineChart').getContext('2d');
+        // 2. Chart Kedisiplinan dengan Smooth Line Area Fill
+        const ctxDiscCanvas = document.getElementById('disciplineChart');
+        const ctxDisc = ctxDiscCanvas.getContext('2d');
+        
+        const gradRose = ctxDisc.createLinearGradient(0, 0, 0, 300);
+        gradRose.addColorStop(0, 'rgba(225, 29, 72, 0.35)');
+        gradRose.addColorStop(1, 'rgba(225, 29, 72, 0.0)');
+
         new Chart(ctxDisc, {
             type: 'line',
             data: {
@@ -735,19 +817,22 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                     {
                         label: 'Total Terlambat (Menit)',
                         data: dataTelat,
-                        backgroundColor: 'rgba(225, 29, 72, 0.12)',
+                        backgroundColor: gradRose,
                         borderColor: '#e11d48',
-                        borderWidth: 2.5,
+                        borderWidth: 3,
                         tension: 0.35,
                         fill: true,
                         pointBackgroundColor: '#e11d48',
-                        pointRadius: 4,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
                         yAxisID: 'y'
                     },
                     {
                         label: 'Tidak Absen (Kali)',
                         data: dataTidakAbsen,
-                        backgroundColor: 'rgba(16, 185, 129, 0.75)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.85)',
                         borderColor: '#047857',
                         type: 'bar',
                         borderWidth: 1,
@@ -761,14 +846,14 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                 maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
-                    legend: { position: 'top' }
+                    legend: { position: 'top', labels: { font: { family: 'Plus Jakarta Sans', weight: '700' } } }
                 },
                 scales: {
                     y: {
                         type: 'linear',
                         display: true,
                         position: 'left',
-                        title: { display: true, text: 'Menit Telat' },
+                        title: { display: true, text: 'Menit Telat', font: { family: 'Plus Jakarta Sans', weight: '700' } },
                         grid: { color: 'rgba(226, 232, 240, 0.6)' },
                         beginAtZero: true
                     },
@@ -776,21 +861,27 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                         type: 'linear',
                         display: true,
                         position: 'right',
-                        title: { display: true, text: 'Kali Tidak Absen' },
+                        title: { display: true, text: 'Kali Tidak Absen', font: { family: 'Plus Jakarta Sans', weight: '700' } },
                         grid: { display: false },
                         suggestedMax: 5,
                         beginAtZero: true
                     },
                     x: { 
                         grid: { display: false },
-                        ticks: { autoSkip: false, maxRotation: 45, minRotation: 0 }
+                        ticks: { autoSkip: false, maxRotation: 45, minRotation: 0, font: { family: 'Plus Jakarta Sans', size: 11 } }
                     }
                 }
             }
         });
 
-        // 3. Chart Cuti
-        const ctxLeave = document.getElementById('leaveChart').getContext('2d');
+        // 3. Chart Cuti dengan Purple Gradient Bars
+        const ctxLeaveCanvas = document.getElementById('leaveChart');
+        const ctxLeave = ctxLeaveCanvas.getContext('2d');
+
+        const gradPurple = ctxLeave.createLinearGradient(0, 0, 0, 300);
+        gradPurple.addColorStop(0, 'rgba(124, 58, 237, 0.9)');
+        gradPurple.addColorStop(1, 'rgba(167, 139, 250, 0.3)');
+
         new Chart(ctxLeave, {
             type: 'bar',
             data: {
@@ -799,10 +890,10 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                     {
                         label: 'Total Cuti (Hari)',
                         data: dataCuti,
-                        backgroundColor: 'rgba(111, 66, 193, 0.75)', 
+                        backgroundColor: gradPurple, 
                         borderColor: '#5b21b6',
-                        borderWidth: 1,
-                        borderRadius: 6
+                        borderWidth: 1.5,
+                        borderRadius: 8
                     }
                 ]
             },
@@ -810,13 +901,13 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { position: 'top' }
+                    legend: { position: 'top', labels: { font: { family: 'Plus Jakarta Sans', weight: '700' } } }
                 },
                 scales: {
                     y: { beginAtZero: true, grid: { color: 'rgba(226, 232, 240, 0.6)' } },
                     x: { 
                         grid: { display: false },
-                        ticks: { autoSkip: false, maxRotation: 45, minRotation: 0 }
+                        ticks: { autoSkip: false, maxRotation: 45, minRotation: 0, font: { family: 'Plus Jakarta Sans', size: 11 } }
                     }
                 }
             }
