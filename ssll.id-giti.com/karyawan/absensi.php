@@ -48,7 +48,7 @@ if ($res_shift_req && $res_shift_req->num_rows > 0) {
 }
 
 $current_page_basename = basename($_SERVER['PHP_SELF']); 
-$asset_version = time();
+$asset_version = '2026.08.06.2';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -879,11 +879,21 @@ $asset_version = time();
                 const ctx = canvas.getContext('2d');
                 let w = videoEl.videoWidth || 640;
                 let h = videoEl.videoHeight || 480;
+                const maxDim = 540;
+                if (w > maxDim || h > maxDim) {
+                    if (w >= h) {
+                        h = Math.round((h * maxDim) / w);
+                        w = maxDim;
+                    } else {
+                        w = Math.round((w * maxDim) / h);
+                        h = maxDim;
+                    }
+                }
                 canvas.width = w;
                 canvas.height = h;
                 ctx.drawImage(videoEl, 0, 0, w, h);
                 
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.65);
                 const photoImg = document.getElementById('photoPreviewImg');
                 photoImg.src = dataUrl;
                 
@@ -907,7 +917,7 @@ $asset_version = time();
                         const canvas = document.createElement('canvas');
                         let w = tempImg.naturalWidth || tempImg.width || 640;
                         let h = tempImg.naturalHeight || tempImg.height || 480;
-                        const maxDim = 640;
+                        const maxDim = 540;
 
                         if (w > maxDim || h > maxDim) {
                             if (w >= h) {
@@ -924,7 +934,7 @@ $asset_version = time();
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(tempImg, 0, 0, w, h);
 
-                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.80);
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.65);
                         const photoImg = document.getElementById('photoPreviewImg');
                         photoImg.src = compressedDataUrl;
                         

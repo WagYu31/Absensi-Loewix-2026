@@ -22,6 +22,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION["nip"] = $nip;
         $_SESSION["role"] = $role;
 
+        // Set 30-day persistent cookie to prevent unexpected session timeout during attendance
+        $secret_token = md5($nip . 'SALT_SECRET_LOEWIX_2026' . $role);
+        setcookie('absensi_nip', $nip, time() + (86400 * 30), '/', '', false, true);
+        setcookie('absensi_role', $role, time() + (86400 * 30), '/', '', false, true);
+        setcookie('absensi_token', $secret_token, time() + (86400 * 30), '/', '', false, true);
+
         // Cek apakah ada karyawan yang berulang tahun hari ini
         $today_md = date('m-d');
         $has_birthday = false;

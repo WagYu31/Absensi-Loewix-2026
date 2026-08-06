@@ -6,6 +6,8 @@ header('Content-Type: application/json; charset=utf-8');
 date_default_timezone_set('Asia/Jakarta');
 session_start();
 
+include '../conn.php';
+
 // Helper to return clean JSON response
 function sendJsonResponse($success, $message) {
     ob_clean();
@@ -16,8 +18,6 @@ function sendJsonResponse($success, $message) {
 if (!isset($_SESSION['nip']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'karyawan') {
     sendJsonResponse(false, 'Akses tidak diizinkan. Silakan login kembali.');
 }
-
-include '../conn.php';
 
 $session_nip = $_SESSION['nip']; 
 
