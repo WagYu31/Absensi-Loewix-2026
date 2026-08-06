@@ -38,6 +38,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
 
 $filter_bulan = isset($_GET['bulan']) ? str_pad($_GET['bulan'], 2, '0', STR_PAD_LEFT) : date('m');
 $filter_tahun = isset($_GET['tahun']) ? $_GET['tahun'] : date('Y');
+$nama_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 ?>
 
 <!DOCTYPE html>
