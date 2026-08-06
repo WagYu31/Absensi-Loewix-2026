@@ -510,7 +510,7 @@ if ($hour < 11) {
                 <!-- Attendance Metrics (Col 7) -->
                 <div class="col-lg-7">
                     <div class="exec-card h-100">
-                        <div class="card-header-clean cursor-pointer" data-bs-toggle="collapse" data-bs-target="#collapseRingkasanKehadiran" aria-expanded="true" aria-controls="collapseRingkasanKehadiran" style="cursor: pointer; user-select: none;" title="Klik untuk Buka/Tutup Ringkasan Kehadiran">
+                        <div class="card-header-clean cursor-pointer collapsed" data-bs-toggle="collapse" data-bs-target="#collapseRingkasanKehadiran" aria-expanded="false" aria-controls="collapseRingkasanKehadiran" style="cursor: pointer; user-select: none;" title="Klik untuk Buka/Tutup Ringkasan Kehadiran">
                             <h6 class="card-title-clean">
                                 <i class="fa-solid fa-chart-pie text-primary"></i>
                                 <span>Ringkasan Kehadiran</span>
@@ -521,7 +521,7 @@ if ($hour < 11) {
                             </span>
                         </div>
 
-                        <div class="collapse show" id="collapseRingkasanKehadiran">
+                        <div class="collapse" id="collapseRingkasanKehadiran">
                             <div class="p-4">
                                 <div class="row g-3 mb-3">
                                     
