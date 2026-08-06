@@ -510,76 +510,80 @@ if ($hour < 11) {
                 <!-- Attendance Metrics (Col 7) -->
                 <div class="col-lg-7">
                     <div class="exec-card h-100">
-                        <div class="card-header-clean">
+                        <div class="card-header-clean cursor-pointer" data-bs-toggle="collapse" data-bs-target="#collapseRingkasanKehadiran" aria-expanded="true" aria-controls="collapseRingkasanKehadiran" style="cursor: pointer; user-select: none;" title="Klik untuk Buka/Tutup Ringkasan Kehadiran">
                             <h6 class="card-title-clean">
-                                <i class="fa-solid fa-chart-pie text-primary"></i>Ringkasan Kehadiran
+                                <i class="fa-solid fa-chart-pie text-primary"></i>
+                                <span>Ringkasan Kehadiran</span>
+                                <i class="fa-solid fa-chevron-down text-muted small ms-1" id="iconChevronRingkasan" style="transition: transform 0.25s ease;"></i>
                             </h6>
                             <span class="badge bg-slate-100 text-secondary border fw-bold rounded-pill px-3 py-1" style="font-size: 0.75rem;">
                                 <?php echo htmlspecialchars($periode_absensi_display_dash); ?>
                             </span>
                         </div>
 
-                        <div class="p-4">
-                            <div class="row g-3 mb-3">
-                                
-                                <div class="col-6 col-sm-3">
-                                    <div class="metric-item-card metric-box-blue p-3 h-100 d-flex flex-column justify-content-between">
-                                        <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <div class="metric-lbl text-primary">Hari Kerja</div>
-                                            <div class="metric-icon-box bg-primary text-white"><i class="fa-solid fa-calendar-check"></i></div>
-                                        </div>
-                                        <div>
-                                            <div class="text-primary mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $total_hari_kerja_dash; ?> <span class="fs-6 text-muted fw-normal">Hari</span></div>
-                                            <span class="badge bg-primary-subtle text-primary fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Efektif Bulan Ini</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-6 col-sm-3">
-                                    <div class="metric-item-card metric-box-green p-3 h-100 d-flex flex-column justify-content-between">
-                                        <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <div class="metric-lbl text-success">Kehadiran</div>
-                                            <div class="metric-icon-box bg-success text-white"><i class="fa-solid fa-user-check"></i></div>
-                                        </div>
-                                        <div>
-                                            <div class="text-success mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $jumlah_hadir_dash; ?> <span class="fs-6 text-muted fw-normal">Hari</span></div>
-                                            <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Total Hadir</span>
+                        <div class="collapse show" id="collapseRingkasanKehadiran">
+                            <div class="p-4">
+                                <div class="row g-3 mb-3">
+                                    
+                                    <div class="col-6 col-sm-3">
+                                        <div class="metric-item-card metric-box-blue p-3 h-100 d-flex flex-column justify-content-between">
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <div class="metric-lbl text-primary">Hari Kerja</div>
+                                                <div class="metric-icon-box bg-primary text-white"><i class="fa-solid fa-calendar-check"></i></div>
+                                            </div>
+                                            <div>
+                                                <div class="text-primary mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $total_hari_kerja_dash; ?> <span class="fs-6 text-muted fw-normal">Hari</span></div>
+                                                <span class="badge bg-primary-subtle text-primary fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Efektif Bulan Ini</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="col-6 col-sm-3">
-                                    <div class="metric-item-card metric-box-amber p-3 h-100 d-flex flex-column justify-content-between">
-                                        <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <div class="metric-lbl text-warning" style="color: #b45309;">Cuti / Izin</div>
-                                            <div class="metric-icon-box bg-warning text-white"><i class="fa-solid fa-umbrella-beach"></i></div>
-                                        </div>
-                                        <div>
-                                            <div class="text-warning mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $jumlah_izin_sakit_dash; ?> <span class="fs-6 text-muted fw-normal">Hari</span></div>
-                                            <span class="badge bg-warning-subtle text-warning-emphasis fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Izin Disetujui</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-6 col-sm-3">
-                                    <div class="metric-item-card metric-box-rose p-3 h-100 d-flex flex-column justify-content-between">
-                                        <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <div class="metric-lbl text-danger">Terlambat</div>
-                                            <div class="metric-icon-box bg-danger text-white"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                                        </div>
-                                        <div>
-                                            <div class="text-danger mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $total_menit_terlambat_dash; ?> <span class="fs-6 text-muted fw-normal">Mnt</span></div>
-                                            <span class="badge bg-danger-subtle text-danger fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Akumulasi Menit</span>
+                                    <div class="col-6 col-sm-3">
+                                        <div class="metric-item-card metric-box-green p-3 h-100 d-flex flex-column justify-content-between">
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <div class="metric-lbl text-success">Kehadiran</div>
+                                                <div class="metric-icon-box bg-success text-white"><i class="fa-solid fa-user-check"></i></div>
+                                            </div>
+                                            <div>
+                                                <div class="text-success mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $jumlah_hadir_dash; ?> <span class="fs-6 text-muted fw-normal">Hari</span></div>
+                                                <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Total Hadir</span>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <div class="col-6 col-sm-3">
+                                        <div class="metric-item-card metric-box-amber p-3 h-100 d-flex flex-column justify-content-between">
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <div class="metric-lbl text-warning" style="color: #b45309;">Cuti / Izin</div>
+                                                <div class="metric-icon-box bg-warning text-white"><i class="fa-solid fa-umbrella-beach"></i></div>
+                                            </div>
+                                            <div>
+                                                <div class="text-warning mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $jumlah_izin_sakit_dash; ?> <span class="fs-6 text-muted fw-normal">Hari</span></div>
+                                                <span class="badge bg-warning-subtle text-warning-emphasis fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Izin Disetujui</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6 col-sm-3">
+                                        <div class="metric-item-card metric-box-rose p-3 h-100 d-flex flex-column justify-content-between">
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <div class="metric-lbl text-danger">Terlambat</div>
+                                                <div class="metric-icon-box bg-danger text-white"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                                            </div>
+                                            <div>
+                                                <div class="text-danger mb-1" style="font-size: 1.75rem; font-weight: 800;"><?php echo $total_menit_terlambat_dash; ?> <span class="fs-6 text-muted fw-normal">Mnt</span></div>
+                                                <span class="badge bg-danger-subtle text-danger fw-bold rounded-pill px-2.5 py-1" style="font-size: 0.68rem;">Akumulasi Menit</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                            </div>
-
-                            <div class="text-end">
-                                <a href="<?php echo $link_ke_detail_absen_dash; ?>" class="fw-bold text-primary text-decoration-none small">
-                                    Lihat Histori Absen Lengkap <i class="fa-solid fa-arrow-right ms-1"></i>
-                                </a>
+                                <div class="text-end">
+                                    <a href="<?php echo $link_ke_detail_absen_dash; ?>" class="fw-bold text-primary text-decoration-none small">
+                                        Lihat Histori Absen Lengkap <i class="fa-solid fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
