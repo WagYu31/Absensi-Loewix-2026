@@ -1,12 +1,7 @@
 /* sw.js - Absensi Loewix PWA Service Worker */
 
-const CACHE_NAME = 'absensi-loewix-v1';
+const CACHE_NAME = 'absensi-loewix-v3';
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.php',
-  '/assets/css/main-styles.css',
-  '/assets/css/sidebar.css',
-  '/assets/css/bottom-nav.css',
   '/img/logo.png',
   '/img/giti.png'
 ];
@@ -38,20 +33,42 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   
-  // Stale-while-revalidate strategy
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request).then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return networkResponse;
-      }).catch(() => cachedResponse);
+  const url = new URL(event.request.url);
+  const isPhpPage = url.pathname.endsWith('.php') || url.pathname === '/' || !url.pathname.includes('.');
 
-      return cachedResponse || fetchPromise;
-    })
-  );
+  if (isPhpPage) {
+    // NETWORK-FIRST Strategy for PHP pages so layout updates show instantly without stale caching
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request))
+    );
+  } else {
+    // STALE-WHILE-REVALIDATE Strategy for static media/assets
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              const responseToCache = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, responseToCache);
+              });
+            }
+            return networkResponse;
+          })
+          .catch(() => cachedResponse);
+
+        return cachedResponse || fetchPromise;
+      })
+    );
+  }
 });
