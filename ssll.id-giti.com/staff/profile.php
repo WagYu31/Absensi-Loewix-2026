@@ -29,7 +29,18 @@ $jabatan = $kar['jabatan'] ?? '-';
 $statusKaryawan = $kar['status_karyawan'] ?? '-';
 $tanggalMasuk = $kar['tanggal_masuk'] ?? '';
 $photo = $kar['pas_photo'] ?? '';
+$gajiPokokVal = $kar['gaji_pokok'] ?? 0;
+$tunjanganVal = $kar['tunjangan'] ?? 0;
+$namaBank = $kar['nama_bank'] ?? '-';
+$nomorRekening = $kar['nomor_rekening'] ?? '-';
+$namaPemilikRekening = $kar['nama_pemilik_rekening'] ?? '-';
+$nomorKTP = $kar['nomor_ktp'] ?? '-';
+$gambarKTP = $kar['gambar_ktp'] ?? '';
+$shifting = $kar['shifting'] ?? '';
 $nip = $kar['nip'];
+
+$words = explode(' ', trim($nama));
+$initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -37,29 +48,25 @@ $nip = $kar['nip'];
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Staff 3D - Gravitti Tech</title>
+    <title>Profil Saya - Gravitti Tech</title>
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a97d5963a4.js" crossorigin="anonymous"></script>
     
     <link rel="stylesheet" href="../assets/css/main-styles.css?v=<?php echo $asset_version; ?>">
     <link rel="stylesheet" href="../assets/css/sidebar.css?v=<?php echo $asset_version; ?>">
-    <link rel="stylesheet" href="../assets/css/footer.css?v=<?php echo $asset_version; ?>">
 
     <style>
         :root {
-            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%);
+            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0284c7 100%);
             --card-radius-lg: 24px;
-            --primary-3d: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
         }
 
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
             background: #f1f5f9 !important;
+            color: #0f172a;
         }
 
         .main-content-wrapper {
@@ -70,7 +77,7 @@ $nip = $kar['nip'];
             min-height: 100vh;
         }
 
-        /* 3D Header Banner */
+        /* Hero Header Banner */
         .page-specific-header {
             background: var(--header-gradient) !important;
             color: #ffffff;
@@ -87,111 +94,100 @@ $nip = $kar['nip'];
             color: #ffffff !important;
         }
 
-        /* 3D Glassmorphic Profile Card */
-        .profile-3d-card {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(20px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-            border-radius: var(--card-radius-lg) !important;
-            border: 1px solid rgba(255, 255, 255, 0.9) !important;
-            box-shadow: 
-                0 25px 50px -12px rgba(15, 23, 42, 0.12),
-                0 12px 24px -12px rgba(15, 23, 42, 0.08) !important;
-            padding: 2rem !important;
-            margin-bottom: 1.5rem !important;
+        /* Profile Cards */
+        .profile-card-main {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: var(--card-radius-lg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
         }
 
-        .avatar-3d-wrapper {
+        .avatar-container {
             position: relative;
             display: inline-block;
             cursor: pointer;
             margin-bottom: 1rem;
         }
 
-        .avatar-3d-img {
-            width: 130px;
-            height: 130px;
+        .avatar-circle-large {
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid #ffffff;
-            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.25), 0 0 0 4px rgba(37, 99, 235, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.25);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .avatar-3d-wrapper:hover .avatar-3d-img {
-            transform: scale(1.04);
-            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.35), 0 0 0 6px rgba(37, 99, 235, 0.5);
-        }
-
-        .avatar-camera-badge {
+        .avatar-cam-badge {
             position: absolute;
-            bottom: 4px;
-            right: 4px;
-            width: 38px;
-            height: 38px;
-            background: var(--primary-3d);
+            bottom: 2px;
+            right: 2px;
+            width: 36px;
+            height: 36px;
+            background: #2563eb;
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 2.5px solid #ffffff;
-            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.4);
-            font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            font-size: 0.85rem;
         }
 
-        /* 3D Buttons */
-        .btn-3d-primary {
-            background: var(--primary-3d) !important;
-            color: #ffffff !important;
-            border: none !important;
-            font-weight: 700 !important;
-            border-radius: 14px !important;
-            padding: 10px 24px !important;
-            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35), 0 3px 0 #1d4ed8 !important;
-            transition: all 0.15s ease-out !important;
+        /* Detail Item Row */
+        .detail-item-row {
+            padding: 12px 16px;
+            border-bottom: 1px dashed #e2e8f0;
+            display: flex;
+            flex-direction: column;
         }
 
-        .btn-3d-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.45), 0 4px 0 #1e40af !important;
-            color: #ffffff !important;
+        @media (min-width: 576px) {
+            .detail-item-row {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
         }
 
-        .btn-3d-outline {
-            background: #ffffff !important;
-            color: #2563eb !important;
-            border: 1.5px solid #cbd5e1 !important;
-            font-weight: 700 !important;
-            border-radius: 14px !important;
-            padding: 10px 24px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04), 0 2px 0 #cbd5e1 !important;
-            transition: all 0.15s ease-out !important;
+        .detail-label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
-        .btn-3d-outline:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08), 0 3px 0 #94a3b8 !important;
-            color: #1d4ed8 !important;
+        @media (min-width: 576px) {
+            .detail-label {
+                margin-bottom: 0;
+                width: 40%;
+            }
         }
 
-        .btn-3d-danger {
-            background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #b91c1c 100%) !important;
-            color: #ffffff !important;
-            font-weight: 800 !important;
-            border-radius: 14px !important;
-            padding: 10px 20px !important;
-            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35), 0 3px 0 #991b1b !important;
-            transition: all 0.15s ease-out !important;
-            text-decoration: none !important;
-            display: inline-flex;
-            align-items: center;
+        .detail-value {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #0f172a;
         }
 
-        .btn-3d-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 24px rgba(220, 38, 38, 0.45), 0 4px 0 #7f1d1d !important;
-            color: #ffffff !important;
+        @media (min-width: 576px) {
+            .detail-value {
+                width: 60%;
+                text-align: right;
+            }
         }
 
         .popup {
@@ -228,90 +224,230 @@ $nip = $kar['nip'];
             cursor: pointer;
             color: #94a3b8;
         }
-
-        .popup-content-3d .close-popup-btn:hover {
-            color: #1e293b;
-        }
     </style>
 </head>
 <body>
     <?php include 'nav/sidebar.php'; ?>
 
     <div class="main-content-wrapper p-0">
+        <!-- Header Banner -->
         <div class="header-banner page-specific-header no-print">
             <div class="container-fluid px-lg-4">
-                <h1><i class="fa-solid fa-user-gear me-2 text-primary-light"></i>Profil Saya (Staff/Admin)</h1>
-                <p class="small mb-0 opacity-80">Lihat dan kelola informasi akun administrator Anda.</p>
+                <h1>Profil Saya</h1>
+                <p class="small opacity-80 mb-0">Kelola data informasi akun administrator dan kepegawaian Anda.</p>
             </div>
         </div>
 
-        <div class="dashboard-content px-0">
+        <div class="dashboard-content">
             <div class="container-fluid px-lg-4">
-
-                <!-- 3D Header Profile Card -->
-                <div class="profile-3d-card text-center position-relative">
-                    <?php
-                    $base_upload_path_profile = '../uploads/';
-                    $universal_default_image_profile = $base_upload_path_profile . 'default_avatar.png';
-                    $image_source_profile = '';
-
-                    if (!empty($photo)) { 
-                        $image_source_profile = htmlspecialchars($base_upload_path_profile . $photo);
-                    } else {
-                        $initial_profile = !empty($nama) ? strtoupper(substr($nama, 0, 1)) : 'U';
-                        $image_source_profile = 'https://via.placeholder.com/130/2563eb/ffffff?Text=' . $initial_profile;
-                    }
-                    ?>
+                
+                <div class="row g-4">
                     
-                    <div class="avatar-3d-wrapper" id="photoButton">
-                        <img src="<?php echo $image_source_profile; ?>"
-                            alt="Foto Profil"
-                            class="avatar-3d-img"
-                            onerror="this.onerror=null; this.src='<?php echo htmlspecialchars($universal_default_image_profile); ?>';">
-                        <div class="avatar-camera-badge">
-                            <i class="fa-solid fa-camera"></i>
+                    <!-- Left Column: Hero Card & Actions (col-lg-4) -->
+                    <div class="col-lg-4">
+                        <div class="profile-card-main text-center p-4">
+                            <div class="avatar-container" id="photoButton" title="Klik untuk ubah foto profil">
+                                <?php if (!empty($photo) && file_exists('../uploads/' . $photo)): ?>
+                                    <img src="../uploads/<?php echo htmlspecialchars($photo); ?>" alt="Foto Profil" class="avatar-circle-large">
+                                <?php else: ?>
+                                    <div class="avatar-circle-large"><?php echo $initials; ?></div>
+                                <?php endif; ?>
+                                <div class="avatar-cam-badge">
+                                    <i class="fa-solid fa-camera"></i>
+                                </div>
+                            </div>
+
+                            <h4 class="fw-extrabold text-dark mb-1"><?php echo htmlspecialchars($nama); ?></h4>
+                            <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold rounded-pill px-3 py-1"><?php echo htmlspecialchars($jabatan); ?></span>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold rounded-pill px-3 py-1"><i class="fa-solid fa-shield-halved me-1"></i><?php echo htmlspecialchars(strtoupper($_SESSION['role'])); ?></span>
+                            </div>
+
+                            <!-- Quick Action Buttons -->
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="button" class="btn btn-primary rounded-3 fw-bold py-2.5 shadow-sm" onclick="triggerPWAInstall()">
+                                    <i class="fa-solid fa-mobile-screen-button me-2"></i>Install Aplikasi HP
+                                </button>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-outline-secondary rounded-3 w-100 fw-bold py-2" onclick="changePasswordPrompt('<?php echo htmlspecialchars($nip); ?>')">
+                                            <i class="fa-solid fa-key me-1.5"></i>Password
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="edit-profile.php" class="btn btn-outline-primary rounded-3 w-100 fw-bold py-2">
+                                            <i class="fa-solid fa-pen-to-square me-1.5"></i>Edit Profil
+                                        </a>
+                                    </div>
+                                </div>
+                                <a href="../logout.php" class="btn btn-outline-danger rounded-3 fw-bold py-2 mt-1" onclick="return confirm('Apakah Anda yakin ingin keluar (Log Out) dari akun ini?');">
+                                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Financial Overview Summary Card -->
+                        <div class="profile-card-main p-4">
+                            <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom"><i class="fa-solid fa-wallet text-success me-2"></i>Ringkasan Finansial</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small text-muted fw-bold">GAJI POKOK</span>
+                                <span class="fw-bold text-success fs-6">Rp <?php echo number_format($gajiPokokVal, 0, ',', '.'); ?></span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small text-muted fw-bold">TUNJANGAN JABATAN</span>
+                                <span class="fw-semibold text-dark">Rp <?php echo number_format($tunjanganVal, 0, ',', '.'); ?></span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-muted fw-bold">TUNJANGAN MASA KERJA</span>
+                                <span class="fw-semibold text-dark">
+                                    <?php 
+                                    $dataTMK = ['tunjangan_masa_kerja' => 0];
+                                    if (file_exists('get-tunjangan-masa-kerja.php')) {
+                                        $temp_karyawan_for_tmk = $kar;
+                                        include 'get-tunjangan-masa-kerja.php';
+                                        unset($temp_karyawan_for_tmk);
+                                    }
+                                    echo "Rp " . number_format($dataTMK['tunjangan_masa_kerja'], 0, ',', '.');
+                                    ?>
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    <h4 class="fw-extrabold text-dark mb-1" style="letter-spacing: -0.5px;"><?php echo htmlspecialchars($nama); ?></h4>
-                    <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
-                        <span class="badge bg-primary-subtle text-primary fw-bold rounded-pill px-3 py-1"><?php echo htmlspecialchars($jabatan); ?></span>
-                        <span class="badge bg-success-subtle text-success fw-bold rounded-pill px-3 py-1"><i class="fa-solid fa-shield-halved me-1"></i><?php echo htmlspecialchars(strtoupper($_SESSION['role'])); ?></span>
+                    <!-- Right Column: Details Grid (col-lg-8) -->
+                    <div class="col-lg-8">
+                        
+                        <!-- 1. Informasi Dasar & Kontak -->
+                        <div class="profile-card-main">
+                            <div class="card-header bg-white border-bottom p-3">
+                                <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-user me-2 text-primary"></i>Informasi Dasar & Kontak</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="detail-item-row">
+                                    <div class="detail-label">NIK (Nomor Induk Karyawan)</div>
+                                    <div class="detail-value"><span class="badge bg-light text-dark border fw-bold font-mono px-2.5 py-1"><?php echo htmlspecialchars($nik); ?></span></div>
+                                </div>
+                                <div class="detail-item-row">
+                                    <div class="detail-label">Nama Lengkap</div>
+                                    <div class="detail-value fw-bold text-dark"><?php echo htmlspecialchars($nama); ?></div>
+                                </div>
+                                <div class="detail-item-row">
+                                    <div class="detail-label">Tempat & Tanggal Lahir</div>
+                                    <div class="detail-value"><?php echo htmlspecialchars($tempatLahir); ?>, <?php echo !empty($tanggalLahir) ? date('d F Y', strtotime($tanggalLahir)) : '-'; ?></div>
+                                </div>
+                                <div class="detail-item-row">
+                                    <div class="detail-label">Alamat Lengkap</div>
+                                    <div class="detail-value"><?php echo nl2br(htmlspecialchars($alamat)); ?></div>
+                                </div>
+                                <div class="detail-item-row">
+                                    <div class="detail-label">No. Handphone</div>
+                                    <div class="detail-value"><a href="tel:<?php echo htmlspecialchars($nomorHP); ?>" class="text-decoration-none fw-bold text-primary"><i class="fa-solid fa-phone me-1.5"></i><?php echo htmlspecialchars($nomorHP); ?></a></div>
+                                </div>
+                                <div class="detail-item-row border-bottom-0">
+                                    <div class="detail-label">Email</div>
+                                    <div class="detail-value"><a href="mailto:<?php echo htmlspecialchars($email); ?>" class="text-decoration-none text-dark fw-medium"><i class="fa-solid fa-envelope me-1.5 text-secondary"></i><?php echo htmlspecialchars($email); ?></a></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Informasi Kepegawaian & Bank -->
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="profile-card-main h-100">
+                                    <div class="card-header bg-white border-bottom p-3">
+                                        <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-briefcase me-2 text-primary"></i>Informasi Kepegawaian</h6>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="detail-item-row">
+                                            <div class="detail-label" style="width: 50%;">Jabatan</div>
+                                            <div class="detail-value" style="width: 50%;"><span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold rounded-pill px-3 py-1"><?php echo htmlspecialchars($jabatan); ?></span></div>
+                                        </div>
+                                        <div class="detail-item-row">
+                                            <div class="detail-label" style="width: 50%;">Status Karyawan</div>
+                                            <div class="detail-value" style="width: 50%;"><span class="badge bg-success-subtle text-success border border-success-subtle fw-bold rounded-pill px-3 py-1"><?php echo htmlspecialchars($statusKaryawan); ?></span></div>
+                                        </div>
+                                        <div class="detail-item-row">
+                                            <div class="detail-label" style="width: 50%;">Tanggal Masuk</div>
+                                            <div class="detail-value" style="width: 50%;"><?php echo !empty($tanggalMasuk) ? date('d M Y', strtotime($tanggalMasuk)) : '-'; ?></div>
+                                        </div>
+                                        <div class="detail-item-row border-bottom-0">
+                                            <div class="detail-label" style="width: 50%;">Status Shifting</div>
+                                            <div class="detail-value" style="width: 50%;"><?php echo htmlspecialchars($shifting ? 'Aktif (Ya)' : 'Tidak'); ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="profile-card-main h-100">
+                                    <div class="card-header bg-white border-bottom p-3">
+                                        <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-building-columns me-2 text-primary"></i>Informasi Bank</h6>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="detail-item-row">
+                                            <div class="detail-label" style="width: 50%;">Nama Bank</div>
+                                            <div class="detail-value fw-bold text-dark" style="width: 50%;"><?php echo htmlspecialchars($namaBank); ?></div>
+                                        </div>
+                                        <div class="detail-item-row">
+                                            <div class="detail-label" style="width: 50%;">No. Rekening</div>
+                                            <div class="detail-value font-mono fw-bold text-primary" style="width: 50%;"><?php echo htmlspecialchars($nomorRekening); ?></div>
+                                        </div>
+                                        <div class="detail-item-row border-bottom-0">
+                                            <div class="detail-label" style="width: 50%;">Pemilik Rekening</div>
+                                            <div class="detail-value fw-medium" style="width: 50%;"><?php echo htmlspecialchars($namaPemilikRekening); ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Dokumen Identitas (KTP) -->
+                        <div class="profile-card-main mt-4">
+                            <div class="card-header bg-white border-bottom p-3">
+                                <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-file-contract me-2 text-primary"></i>Dokumen Identitas KTP</h6>
+                            </div>
+                            <div class="card-body p-3">
+                                <div class="row align-items-center g-3">
+                                    <div class="col-md-6">
+                                        <div class="small text-muted fw-bold uppercase mb-1">NOMOR KTP</div>
+                                        <div class="fs-5 fw-bold text-dark font-mono"><?php echo htmlspecialchars($nomorKTP); ?></div>
+                                    </div>
+                                    <div class="col-md-6 text-md-end">
+                                        <?php if (!empty($gambarKTP) && file_exists('../uploads/' . $gambarKTP)): ?>
+                                            <img src="../uploads/<?php echo htmlspecialchars($gambarKTP); ?>" alt="Scan KTP" class="img-fluid rounded-3 border shadow-sm" style="max-height: 130px;">
+                                        <?php else: ?>
+                                            <span class="text-muted fst-italic small"><i class="fa-solid fa-image me-1"></i>Scan KTP belum diupload</span>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap mt-3">
-                        <button type="button" class="btn btn-3d-primary" onclick="triggerPWAInstall()">
-                            <i class="fa-solid fa-mobile-screen-button me-1.5"></i>Install HP
-                        </button>
-                        <button type="button" class="btn btn-3d-outline" onclick="changePasswordPrompt('<?php echo htmlspecialchars($nip); ?>')">
-                            <i class="fas fa-key me-1.5"></i>Password
-                        </button>
-                        <a href="edit-profile.php" class="btn btn-3d-outline">
-                            <i class="fas fa-user-edit me-1.5"></i>Edit Profil
-                        </a>
-                        <a href="../logout.php" class="btn btn-3d-danger" onclick="return confirm('Apakah Anda yakin ingin keluar (Log Out) dari akun ini?');">
-                            <i class="fa-solid fa-arrow-right-from-bracket me-1.5"></i>Log Out
-                        </a>
-                    </div>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <!-- Popup Upload Photo 3D -->
+    <!-- Popup Upload Photo -->
     <div id="uploadPopup" class="popup">
         <div class="popup-content-3d text-center">
             <span class="close-popup-btn" id="cancelBtn">&times;</span>
-            <div class="avatar-3d-wrapper mb-3">
-                <img src="<?php echo $image_source_profile; ?>" class="avatar-3d-img" style="width: 90px; height: 90px;">
+            <div class="avatar-container mb-3">
+                <?php if (!empty($photo) && file_exists('../uploads/' . $photo)): ?>
+                    <img src="../uploads/<?php echo htmlspecialchars($photo); ?>" alt="Foto Profil" class="avatar-circle-large" style="width:90px; height:90px;">
+                <?php else: ?>
+                    <div class="avatar-circle-large" style="width:90px; height:90px; font-size:1.8rem;"><?php echo $initials; ?></div>
+                <?php endif; ?>
             </div>
             <h5 class="fw-bold text-dark mb-3">Upload Foto Profil Baru</h5>
             <form action="../upload-photo-kar.php" method="post" enctype="multipart/form-data">
                 <div class="mb-4">
                     <input type="file" class="form-control rounded-3 p-2" id="newPhotoInput" name="newPhoto" accept="image/jpeg, image/png" required>
                 </div>
-                <button type="submit" class="btn btn-3d-primary w-100"><i class="fa-solid fa-cloud-arrow-up me-2"></i>Upload Foto Sekarang</button>
+                <button type="submit" class="btn btn-primary rounded-3 w-100 fw-bold py-2"><i class="fa-solid fa-cloud-arrow-up me-2"></i>Upload Foto Sekarang</button>
             </form>
         </div>
     </div>
@@ -335,6 +471,10 @@ $nip = $kar['nip'];
                 }
             });
         });
+
+        function triggerPWAInstall() {
+            alert("Aplikasi web siap diinstall di HP Anda. Silakan gunakan menu 'Add to Home Screen' pada browser Anda.");
+        }
 
         function changePasswordPrompt(nip) {
             var oldPassword = prompt("Masukkan Password Lama:");
