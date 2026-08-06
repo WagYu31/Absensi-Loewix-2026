@@ -2,6 +2,9 @@
 $current_page_basename = basename($_SERVER['PHP_SELF']);
 ?>
 
+<!-- Link Mobile Bottom Navigation CSS -->
+<link rel="stylesheet" href="../assets/css/bottom-nav.css?v=<?php echo time(); ?>">
+
 <style>
 /* ==========================================
    ULTRA-SLEEK MODERN SAAS SIDEBAR & HAMBURGER
@@ -14,7 +17,6 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
     --sb-active-bg: rgba(59, 130, 246, 0.15);
     --sb-active-color: #60a5fa;
     --sb-width: 250px;
-    --sb-mini-width: 70px;
 }
 
 /* Base Reset & Lock for Sidebar Layout */
@@ -28,8 +30,8 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
     background-color: var(--sb-bg) !important;
     color: #f3f4f6 !important;
     z-index: 1035 !important;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.2) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.25) !important;
     display: flex !important;
     flex-direction: column !important;
     overflow-x: hidden !important;
@@ -82,8 +84,8 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
     background: rgba(255, 255, 255, 0.08) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     color: #9ca3af !important;
-    width: 34px !important;
-    height: 34px !important;
+    width: 36px !important;
+    height: 36px !important;
     border-radius: 8px !important;
     display: flex !important;
     align-items: center !important;
@@ -95,7 +97,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
 }
 
 .hamburger-toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.18) !important;
+    background: rgba(255, 255, 255, 0.2) !important;
     color: #ffffff !important;
 }
 
@@ -161,65 +163,45 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
     font-size: 1.05rem !important;
     margin-right: 12px !important;
     flex-shrink: 0 !important;
-    transition: transform 0.2s ease !important;
 }
 
-.sidebar-nav-item .chevron-arrow {
-    font-size: 0.75rem !important;
-    transition: transform 0.25s ease !important;
-    margin-right: 0 !important;
-    width: auto !important;
-}
-
-/* Submenu Links */
-.sidebar .collapse a,
-.sidebar-submenu a {
-    padding-left: 46px !important;
-    font-size: 0.84rem !important;
-    color: #9ca3af !important;
-    background-color: transparent !important;
-}
-
-.sidebar .collapse a:hover,
-.sidebar-submenu a:hover {
-    background-color: rgba(255, 255, 255, 0.04) !important;
+/* Floating Hamburger Button when Sidebar Closed */
+.floating-hamburger-btn {
+    position: fixed !important;
+    top: 15px !important;
+    left: 18px !important;
+    z-index: 1040 !important;
+    background: #0f172a !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
     color: #ffffff !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
+    transition: all 0.2s ease !important;
 }
 
-.sidebar .collapse a.active,
-.sidebar-submenu a.active {
-    background-color: rgba(59, 130, 246, 0.12) !important;
-    color: #60a5fa !important;
+.floating-hamburger-btn:hover {
+    background: #1e293b !important;
+    transform: scale(1.05) !important;
 }
 
 /* Desktop Collapsed State */
-body.sidebar-collapsed .sidebar {
-    width: var(--sb-mini-width) !important;
-}
-
-body.sidebar-collapsed .sidebar-brand span,
-body.sidebar-collapsed .sidebar-group-title,
-body.sidebar-collapsed .sidebar-nav-item span:not(.nav-icon),
-body.sidebar-collapsed .chevron-arrow,
-body.sidebar-collapsed .sidebar-submenu,
-body.sidebar-collapsed .sidebar .collapse {
-    display: none !important;
-}
-
-body.sidebar-collapsed .sidebar-nav-item,
-body.sidebar-collapsed .sidebar a {
-    justify-content: center !important;
-    padding: 12px 0 !important;
-}
-
-body.sidebar-collapsed .sidebar-nav-item .nav-icon,
-body.sidebar-collapsed .sidebar a i {
-    margin-right: 0 !important;
-    font-size: 1.2rem !important;
+body.sidebar-collapsed .sidebar,
+body.sidebar-collapsed #appSidebar {
+    transform: translateX(-100%) !important;
 }
 
 body.sidebar-collapsed .main-content-wrapper {
-    margin-left: var(--sb-mini-width) !important;
+    margin-left: 0 !important;
+}
+
+body.sidebar-collapsed .floating-hamburger-btn {
+    display: flex !important;
 }
 
 @media (min-width: 992px) {
@@ -284,6 +266,11 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
 }
 </style>
 
+<!-- Floating Hamburger Button (Appears when sidebar is closed) -->
+<button class="floating-hamburger-btn" id="floatingOpenBtn" title="Buka Sidebar Navigasi">
+    <i class="fa-solid fa-bars"></i>
+</button>
+
 <!-- Mobile Top Floating Bar -->
 <div class="mobile-top-bar">
     <div class="d-flex align-items-center gap-2">
@@ -298,7 +285,7 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
 <!-- Backdrop Overlay -->
 <div class="sidebar-backdrop-overlay" id="sidebarOverlay"></div>
 
-<!-- Sidebar Navigation Container -->
+<!-- Sidebar Navigation Container (Desktop & Mobile Drawer) -->
 <aside class="sidebar" id="appSidebar">
     <!-- Sidebar Header -->
     <div class="sidebar-header">
@@ -352,25 +339,62 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
     </div>
 </aside>
 
+<!-- Custom Mobile Bottom Navigation Bar (Appears on Mobile screens <992px) -->
+<div class="custom-mobile-nav-wrapper d-lg-none">
+    <nav class="custom-mobile-nav">
+        <a href="home.php" class="custom-nav__link">
+            <i class="fa-solid fa-house-chimney-user"></i>
+            <span class="custom-nav__text">Home</span>
+        </a>
+
+        <a href="riwayat-absen.php" class="custom-nav__link">
+            <i class="fa-solid fa-clock"></i>
+            <span class="custom-nav__text">Absen</span>
+        </a>
+
+        <!-- Center Floating FAB Absen Camera Button -->
+        <div class="custom-nav__fab-container">
+            <a href="absen.php?nik=<?php echo htmlspecialchars($_SESSION['nip'] ?? ''); ?>#form-absen" class="custom-nav__fab-button" title="Absen Masuk">
+                <i class="fa-solid fa-camera"></i>
+            </a>
+            <span class="custom-nav__fab-text">Presensi</span>
+        </div>
+
+        <a href="riwayat-gaji.php" class="custom-nav__link">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+            <span class="custom-nav__text">Gaji</span>
+        </a>
+
+        <a href="profile.php" class="custom-nav__link">
+            <i class="fa-solid fa-id-card-clip"></i>
+            <span class="custom-nav__text">Profil</span>
+        </a>
+    </nav>
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const desktopBtn = document.getElementById("desktopHamburgerBtn");
+    const floatingBtn = document.getElementById("floatingOpenBtn");
     const mobileBtn = document.getElementById("mobileHamburgerBtn");
     const overlay = document.getElementById("sidebarOverlay");
     const body = document.body;
 
-    // Restore desktop collapsed state from localStorage
-    if (localStorage.getItem("gravitti_sidebar_collapsed") === "true" && window.innerWidth >= 992) {
-        body.classList.add("sidebar-collapsed");
+    // Toggle Desktop Sidebar Open/Close Completely
+    function toggleSidebar() {
+        body.classList.toggle("sidebar-collapsed");
+        localStorage.setItem("gravitti_sidebar_collapsed", body.classList.contains("sidebar-collapsed"));
     }
 
     if (desktopBtn) {
-        desktopBtn.addEventListener("click", function() {
-            body.classList.toggle("sidebar-collapsed");
-            localStorage.setItem("gravitti_sidebar_collapsed", body.classList.contains("sidebar-collapsed"));
-        });
+        desktopBtn.addEventListener("click", toggleSidebar);
     }
 
+    if (floatingBtn) {
+        floatingBtn.addEventListener("click", toggleSidebar);
+    }
+
+    // Toggle Mobile Drawer
     if (mobileBtn) {
         mobileBtn.addEventListener("click", function() {
             body.classList.toggle("sidebar-mobile-open");
@@ -383,9 +407,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Active Route Highlight
+    // Active Route Highlight for Sidebar & Mobile Bottom Nav
     const currentPath = "<?php echo $current_page_basename; ?>";
-    document.querySelectorAll('.sidebar-menu-body a').forEach(link => {
+    document.querySelectorAll('.sidebar-menu-body a, .custom-mobile-nav a').forEach(link => {
         if (link.getAttribute('href') === currentPath) {
             link.classList.add('active');
         }
