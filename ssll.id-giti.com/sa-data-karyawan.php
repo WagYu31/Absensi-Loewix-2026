@@ -175,7 +175,7 @@ if ($result->num_rows > 0) {
           <h2>Data Karyawan</h2>
               <?php
                 // Check if there are any records with gaji_pokok value of 0
-                $query_check_zero_gaji = "SELECT COUNT(*) AS count FROM karyawan WHERE gaji_pokok = 0";
+                $query_check_zero_gaji = "SELECT COUNT(*) AS count FROM karyawan WHERE (gaji_pokok = 0 OR gaji_pokok IS NULL) AND deleted_at IS NULL AND status_karyawan = 'aktif' AND LOWER(nama) NOT LIKE '%admin%' AND nip NOT IN ('001', '70326') AND nip NOT IN (SELECT nip FROM users WHERE role IN ('superadmin', 'admin'))";
                 $result_check_zero_gaji = $conn->query($query_check_zero_gaji);
                 
                 if ($result_check_zero_gaji) {

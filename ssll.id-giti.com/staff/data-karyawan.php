@@ -59,7 +59,7 @@ if (!$result) {
 }
 $karyawanData = $result->fetch_all(MYSQLI_ASSOC);
 
-$query_check_zero_gaji = "SELECT COUNT(*) AS count FROM karyawan WHERE gaji_pokok = 0 AND nip NOT IN ('001', '70326') AND deleted_at IS NULL";
+$query_check_zero_gaji = "SELECT COUNT(*) AS count FROM karyawan WHERE (gaji_pokok = 0 OR gaji_pokok IS NULL) AND deleted_at IS NULL AND status_karyawan = 'aktif' AND LOWER(nama) NOT LIKE '%admin%' AND nip NOT IN ('001', '70326') AND nip NOT IN (SELECT nip FROM users WHERE role IN ('superadmin', 'admin'))";
 $result_check_zero_gaji = $conn->query($query_check_zero_gaji);
 $zero_gaji_count = 0;
 if ($result_check_zero_gaji) {
