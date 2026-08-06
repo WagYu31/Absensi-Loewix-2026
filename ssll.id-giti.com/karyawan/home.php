@@ -12,6 +12,9 @@ include 'get-kar-login-data.php';
 
 $current_page_basename = basename($_SERVER['PHP_SELF']);
 $asset_version = time();
+
+$words = explode(' ', trim($nama));
+$initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +24,7 @@ $asset_version = time();
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Karyawan 3D - Gravitti Tech</title>
+    <title>Dashboard Karyawan - Gravitti Tech</title>
     <meta name="description" content="Dashboard profesional untuk karyawan Gravitti Tech" />
 
     <!-- Google Fonts: Plus Jakarta Sans -->
@@ -35,21 +38,19 @@ $asset_version = time();
     <link rel="stylesheet" href="../assets/css/main-styles.css?v=<?php echo $asset_version; ?>">
     <link rel="stylesheet" href="../assets/css/sidebar.css?v=<?php echo $asset_version; ?>">
     <link rel="stylesheet" href="../assets/css/bottom-nav.css?v=<?php echo $asset_version; ?>">
-    <link rel="stylesheet" href="../assets/css/footer.css?v=<?php echo $asset_version; ?>">
 
     <style>
         :root {
-            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%);
+            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0284c7 100%);
             --card-radius-lg: 24px;
             --primary-3d: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
             --success-3d: linear-gradient(135deg, #059669 0%, #10b981 50%, #047857 100%);
-            --warning-3d: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #b45309 100%);
-            --danger-3d: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #b91c1c 100%);
         }
 
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
             background: #f1f5f9 !important;
+            color: #0f172a;
         }
 
         .main-content-wrapper {
@@ -58,10 +59,10 @@ $asset_version = time();
                 radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
                 radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%) !important;
             min-height: 100vh;
-            padding-bottom: 120px !important; /* Prevents bottom-nav overlap */
+            padding-bottom: 120px !important;
         }
 
-        /* 3D Header Banner */
+        /* Hero Header Banner */
         .page-specific-header {
             background: var(--header-gradient) !important;
             color: #ffffff;
@@ -78,34 +79,37 @@ $asset_version = time();
             color: #ffffff !important;
         }
 
-        /* 3D Glassmorphic Containers */
+        /* Glassmorphic Cards */
         .card-3d-modern {
             background: rgba(255, 255, 255, 0.95) !important;
             backdrop-filter: blur(20px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
             border-radius: var(--card-radius-lg) !important;
-            border: 1px solid rgba(255, 255, 255, 0.9) !important;
-            box-shadow: 
-                0 25px 50px -12px rgba(15, 23, 42, 0.12),
-                0 12px 24px -12px rgba(15, 23, 42, 0.08) !important;
+            border: 1px solid rgba(226, 232, 240, 0.9) !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04) !important;
             transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
         }
 
         .card-3d-modern:hover {
             transform: translateY(-3px);
-            box-shadow: 
-                0 30px 60px -15px rgba(37, 99, 235, 0.18),
-                0 15px 30px -10px rgba(15, 23, 42, 0.1) !important;
+            box-shadow: 0 16px 35px rgba(37, 99, 235, 0.1) !important;
         }
 
-        /* Profile Hero Styling */
-        .profile-img-3d {
-            width: 80px;
-            height: 80px;
+        /* Avatar Box */
+        .avatar-circle-dash {
+            width: 75px;
+            height: 75px;
             border-radius: 50%;
             object-fit: cover;
             border: 3.5px solid #ffffff;
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
         .btn-3d-edit {
@@ -114,9 +118,9 @@ $asset_version = time();
             border: none !important;
             font-weight: 800 !important;
             font-size: 0.82rem !important;
-            border-radius: 14px !important;
-            padding: 8px 18px !important;
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35), 0 3px 0 #1d4ed8 !important;
+            border-radius: 12px !important;
+            padding: 9px 20px !important;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
             transition: all 0.2s ease !important;
             display: inline-flex;
             align-items: center;
@@ -126,11 +130,11 @@ $asset_version = time();
 
         .btn-3d-edit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.45), 0 4px 0 #1e40af !important;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4) !important;
             color: #ffffff !important;
         }
 
-        /* 3D Stat Mini Cards Grid */
+        /* Stat Grid */
         .stat-grid-3d {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -143,14 +147,12 @@ $asset_version = time();
             border-radius: 18px;
             padding: 14px;
             transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
         }
 
         .stat-mini-card-3d:hover {
             transform: translateY(-2px);
             border-color: #3b82f6;
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.12);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.1);
         }
 
         .stat-icon-badge {
@@ -179,27 +181,16 @@ $asset_version = time();
             letter-spacing: 0.3px;
         }
 
-        /* Salary Card Glow */
+        /* Salary Card */
         .salary-card-3d {
             background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #065f46 100%) !important;
             color: #ffffff !important;
-            box-shadow: 0 15px 35px rgba(5, 150, 105, 0.3) !important;
+            box-shadow: 0 15px 35px rgba(5, 150, 105, 0.25) !important;
             position: relative;
             overflow: hidden;
         }
 
-        .salary-card-3d::after {
-            content: '';
-            position: absolute;
-            top: -40%;
-            right: -20%;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(52, 211, 153, 0.25) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        /* Quick Action Grid 3D */
+        /* Quick Action Grid */
         .quick-action-grid-3d {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -221,7 +212,7 @@ $asset_version = time();
             text-align: center;
             text-decoration: none !important;
             color: #334155 !important;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.03), 0 3px 0 #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
             flex-direction: column;
@@ -232,7 +223,7 @@ $asset_version = time();
 
         .quick-action-card-3d:hover {
             transform: translateY(-4px);
-            box-shadow: 0 14px 28px rgba(37, 99, 235, 0.18), 0 4px 0 #3b82f6;
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.15);
             border-color: #3b82f6;
             color: #2563eb !important;
         }
@@ -245,12 +236,12 @@ $asset_version = time();
             align-items: center;
             justify-content: center;
             font-size: 1.25rem;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
             transition: all 0.2s ease;
         }
 
         .quick-action-card-3d:hover .quick-action-icon-3d {
-            transform: scale(1.1) rotate(5deg);
+            transform: scale(1.08);
         }
 
         .qa-text-3d {
@@ -275,7 +266,7 @@ $asset_version = time();
     <?php include 'nav/sidebar.php'; ?>
 
     <div class="main-content-wrapper p-0">
-        <!-- 3D Header Banner -->
+        <!-- Header Banner -->
         <div class="header-banner page-specific-header no-print">
             <div class="container-fluid px-lg-4">
                 <h1><i class="fa-solid fa-hand me-2 text-warning"></i>Selamat Datang, <?php echo htmlspecialchars(explode(' ', $nama)[0]); ?>!</h1>
@@ -289,30 +280,21 @@ $asset_version = time();
                 <!-- 1. Profile Hero Executive Card -->
                 <div class="card card-3d-modern p-3 mb-4">
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                        <?php
-                        $base_upload_path = '../uploads/';
-                        $universal_default_image = $base_upload_path . 'default_avatar.png';
-                        $image_source_for_profile = '';
-
-                        if (!empty($photo)) {
-                            $image_source_for_profile = htmlspecialchars($base_upload_path . $photo);
-                        } else {
-                            $initial = !empty($nama) ? strtoupper(substr($nama, 0, 1)) : 'U';
-                            $image_source_for_profile = 'https://via.placeholder.com/85/2563eb/ffffff?Text=' . $initial;
-                        }
-                        ?>
                         <div class="d-flex align-items-center gap-3" style="min-width: 0;">
-                            <img src="<?php echo $image_source_for_profile; ?>"
-                                alt="Foto Profil" class="profile-img-3d"
-                                onerror="this.onerror=null; this.src='<?php echo htmlspecialchars($universal_default_image); ?>';">
+                            <?php if (!empty($photo) && file_exists('../uploads/' . $photo)): ?>
+                                <img src="../uploads/<?php echo htmlspecialchars($photo); ?>" alt="Foto Profil" class="avatar-circle-dash">
+                            <?php else: ?>
+                                <div class="avatar-circle-dash"><?php echo $initials; ?></div>
+                            <?php endif; ?>
+                            
                             <div style="min-width: 0;">
                                 <h5 class="fw-extrabold text-dark mb-1 fs-5" style="letter-spacing: -0.5px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                                     <?php echo htmlspecialchars($nama); ?>
                                 </h5>
                                 <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
                                     <span class="badge bg-light text-dark border font-mono small">NIK: <?php echo htmlspecialchars($nik); ?></span>
-                                    <span class="badge bg-primary-subtle text-primary fw-bold small"><?php echo htmlspecialchars($jabatan); ?></span>
-                                    <span class="badge bg-success-subtle text-success fw-bold small"><i class="fa-solid fa-circle me-1" style="font-size: 0.5rem;"></i>Aktif</span>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold small"><?php echo htmlspecialchars($jabatan); ?></span>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold small"><i class="fa-solid fa-circle me-1" style="font-size: 0.5rem;"></i>Aktif</span>
                                 </div>
                             </div>
                         </div>
@@ -450,89 +432,54 @@ $asset_version = time();
 
                         <a href="help.php" class="quick-action-card-3d">
                             <div class="quick-action-icon-3d qa-icon-help">
-                                <i class="fa-solid fa-circle-question"></i>
+                                <i class="fa-solid fa-headset"></i>
                             </div>
                             <span class="qa-text-3d">Pusat Bantuan</span>
                         </a>
 
-                        <a href="javascript:void(0)" onclick="window.triggerPWAInstall && window.triggerPWAInstall()" class="quick-action-card-3d">
+                        <a href="profile.php" class="quick-action-card-3d" onclick="triggerPWAInstall(); return false;">
                             <div class="quick-action-icon-3d qa-icon-install">
                                 <i class="fa-solid fa-mobile-screen-button"></i>
                             </div>
-                            <span class="qa-text-3d text-success">Install HP</span>
+                            <span class="qa-text-3d">Install HP</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- 4. Pengumuman Terbaru 3D Card -->
-                <?php
-                $pengumuman_list_db = [];
-                $sql_pengumuman = "SELECT id, judul, isi, jenis, created_at, gambar, media 
-                   FROM pengumuman 
-                   WHERE deleted_at IS NULL 
-                   ORDER BY created_at DESC 
-                   LIMIT 3";
-
-                $result_pengumuman = $conn->query($sql_pengumuman);
-                if ($result_pengumuman && $result_pengumuman->num_rows > 0) {
-                    while ($row_pengumuman = $result_pengumuman->fetch_assoc()) {
-                        $pengumuman_list_db[] = $row_pengumuman;
-                    }
-                }
-                ?>
-
-                <div class="card card-3d-modern p-3 mb-4">
+                <!-- 4. Pengumuman Terbaru Card -->
+                <div class="card card-3d-modern p-4 mb-4">
                     <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-                        <h6 class="fw-extrabold text-dark mb-0 fs-6"><i class="fa-solid fa-bullhorn text-danger me-2"></i>Pengumuman Terbaru</h6>
-                        <a href="pengumuman.php" class="fw-bold text-primary text-decoration-none small">Lihat Semua <i class="fa-solid fa-angle-right ms-1"></i></a>
+                        <h6 class="fw-extrabold text-dark mb-0">
+                            <i class="fa-solid fa-bullhorn text-danger me-2"></i>Pengumuman Terbaru
+                        </h6>
+                        <a href="pengumuman.php" class="small fw-bold text-primary text-decoration-none">
+                            Lihat Semua <i class="fa-solid fa-angle-right ms-1"></i>
+                        </a>
                     </div>
 
-                    <div>
-                        <?php if (!empty($pengumuman_list_db)): ?>
-                            <?php foreach ($pengumuman_list_db as $item_db): ?>
-                                <div class="p-3 mb-2 rounded-4 bg-light border d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                    <div>
-                                        <a href="#" class="fw-bold text-dark text-decoration-none" data-bs-toggle="modal" data-bs-target="#announcementDetailModal_<?php echo htmlspecialchars($item_db['id']); ?>">
-                                            <?php echo htmlspecialchars($item_db['judul']); ?>
-                                        </a>
-                                        <div class="small text-muted mt-1">
-                                            <i class="fa-regular fa-calendar-alt me-1"></i>
-                                            <?php
-                                            try {
-                                                $tanggal_pengumuman = new DateTime($item_db['created_at']);
-                                                echo htmlspecialchars($tanggal_pengumuman->format('d M Y, H:i'));
-                                            } catch (Exception $e) {
-                                                echo htmlspecialchars($item_db['created_at']);
-                                            }
-                                            ?>
-                                        </div>
-                                    </div>
-                                    <?php if (!empty($item_db['jenis'])): ?>
-                                        <span class="badge bg-primary-subtle text-primary fw-bold rounded-pill px-3 py-2">
-                                            <?php echo htmlspecialchars($item_db['jenis']); ?>
-                                        </span>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <p class="text-center text-muted my-3">Tidak ada pengumuman terbaru saat ini.</p>
-                        <?php endif; ?>
+                    <div class="text-center py-3 text-muted">
+                        <i class="fa-solid fa-bell-slash text-light-emphasis fs-3 mb-2 d-block"></i>
+                        <p class="mb-0 small">Tidak ada pengumuman terbaru saat ini.</p>
                     </div>
                 </div>
 
                 <div class="footer text-center my-4 text-muted small">
-                    Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>. All Rights Reserved.<br>
-                    <small>Version 1.1.0</small>
+                    Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>. All Rights Reserved.
+                    <br><small>Version 1.1.0</small>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <?php include 'nav/bottom-nav.php'; ?>
-
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function triggerPWAInstall() {
+            alert("Aplikasi web siap diinstall di HP Anda. Silakan gunakan menu 'Add to Home Screen' pada browser Anda.");
+        }
+    </script>
 </body>
 
 </html>
