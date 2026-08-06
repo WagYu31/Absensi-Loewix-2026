@@ -71,164 +71,145 @@ $asset_version = '2026.08.06.2';
     <link rel="stylesheet" href="../assets/css/presensi-styles.css?v=<?php echo $asset_version; ?>">
     
     <style>
-        /* Taste Skill 3D Design Overrides */
         :root {
-            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e293b 100%);
-            --card-radius-lg: 28px;
-            --btn-radius: 16px;
+            --hris-primary: #0f172a;
+            --hris-accent: #2563eb;
+            --hris-bg: #f8fafc;
+            --hris-card-border: #e2e8f0;
+            --header-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #1e40af 100%);
+            --card-radius-lg: 24px;
+            --btn-radius: 14px;
             --primary-3d: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
             --success-3d: linear-gradient(135deg, #059669 0%, #10b981 50%, #047857 100%);
             --danger-3d: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #b91c1c 100%);
-            --warning-3d: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #b45309 100%);
+            --warning-3d: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #c2410c 100%);
         }
 
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
-            background: #e2e8f0 !important;
+            background: #f8fafc !important;
+            color: #0f172a !important;
         }
 
         .main-content-wrapper {
-            background: #e2e8f0;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.15) 0px, transparent 50%) !important;
+            background: #f8fafc !important;
             min-height: 100vh;
             min-height: 100dvh;
             overflow-x: hidden;
-            touch-action: manipulation;
         }
 
         .presensi-header-section {
             background: var(--header-gradient) !important;
             color: #fff;
-            padding: 1.75rem 0 4rem 0 !important;
-            margin-bottom: -60px !important;
+            padding: 1.8rem 0 4.5rem 0 !important;
+            margin-bottom: -55px !important;
             position: relative;
             z-index: 5;
-            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.3) !important;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2) !important;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .page-title-presensi {
             font-weight: 800 !important;
-            font-size: 1.1rem !important;
-            letter-spacing: 0.8px;
+            font-size: 1.25rem !important;
+            letter-spacing: -0.3px;
             color: #ffffff !important;
         }
 
         #realTimeClockDisplay {
-            font-size: 1.35rem !important;
+            font-size: 1.15rem !important;
             font-weight: 800 !important;
             letter-spacing: 0.5px;
-            background: rgba(255, 255, 255, 0.15) !important;
-            padding: 4px 14px !important;
-            border-radius: 20px !important;
-            display: inline-block;
+            background: rgba(255, 255, 255, 0.12) !important;
+            padding: 5px 16px !important;
+            border-radius: 50px !important;
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .employee-info-presensi.card {
-            background: rgba(255, 255, 255, 0.12) !important;
-            backdrop-filter: blur(16px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
-            color: #fff !important;
-            border-radius: 22px !important;
-            padding: 0.95rem 1.25rem !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
-        }
-
-        .employee-photo-presensi {
-            width: 54px !important;
-            height: 54px !important;
-            border-radius: 50% !important;
-            object-fit: cover;
-            border: 2.5px solid #ffffff !important;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
-        }
-
-        .employee-name-presensi {
-            font-weight: 800 !important;
-            font-size: 1.1rem !important;
             color: #ffffff !important;
         }
 
-        /* 3D Presensi Action Card */
+        .employee-info-presensi.card {
+            background: rgba(255, 255, 255, 0.08) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            color: #fff !important;
+            border-radius: 18px !important;
+            padding: 1rem 1.25rem !important;
+        }
+
+        .employee-photo-presensi {
+            width: 52px !important;
+            height: 52px !important;
+            border-radius: 50% !important;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        }
+
+        /* Executive HRIS Presensi Cards */
         .presensi-action-card.card {
-            background: rgba(255, 255, 255, 0.88) !important;
-            backdrop-filter: blur(20px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+            background: #ffffff !important;
             border-radius: var(--card-radius-lg) !important;
-            border: 1px solid rgba(255, 255, 255, 0.9) !important;
-            box-shadow: 
-                0 30px 60px -12px rgba(15, 23, 42, 0.15),
-                0 18px 36px -18px rgba(15, 23, 42, 0.12),
-                inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
-            transform-style: preserve-3d;
-            will-change: transform;
-            transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+            border: 1px solid var(--hris-card-border) !important;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05) !important;
+            margin-bottom: 24px;
         }
 
         .presensi-action-card .section-title-presensi-card {
-            color: #334155 !important;
-            font-weight: 800 !important;
-            font-size: 0.85rem !important;
+            color: #64748b !important;
+            font-weight: 700 !important;
+            font-size: 0.78rem !important;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.8px;
         }
 
         .presensi-action-card .schedule-display-presensi-card {
-            font-size: 2.75rem !important;
+            font-size: 2.6rem !important;
             font-weight: 900 !important;
             line-height: 1.1;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
-            -webkit-background-clip: text !important;
-            -webkit-text-fill-color: transparent !important;
-            letter-spacing: -1.5px;
-            margin: 0.4rem 0 !important;
+            color: #0f172a !important;
+            letter-spacing: -1.2px;
+            margin: 0.3rem 0 !important;
         }
 
         @media (max-width: 576px) {
             .presensi-action-card .schedule-display-presensi-card {
-                font-size: 2.25rem !important;
+                font-size: 2.1rem !important;
             }
         }
 
         .presensi-action-card .shift-name-presensi-card {
-            font-size: 0.85rem !important;
+            font-size: 0.82rem !important;
             color: #2563eb !important;
             font-weight: 700 !important;
-            background: rgba(37, 99, 235, 0.08) !important;
+            background: #eff6ff !important;
             padding: 6px 16px !important;
-            border-radius: 20px !important;
+            border-radius: 50px !important;
             display: inline-block;
-            border: 1px solid rgba(37, 99, 235, 0.15) !important;
+            border: 1px solid #bfdbfe !important;
         }
 
         .status-area-presensi .location-status-presensi-card {
-            font-size: 0.875rem !important;
+            font-size: 0.88rem !important;
             font-weight: 600 !important;
-            padding: 0.85rem 1.1rem !important;
-            background-color: rgba(248, 250, 252, 0.95) !important;
-            border: 1.5px solid #cbd5e1 !important;
-            border-radius: 16px !important;
-            min-height: 48px;
-            color: #1e293b !important;
+            padding: 0.9rem 1.1rem !important;
+            background-color: #f8fafc !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 14px !important;
+            color: #0f172a !important;
         }
 
         /* Tactile 3D Buttons */
         .button-area-presensi .btn {
             font-size: 0.95rem !important;
             font-weight: 800 !important;
-            height: 54px !important;
+            height: 52px !important;
             border-radius: var(--btn-radius) !important;
             letter-spacing: 0.4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.15s ease-out !important;
+            transition: all 0.2s ease !important;
             border: none !important;
             cursor: pointer;
         }
@@ -236,231 +217,99 @@ $asset_version = '2026.08.06.2';
         .btn-check-in-presensi {
             background: var(--success-3d) !important;
             color: #ffffff !important;
-            box-shadow: 
-                0 8px 20px rgba(16, 185, 129, 0.35),
-                0 4px 0 #047857 !important;
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3) !important;
         }
 
-        .btn-check-in-presensi:hover:not(:disabled), .btn-check-in-presensi:focus:not(:disabled) {
+        .btn-check-in-presensi:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 
-                0 12px 25px rgba(16, 185, 129, 0.45),
-                0 6px 0 #065f46 !important;
+            box-shadow: 0 10px 24px rgba(16, 185, 129, 0.45) !important;
             color: #ffffff !important;
-        }
-
-        .btn-check-in-presensi:active:not(:disabled) {
-            transform: translateY(2px);
-            box-shadow: 
-                0 4px 10px rgba(16, 185, 129, 0.3),
-                0 1px 0 #065f46 !important;
         }
 
         .btn-check-in-presensi:disabled {
             background: #cbd5e1 !important;
             color: #64748b !important;
-            box-shadow: 0 4px 0 #94a3b8 !important;
+            box-shadow: none !important;
             opacity: 0.7;
         }
 
         .btn-check-out-presensi {
             background: var(--danger-3d) !important;
             color: #ffffff !important;
-            box-shadow: 
-                0 8px 20px rgba(239, 68, 68, 0.35),
-                0 4px 0 #b91c1c !important;
+            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.3) !important;
         }
 
-        .btn-check-out-presensi:hover:not(:disabled), .btn-check-out-presensi:focus:not(:disabled) {
+        .btn-check-out-presensi:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 
-                0 12px 25px rgba(239, 68, 68, 0.45),
-                0 6px 0 #991b1b !important;
+            box-shadow: 0 10px 24px rgba(239, 68, 68, 0.45) !important;
             color: #ffffff !important;
-        }
-
-        .btn-check-out-presensi:active:not(:disabled) {
-            transform: translateY(2px);
-            box-shadow: 
-                0 4px 10px rgba(239, 68, 68, 0.3),
-                0 1px 0 #991b1b !important;
         }
 
         .btn-check-out-presensi:disabled {
             background: #cbd5e1 !important;
             color: #64748b !important;
-            box-shadow: 0 4px 0 #94a3b8 !important;
+            box-shadow: none !important;
             opacity: 0.7;
         }
 
         .btn-riwayat-absen {
             background: var(--warning-3d) !important;
             color: #ffffff !important;
-            box-shadow: 
-                0 8px 20px rgba(245, 158, 11, 0.35),
-                0 4px 0 #b45309 !important;
+            box-shadow: 0 6px 18px rgba(234, 88, 12, 0.3) !important;
         }
 
-        .btn-riwayat-absen:hover, .btn-riwayat-absen:focus {
+        .btn-riwayat-absen:hover {
             transform: translateY(-2px);
-            box-shadow: 
-                0 12px 25px rgba(245, 158, 11, 0.45),
-                0 6px 0 #92400e !important;
-                color: #ffffff !important;
-        }
-
-        .btn-riwayat-absen:active {
-            transform: translateY(2px);
-            box-shadow: 
-                0 4px 10px rgba(245, 158, 11, 0.3),
-                0 1px 0 #92400e !important;
-        }
-
-        /* Perfect Mobile Camera Modal (Fits screen perfectly, no black void) */
-        #cameraModal {
-            z-index: 1060 !important;
-        }
-        .modal-backdrop {
-            z-index: 1050 !important;
-        }
-        #cameraModal .modal-dialog {
-            max-width: 360px !important;
-            width: 92% !important;
-            margin: 0.75rem auto !important;
-        }
-        #cameraModal .modal-content {
-            background: #0f172a !important;
-            border-radius: 20px !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
-        }
-        #cameraModal .modal-header {
-            background: #0f172a !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: #ffffff !important;
-            padding: 10px 14px !important;
-        }
-        #cameraModal .modal-title {
-            font-weight: 800 !important;
-            font-size: 0.95rem !important;
+            box-shadow: 0 10px 24px rgba(234, 88, 12, 0.45) !important;
             color: #ffffff !important;
         }
-        #cameraModal .modal-header .btn-close {
-            filter: invert(1);
-            opacity: 0.8;
-            z-index: 1070 !important;
+
+        /* Right Panel Today Live Status Card */
+        .today-live-card {
+            background: #ffffff;
+            border-radius: var(--card-radius-lg);
+            border: 1px solid var(--hris-card-border);
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+            margin-bottom: 24px;
         }
-        .camera-video-presensi,
-        .photo-canvas-presensi,
-        .photo-preview-img {
-            width: 100% !important;
-            height: 320px !important;
-            max-height: 320px !important;
-            min-height: 320px !important;
+
+        .today-status-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+
+        .today-status-photo {
+            width: 56px;
+            height: 64px;
             object-fit: cover !important;
-            object-position: center !important;
-            display: block !important;
-            background: #0f172a !important;
-            border: none !important;
-            margin: 0 !important;
-            padding: 0 !important;
+            object-position: center top !important;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
         }
 
-        /* 3D Circular Blue Camera Shutter Button */
-        .capture-btn-presensi {
-            position: absolute !important;
-            bottom: 12px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: 52px !important;
-            height: 52px !important;
-            border-radius: 50% !important;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
-            border: 3px solid #60a5fa !important;
-            color: #ffffff !important;
-            font-size: 1.2rem !important;
-            display: flex;
-            align-items: center !important;
-            justify-content: center !important;
-            cursor: pointer !important;
-            z-index: 1070 !important;
-            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.6) !important;
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-            padding: 0 !important;
-            outline: none !important;
-        }
-        .capture-btn-presensi i {
-            font-size: 1.25rem !important;
-            color: #ffffff !important;
-        }
-        .capture-btn-presensi:hover {
-            transform: translateX(-50%) scale(1.08) !important;
-            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.8) !important;
-        }
-        .capture-btn-presensi:active {
-            transform: translateX(-50%) scale(0.95) !important;
-        }
+        /* Camera Modal */
+        #cameraModal { z-index: 1060 !important; }
+        .modal-backdrop { z-index: 1050 !important; }
+        #cameraModal .modal-dialog { max-width: 360px !important; width: 92% !important; margin: 0.75rem auto !important; }
+        #cameraModal .modal-content { background: #0f172a !important; border-radius: 20px !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; overflow: hidden; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important; }
+        #cameraModal .modal-header { background: #0f172a !important; border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important; color: #ffffff !important; padding: 10px 14px !important; }
+        #cameraModal .modal-title { font-weight: 800 !important; font-size: 0.95rem !important; color: #ffffff !important; }
+        #cameraModal .modal-header .btn-close { filter: invert(1); opacity: 0.8; z-index: 1070 !important; }
+        .camera-video-presensi, .photo-canvas-presensi, .photo-preview-img { width: 100% !important; height: 320px !important; max-height: 320px !important; min-height: 320px !important; object-fit: cover !important; object-position: center !important; display: block !important; background: #0f172a !important; border: none !important; margin: 0 !important; padding: 0 !important; }
 
-        #cameraModal .modal-footer {
-            background: #0f172a !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-            padding: 10px 14px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            gap: 10px !important;
-        }
-        #cameraModal .modal-footer .btn-outline-secondary {
-            flex: 1 !important;
-            background: transparent !important;
-            border: 1.5px solid #334155 !important;
-            color: #cbd5e1 !important;
-            border-radius: 12px !important;
-            padding: 9px !important;
-            font-size: 0.9rem !important;
-            font-weight: 700 !important;
-            z-index: 1070 !important;
-        }
-        #cameraModal .modal-footer .btn-outline-secondary:hover {
-            background: #1e293b !important;
-            color: #ffffff !important;
-        }
-        #cameraModal .modal-footer .btn-primary {
-            flex: 1 !important;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
-            border: none !important;
-            color: #ffffff !important;
-            border-radius: 12px !important;
-            padding: 9px !important;
-            font-size: 0.9rem !important;
-            font-weight: 800 !important;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important;
-            z-index: 1070 !important;
-        }
+        .capture-btn-presensi { position: absolute !important; bottom: 12px !important; left: 50% !important; transform: translateX(-50%) !important; width: 52px !important; height: 52px !important; border-radius: 50% !important; background: linear-gradient(135deg, #2563eb, #1d4ed8) !important; border: 3px solid #60a5fa !important; color: #ffffff !important; font-size: 1.2rem !important; display: flex; align-items: center !important; justify-content: center !important; cursor: pointer !important; z-index: 1070 !important; box-shadow: 0 6px 18px rgba(37, 99, 235, 0.6) !important; transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important; padding: 0 !important; outline: none !important; }
+        .capture-btn-presensi i { font-size: 1.25rem !important; color: #ffffff !important; }
+        .capture-btn-presensi:hover { transform: translateX(-50%) scale(1.08) !important; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.8) !important; }
 
-        .retake-btn-presensi {
-            position: absolute !important;
-            bottom: 12px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            background: rgba(15, 23, 42, 0.85) !important;
-            border: 1px solid rgba(255, 255, 255, 0.3) !important;
-            color: #ffffff !important;
-            border-radius: 20px !important;
-            padding: 6px 16px !important;
-            font-size: 0.8rem !important;
-            font-weight: 700 !important;
-            z-index: 1070 !important;
-            backdrop-filter: blur(8px) !important;
-            cursor: pointer !important;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.5) !important;
-            transition: all 0.2s ease !important;
-        }
-        .retake-btn-presensi:hover {
-            background: rgba(30, 41, 59, 0.95) !important;
-            transform: translateX(-50%) scale(1.05) !important;
-        }
+        #cameraModal .modal-footer { background: #0f172a !important; border-top: 1px solid rgba(255, 255, 255, 0.1) !important; padding: 10px 14px !important; display: flex !important; align-items: center !important; justify-content: space-between !important; gap: 10px !important; }
+        #cameraModal .modal-footer .btn-outline-secondary { flex: 1 !important; background: transparent !important; border: 1.5px solid #334155 !important; color: #cbd5e1 !important; border-radius: 12px !important; padding: 9px !important; font-size: 0.9rem !important; font-weight: 700 !important; z-index: 1070 !important; }
+        #cameraModal .modal-footer .btn-primary { flex: 1 !important; background: linear-gradient(135deg, #2563eb, #1d4ed8) !important; border: none !important; color: #ffffff !important; border-radius: 12px !important; padding: 9px !important; font-size: 0.9rem !important; font-weight: 800 !important; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important; z-index: 1070 !important; }
+
+        .retake-btn-presensi { position: absolute !important; bottom: 12px !important; left: 50% !important; transform: translateX(-50%) !important; background: rgba(15, 23, 42, 0.85) !important; border: 1px solid rgba(255, 255, 255, 0.3) !important; color: #ffffff !important; border-radius: 20px !important; padding: 6px 16px !important; font-size: 0.8rem !important; font-weight: 700 !important; z-index: 1070 !important; backdrop-filter: blur(8px) !important; cursor: pointer !important; box-shadow: 0 4px 14px rgba(0,0,0,0.5) !important; }
 
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; backdrop-filter: blur(8px); }
         .loading-spinner { width: 3.5rem; height: 3.5rem; border-width: 0.25em; color: #3b82f6; }
@@ -473,17 +322,35 @@ $asset_version = '2026.08.06.2';
         <h5 class="fw-bold">Sedang Mengirim Data...</h5>
         <p class="small text-white-50">Mohon jangan tutup atau refresh halaman ini.</p>
     </div>
+
+    <!-- Query Today's Live Attendance Records -->
+    <?php
+    $sql_today_check = "SELECT tipe_absen, TIME(tgl_absen) as jam, verif, image, lokasi_absen FROM absen_manual WHERE nip='$pinAbsen' AND DATE(tgl_absen)='$todayDate' ORDER BY tgl_absen ASC";
+    $res_today_check = $conn->query($sql_today_check);
+    $today_absen_data = ['masuk' => null, 'pulang' => null];
+    if ($res_today_check && $res_today_check->num_rows > 0) {
+        while ($r_today = $res_today_check->fetch_assoc()) {
+            if ($r_today['tipe_absen'] === 'masuk') $today_absen_data['masuk'] = $r_today;
+            if ($r_today['tipe_absen'] === 'pulang') $today_absen_data['pulang'] = $r_today;
+        }
+    }
+    ?>
+
     <div class="main-content-wrapper">
+        <!-- Executive Header Section -->
         <div class="presensi-header-section">
             <div class="container">
-                <div class="d-flex justify-content-between align-items-center mb-3 px-2 presensi-top-bar">
-                    <h5 class="text-light mb-0 page-title-presensi"><i class="fas fa-fingerprint me-2"></i>PRESENSI ONLINE</h5>
-                    <div class="text-light text-end time-date-display">
-                        <span id="realTimeClockDisplay" class="d-block fw-bold"><?php echo date('H:i:s'); ?></span>
-                        <small class="d-block mt-1 opacity-75"><?php echo date('d F Y'); ?></small>
+                <div class="d-flex justify-content-between align-items-center mb-3 px-1">
+                    <div>
+                        <h5 class="page-title-presensi mb-0"><i class="fas fa-fingerprint me-2 text-info"></i>PRESENSI ONLINE</h5>
+                        <small class="text-white-50" style="font-size: 0.78rem;">Portal Absensi Karyawan Real-Time</small>
+                    </div>
+                    <div class="text-end">
+                        <span id="realTimeClockDisplay"><?php echo date('H:i:s'); ?></span>
+                        <small class="d-block mt-1 text-white-50" style="font-size: 0.72rem;"><?php echo date('d F Y'); ?></small>
                     </div>
                 </div>
-                <div class="employee-info-presensi card card-body shadow-sm mx-1">
+                <div class="employee-info-presensi card border-0 mx-1">
                     <div class="d-flex align-items-center">
                         <?php
                         $user_photo_src = (!empty($photo) && file_exists('../uploads/' . $photo)) ? '../uploads/' . htmlspecialchars($photo) : '';
@@ -491,73 +358,181 @@ $asset_version = '2026.08.06.2';
                         $avatar_svg_fallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><rect width='60' height='60' rx='30' fill='%232563eb'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='sans-serif' font-size='24' font-weight='bold'>{$first_letter}</text></svg>";
                         ?>
                         <img src="<?php echo !empty($user_photo_src) ? $user_photo_src : $avatar_svg_fallback; ?>"
-                            alt="Foto Profil" class="employee-photo-presensi me-3 rounded-circle shadow-sm"
-                            style="width: 50px; height: 50px; object-fit: cover;"
+                            alt="Foto Profil" class="employee-photo-presensi me-3 shadow-sm"
                             onerror="this.onerror=null; this.src='<?php echo $avatar_svg_fallback; ?>';">
                         <div>
-                            <h6 class="mb-0 employee-name-presensi"><?php echo htmlspecialchars($nama); ?></h6>
-                            <small class="employee-details-presensi"><?php echo htmlspecialchars($jabatan); ?> &bull; NIK: <?php echo htmlspecialchars($nik); ?></small>
+                            <h6 class="mb-0 fw-bold text-white fs-6"><?php echo htmlspecialchars($nama); ?></h6>
+                            <small class="text-white-50" style="font-size: 0.8rem;"><?php echo htmlspecialchars($jabatan); ?> &bull; NIK: <?php echo htmlspecialchars($nik); ?></small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="dashboard-content presensi-main-content px-lg-4 px-md-3 px-0">
-            <div class="container">
-                <div class="row justify-content-center">
-<div class="col-lg-7 col-md-9">
-                        <div class="card presensi-action-card shadow-lg" id="card3d">
-                            <div class="card-body p-lg-4">
+
+        <!-- 2-Column Corporate Grid Layout -->
+        <div class="dashboard-content presensi-main-content px-lg-4 px-md-3 px-2 mt-4">
+            <div class="container p-0">
+                <div class="row g-4">
+
+                    <!-- Left Column: Clock-In & Action Hub (7 Columns on Desktop) -->
+                    <div class="col-12 col-lg-7">
+                        <div class="card presensi-action-card" id="card3d">
+                            <div class="card-body p-3 p-md-4">
                                 <div class="text-center mb-3">
-                                    <h5 class="section-title-presensi-card mb-2">JADWAL ANDA HARI INI</h5>
-                                     <p class="shift-name-presensi-card mb-2">
-                                         Shift: <?php
-                                                 $shiftNames = ['P' => 'Pagi', 'M' => 'Tengah', 'N' => 'Siang', 'S' => 'Siang', 'T' => 'Harco (HC)', 'TEST' => 'Shift Testing (24 Jam)'];
-                                                 echo $shiftNames[$final_shifting] ?? $final_shifting;
-                                                 ?>
-                                     </p>
-                                     <?php
-                                     $shiftSchedule = '';
-                                     if ($isSaturday && $final_shifting !== 'TEST') {
-                                         $shiftSchedule = '08.30 - 13.00';
-                                     } else {
-                                         switch ($final_shifting) {
-                                             case 'P': $shiftSchedule = '07.00 - 16.00'; break;
-                                             case 'M': $shiftSchedule = '08.30 - 17.30'; break;
-                                             case 'N': $shiftSchedule = '09.00 - 18.00'; break;
-                                             case 'S': $shiftSchedule = '09.30 - 18.30'; break;
-                                             case 'T': $shiftSchedule = '09.10 - 18.00'; break;
-                                             case 'TEST': $shiftSchedule = 'Bisa Masuk & Pulang Kapan Saja (Test Mode)'; break; 
-                                             default: $shiftSchedule = 'Tidak Terdefinisi';
-                                         }
-                                     }
-                                     ?>
-                                     <p class="schedule-display-presensi-card my-2"><?php echo $shiftSchedule; ?></p>
-                                 </div>
-                                 <hr class="my-3 presensi-divider">
-                                 <div class="status-area-presensi mb-3">
-                                     <div id="locationStatus" class="d-flex align-items-center justify-content-center location-status-presensi-card">
-                                         <i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi...
-                                     </div>
-                                     <div id="locationWarning" class="alert alert-warning d-none text-center mt-2 py-2 small">
-                                         <i class="fas fa-map-marker-alt me-2"></i>
-                                         Anda di luar lokasi kantor, jika lokasi tidak sesuai, pastikan GPS handphone aktif dan browser tidak memblokir lokasi pada situs ini.
-                                     </div>
-                                     <div id="lateWarning" class="alert alert-danger d-none text-center mt-2 py-2 late-warning-presensi-card">
-                                         <i class="fas fa-exclamation-triangle me-2"></i>
-                                         <span id="lateMessage"></span>
-                                     </div>
-                                 </div>
-                                 <div class="button-area-presensi mt-3">
-                                     <button class="btn btn-check-in-presensi w-100 mb-2 py-3" id="btnCheckIn" disabled><i class="fas fa-hand-point-up fa-fw me-2"></i>MASUK</button>
-                                     <button class="btn btn-check-out-presensi w-100 mb-2 py-3" id="btnCheckOut" disabled><i class="fas fa-door-open fa-fw me-2"></i>PULANG</button>
-                                     <a href="riwayat-absen.php" class="btn btn-riwayat-absen w-100 py-3"><strong><i class="fas fa-calendar-check fa-fw me-2"></i>CEK ABSEN KAMU DISINI</strong></a>
-                                 </div>
+                                    <h5 class="section-title-presensi-card mb-2"><i class="fa-regular fa-calendar-check me-2"></i>JADWAL ANDA HARI INI</h5>
+                                    <p class="shift-name-presensi-card mb-2">
+                                        Shift: <?php
+                                                $shiftNames = ['P' => 'Pagi', 'M' => 'Tengah', 'N' => 'Siang', 'S' => 'Siang', 'T' => 'Harco (HC)', 'TEST' => 'Shift Testing (24 Jam)'];
+                                                echo $shiftNames[$final_shifting] ?? $final_shifting;
+                                                ?>
+                                    </p>
+                                    <?php
+                                    $shiftSchedule = '';
+                                    if ($isSaturday && $final_shifting !== 'TEST') {
+                                        $shiftSchedule = '08.30 - 13.00';
+                                    } else {
+                                        switch ($final_shifting) {
+                                            case 'P': $shiftSchedule = '07.00 - 16.00'; break;
+                                            case 'M': $shiftSchedule = '08.30 - 17.30'; break;
+                                            case 'N': $shiftSchedule = '09.00 - 18.00'; break;
+                                            case 'S': $shiftSchedule = '09.30 - 18.30'; break;
+                                            case 'T': $shiftSchedule = '09.10 - 18.00'; break;
+                                            case 'TEST': $shiftSchedule = 'Bisa Masuk & Pulang Kapan Saja (Test Mode)'; break; 
+                                            default: $shiftSchedule = 'Tidak Terdefinisi';
+                                        }
+                                    }
+                                    ?>
+                                    <p class="schedule-display-presensi-card my-2"><?php echo $shiftSchedule; ?></p>
+                                </div>
+
+                                <hr class="my-3 text-slate-200">
+
+                                <div class="status-area-presensi mb-3">
+                                    <div id="locationStatus" class="d-flex align-items-center justify-content-center location-status-presensi-card">
+                                        <i class="fas fa-spinner fa-spin me-2 text-primary"></i> Mengambil lokasi...
+                                    </div>
+                                    <div id="locationWarning" class="alert alert-warning d-none text-center mt-2 py-2 small rounded-3">
+                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                        Anda di luar lokasi kantor, jika lokasi tidak sesuai, pastikan GPS handphone aktif dan browser tidak memblokir lokasi pada situs ini.
+                                    </div>
+                                    <div id="lateWarning" class="alert alert-danger d-none text-center mt-2 py-2 rounded-3">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <span id="lateMessage"></span>
+                                    </div>
+                                </div>
+
+                                <div class="button-area-presensi mt-3">
+                                    <button class="btn btn-check-in-presensi w-100 mb-2 py-3" id="btnCheckIn" disabled>
+                                        <i class="fas fa-camera me-2"></i>MASUK (CHECK-IN)
+                                    </button>
+                                    <button class="btn btn-check-out-presensi w-100 mb-2 py-3" id="btnCheckOut" disabled>
+                                        <i class="fas fa-door-open me-2"></i>PULANG (CHECK-OUT)
+                                    </button>
+                                    <a href="riwayat-absen.php" class="btn btn-riwayat-absen w-100 py-3 text-decoration-none">
+                                        <i class="fas fa-calendar-check me-2"></i><strong>CEK ABSEN KAMU DISINI</strong>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Right Column: Today's Live Status & Guidelines (5 Columns on Desktop) -->
+                    <div class="col-12 col-lg-5">
+                        <div class="today-live-card">
+                            <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                                <h6 class="fw-bold text-dark m-0"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>Status Absen Hari Ini</h6>
+                                <span class="badge bg-light text-secondary border fw-bold"><?php echo date('d M Y'); ?></span>
+                            </div>
+
+                            <!-- Check-In Live Box -->
+                            <div class="today-status-box">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="fw-bold text-slate-700 small"><i class="fa-solid fa-arrow-right-to-bracket text-primary me-1"></i>Absen Masuk</span>
+                                    <?php if ($today_absen_data['masuk']): ?>
+                                        <span class="badge bg-success-subtle text-success-emphasis rounded-pill"><i class="fa-solid fa-check me-1"></i>Tercatat</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill">Belum Absen</span>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if ($today_absen_data['masuk']): 
+                                    $rec_tm = $today_absen_data['masuk'];
+                                    $img_tm = $rec_tm['image'];
+                                    $img_src_tm = '';
+                                    if (!empty($img_tm)) {
+                                        if (file_exists(__DIR__ . '/../uploads/attendance/' . $img_tm)) {
+                                            $img_src_tm = '../uploads/attendance/' . htmlspecialchars($img_tm);
+                                        } elseif (file_exists(__DIR__ . '/../uploads/' . $img_tm)) {
+                                            $img_src_tm = '../uploads/' . htmlspecialchars($img_tm);
+                                        }
+                                    }
+                                ?>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <?php if (!empty($img_src_tm)): ?>
+                                            <img src="<?php echo $img_src_tm; ?>" alt="Foto Masuk" class="today-status-photo">
+                                        <?php endif; ?>
+                                        <div>
+                                            <div class="fw-extrabold text-dark fs-5 lh-1 mb-1"><?php echo htmlspecialchars($rec_tm['jam']); ?> WIB</div>
+                                            <small class="text-muted text-truncate d-block" style="max-width: 180px;"><?php echo htmlspecialchars($rec_tm['lokasi_absen'] ?: 'Di Kantor'); ?></small>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="text-muted small py-2 text-center opacity-60"><i class="fa-regular fa-clock me-1"></i>Belum melakukan presensi masuk</div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Check-Out Live Box -->
+                            <div class="today-status-box mb-0">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="fw-bold text-slate-700 small"><i class="fa-solid fa-arrow-right-from-bracket text-info me-1"></i>Absen Pulang</span>
+                                    <?php if ($today_absen_data['pulang']): ?>
+                                        <span class="badge bg-success-subtle text-success-emphasis rounded-pill"><i class="fa-solid fa-check me-1"></i>Tercatat</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-secondary-subtle text-secondary-emphasis rounded-pill">Belum Absen</span>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if ($today_absen_data['pulang']): 
+                                    $rec_tp = $today_absen_data['pulang'];
+                                    $img_tp = $rec_tp['image'];
+                                    $img_src_tp = '';
+                                    if (!empty($img_tp)) {
+                                        if (file_exists(__DIR__ . '/../uploads/attendance/' . $img_tp)) {
+                                            $img_src_tp = '../uploads/attendance/' . htmlspecialchars($img_tp);
+                                        } elseif (file_exists(__DIR__ . '/../uploads/' . $img_tp)) {
+                                            $img_src_tp = '../uploads/' . htmlspecialchars($img_tp);
+                                        }
+                                    }
+                                ?>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <?php if (!empty($img_src_tp)): ?>
+                                            <img src="<?php echo $img_src_tp; ?>" alt="Foto Pulang" class="today-status-photo">
+                                        <?php endif; ?>
+                                        <div>
+                                            <div class="fw-extrabold text-dark fs-5 lh-1 mb-1"><?php echo htmlspecialchars($rec_tp['jam']); ?> WIB</div>
+                                            <small class="text-muted text-truncate d-block" style="max-width: 180px;"><?php echo htmlspecialchars($rec_tp['lokasi_absen'] ?: 'Di Kantor'); ?></small>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="text-muted small py-2 text-center opacity-60"><i class="fa-regular fa-clock me-1"></i>Belum melakukan presensi pulang</div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <!-- Radius & Guidelines Info Card -->
+                        <div class="card border-0 rounded-4 shadow-sm p-3 bg-white">
+                            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.85rem;"><i class="fa-solid fa-circle-info text-info me-2"></i>Ketentuan Presensi</h6>
+                            <ul class="text-muted small mb-0 ps-3" style="font-size: 0.78rem; line-height: 1.6;">
+                                <li>Pastikan izin GPS / Lokasi pada browser handphone aktif.</li>
+                                <li>Radius kantor maksimal adalah <strong>150 Meter</strong>.</li>
+                                <li>Foto selfie presensi wajib diambil dengan jelas.</li>
+                            </ul>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="footer">Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>. All Rights Reserved.<br><small>Version 1.1.0</small></div>
+
+                <div class="footer mt-5 pb-4 text-center">
+                    <small class="text-muted fw-medium">Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>.<br>Version 1.2.0</small>
+                </div>
             </div>
         </div>
         <?php include 'nav/bottom-nav.php'; ?>
