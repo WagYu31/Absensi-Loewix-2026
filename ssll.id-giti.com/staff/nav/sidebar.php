@@ -173,11 +173,13 @@ $user_role = $_SESSION['role'] ?? 'guest';
 /* Submenu Links */
 .sidebar .collapse a,
 .sidebar-submenu a {
-    padding-left: 46px !important;
+    padding-left: 32px !important;
     font-size: 0.84rem !important;
     color: #9ca3af !important;
     background-color: transparent !important;
     justify-content: flex-start !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 .sidebar .collapse a:hover,
@@ -190,6 +192,14 @@ $user_role = $_SESSION['role'] ?? 'guest';
 .sidebar-submenu a.active {
     background-color: rgba(59, 130, 246, 0.12) !important;
     color: #60a5fa !important;
+}
+
+.sub-icon {
+    font-size: 0.85rem !important;
+    width: 20px !important;
+    text-align: center !important;
+    margin-right: 8px !important;
+    opacity: 0.85;
 }
 
 /* Floating Hamburger Button when Sidebar Closed */
@@ -344,8 +354,8 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
             <i class="fa-solid fa-chevron-down chevron-arrow"></i>
         </a>
         <div class="collapse sidebar-submenu" id="menuKepegawaian">
-            <a href="data-karyawan.php"><span class="nav-text">Data Karyawan</span></a>
-            <a href="kalender_kerja.php"><span class="nav-text">Kalender Kerja</span></a>
+            <a href="data-karyawan.php"><i class="fa-solid fa-house-chimney-user sub-icon"></i><span class="nav-text">Data Karyawan</span></a>
+            <a href="kalender_kerja.php"><i class="fa-solid fa-calendar-days sub-icon"></i><span class="nav-text">Kalender Kerja</span></a>
         </div>
 
         <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKehadiran" role="button" aria-expanded="false">
@@ -356,11 +366,11 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
             <i class="fa-solid fa-chevron-down chevron-arrow"></i>
         </a>
         <div class="collapse sidebar-submenu" id="menuKehadiran">
-            <a href="absen.php"><span class="nav-text">Data Absensi</span></a>
-            <a href="data-absensi.php"><span class="nav-text">Validasi Absen Manual</span></a>
-            <a href="shifting.php"><span class="nav-text">Jadwal Shifting</span></a>
-            <a href="kelola_jatah_cuti.php"><span class="nav-text">Kelola Jatah Cuti</span></a>
-            <a href="cuti-karyawan.php"><span class="nav-text">Pengajuan Cuti</span></a>
+            <a href="absen.php"><i class="fa-solid fa-id-card-clip sub-icon"></i><span class="nav-text">Data Absensi</span></a>
+            <a href="data-absensi.php"><i class="fa-solid fa-camera sub-icon"></i><span class="nav-text">Validasi Absen Manual</span></a>
+            <a href="shifting.php"><i class="fa-solid fa-person-running sub-icon"></i><span class="nav-text">Jadwal Shifting</span></a>
+            <a href="kelola_jatah_cuti.php"><i class="fa-solid fa-folder-open sub-icon"></i><span class="nav-text">Kelola Jatah Cuti</span></a>
+            <a href="cuti-karyawan.php"><i class="fa-solid fa-calendar-check sub-icon"></i><span class="nav-text">Pengajuan Cuti</span></a>
         </div>
 
         <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKeuangan" role="button" aria-expanded="false">
@@ -371,11 +381,11 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
             <i class="fa-solid fa-chevron-down chevron-arrow"></i>
         </a>
         <div class="collapse sidebar-submenu" id="menuKeuangan">
-            <a href="tunjangan-karyawan.php"><span class="nav-text">Biaya Pengganti</span></a>
-            <a href="denda.php"><span class="nav-text">Denda Karyawan</span></a>
+            <a href="tunjangan-karyawan.php"><i class="fa-solid fa-money-bill-trend-up sub-icon"></i><span class="nav-text">Biaya Pengganti</span></a>
+            <a href="denda.php"><i class="fa-solid fa-hand-scissors sub-icon"></i><span class="nav-text">Denda Karyawan</span></a>
             <?php if ($user_role === 'superadmin'): ?>
-            <a href="cashbon.php"><span class="nav-text">Cashbon</span></a>
-            <a href="penggajian.php"><span class="nav-text">Penggajian</span></a>
+            <a href="cashbon.php"><i class="fa-solid fa-money-bill-transfer sub-icon"></i><span class="nav-text">Cashbon</span></a>
+            <a href="penggajian.php"><i class="fa-solid fa-money-bill-wave sub-icon"></i><span class="nav-text">Penggajian</span></a>
             <?php endif; ?>
         </div>
 
