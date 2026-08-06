@@ -1,5 +1,17 @@
 <?php
 session_start();
+
+// Jika pengguna sudah login, langsung arahkan ke Dashboard
+if (isset($_SESSION['nip']) && isset($_SESSION['role'])) {
+    if ($_SESSION['role'] === 'karyawan') {
+        header("Location: karyawan/home.php");
+        exit();
+    } else {
+        header("Location: staff/grafik-kinerja.php");
+        exit();
+    }
+}
+
 include 'conn.php';
 
 // --- OPTIMALISASI: Ambil semua data yang dibutuhkan di awal ---
