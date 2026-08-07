@@ -325,13 +325,50 @@ $asset_version = '2026.08.06.2';
 
     <!-- Query Today's Live Attendance Records -->
     <?php
-    $sql_today_check = "SELECT tipe_absen, TIME(tgl_absen) as jam, verif, image, lokasi_absen FROM absen_manual WHERE nip='$pinAbsen' AND DATE(tgl_absen)='$todayDate' ORDER BY tgl_absen ASC";
+    $sql_today_check = "SELECT tipe_absen, TIME(tgl_absen) as jam, verif, image, lokasi_absen FROM absen_manual WHERE (nip='$nip' OR nip='$nik' OR nip='$pinAbsen') AND DATE(tgl_absen)='$todayDate' ORDER BY tgl_absen ASC";
     $res_today_check = $conn->query($sql_today_check);
     $today_absen_data = ['masuk' => null, 'pulang' => null];
     if ($res_today_check && $res_today_check->num_rows > 0) {
         while ($r_today = $res_today_check->fetch_assoc()) {
             if ($r_today['tipe_absen'] === 'masuk') $today_absen_data['masuk'] = $r_today;
             if ($r_today['tipe_absen'] === 'pulang') $today_absen_data['pulang'] = $r_today;
+        }
+    }
+
+    // Fallback: check table 'absen' if not found in 'absen_manual'
+    if (empty($today_absen_data['masuk'])) {
+        $sql_absen_masuk = "SELECT MIN(tgl_scan) as min_scan, TIME(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) as jam_str FROM absen WHERE (nip='$nip' OR nip='$nik' OR nip='$pinAbsen') AND (DATE_FORMAT(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s'), '%Y-%m-%d') = '$todayDate' OR DATE(tgl_scan) = '$todayDate')";
+        $res_absen_masuk = $conn->query($sql_absen_masuk);
+        if ($res_absen_masuk && $res_absen_masuk->num_rows > 0) {
+            $r_absen = $res_absen_masuk->fetch_assoc();
+            if (!empty($r_absen['min_scan'])) {
+                $jam_fmt = !empty($r_absen['jam_str']) ? $r_absen['jam_str'] : date('H:i:s', strtotime($r_absen['min_scan']));
+                $today_absen_data['masuk'] = [
+                    'tipe_absen' => 'masuk',
+                    'jam' => $jam_fmt,
+                    'verif' => 'Yes',
+                    'image' => '',
+                    'lokasi_absen' => 'Di Kantor'
+                ];
+            }
+        }
+    }
+
+    if (empty($today_absen_data['pulang']) && !empty($today_absen_data['masuk'])) {
+        $sql_absen_pulang = "SELECT MIN(tgl_scan) as min_scan, MAX(tgl_scan) as max_scan, TIME(STR_TO_DATE(MAX(tgl_scan), '%d-%m-%Y %H:%i:%s')) as jam_str FROM absen WHERE (nip='$nip' OR nip='$nik' OR nip='$pinAbsen') AND (DATE_FORMAT(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s'), '%Y-%m-%d') = '$todayDate' OR DATE(tgl_scan) = '$todayDate')";
+        $res_absen_pulang = $conn->query($sql_absen_pulang);
+        if ($res_absen_pulang && $res_absen_pulang->num_rows > 0) {
+            $r_pulang = $res_absen_pulang->fetch_assoc();
+            if (!empty($r_pulang['max_scan']) && $r_pulang['max_scan'] !== $r_pulang['min_scan']) {
+                $jam_fmt_p = !empty($r_pulang['jam_str']) ? $r_pulang['jam_str'] : date('H:i:s', strtotime($r_pulang['max_scan']));
+                $today_absen_data['pulang'] = [
+                    'tipe_absen' => 'pulang',
+                    'jam' => $jam_fmt_p,
+                    'verif' => 'Yes',
+                    'image' => '',
+                    'lokasi_absen' => 'Di Kantor'
+                ];
+            }
         }
     }
     ?>
