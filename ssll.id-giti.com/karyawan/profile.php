@@ -73,7 +73,7 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
         /* Taste-Driven Modern Executive Profile Styles */
         .dashboard-content-profile {
             padding-top: 85px !important; /* Prevents top header navbar overlap on mobile */
-            padding-bottom: 24px !important;
+            padding-bottom: 100px !important; /* Clears floating bottom navbar on mobile */
         }
 
         @media (min-width: 992px) {
@@ -566,9 +566,11 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
 
                     </div>
 
+                <div class="footer mt-4 mb-1 text-center">
+                    <small class="text-muted fw-medium">Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>.<br>Version 1.2.0</small>
                 </div>
-
             </div>
+        </div>
         <?php include 'nav/bottom-nav.php'; ?>
     </div>
 
