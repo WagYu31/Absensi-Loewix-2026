@@ -173,6 +173,19 @@ if ($hour < 11) {
             align-items: center;
         }
 
+        .pay-date-icon-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(16, 185, 129, 0.18);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
         .hero-action-wrapper {
             flex-shrink: 0;
         }
@@ -709,12 +722,17 @@ if ($hour < 11) {
                         </div>
 
                         <!-- Footer Payment Date & CTA -->
-                        <div class="pt-2 border-top border-white border-opacity-20 d-flex align-items-center justify-content-between mt-2">
-                            <div>
-                                <div class="small text-white-50" style="font-size: 0.72rem;">Estimasi Tanggal Bayar</div>
-                                <div class="fw-bold text-white small"><i class="fa-regular fa-calendar-check me-1.5 text-emerald-300"></i><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['tanggal_bayar']); ?></div>
+                        <div class="pt-2.5 border-top border-white border-opacity-20 d-flex align-items-center justify-content-between mt-3 gap-2">
+                            <div class="d-flex align-items-center gap-2.5">
+                                <div class="pay-date-icon-badge">
+                                    <i class="fa-solid fa-calendar-day text-emerald-300 fs-6"></i>
+                                </div>
+                                <div>
+                                    <div class="text-white-50 uppercase fw-bold" style="font-size: 0.68rem; letter-spacing: 0.5px;">ESTIMASI TANGGAL BAYAR</div>
+                                    <div class="fw-extrabold text-white font-mono" style="font-size: 0.92rem; letter-spacing: -0.2px;"><?php echo htmlspecialchars(str_replace(['August','January','February','March','April','May','June','July','September','October','November','December'], ['Agustus','Januari','Februari','Maret','April','Mei','Juni','Juli','September','Oktober','November','Desember'], $info_gaji_bulan_ini_dash['tanggal_bayar'])); ?></div>
+                                </div>
                             </div>
-                            <a href="<?php echo $link_ke_riwayat_gaji_dash; ?>" class="btn-slip-gaji">
+                            <a href="<?php echo $link_ke_riwayat_gaji_dash; ?>" class="btn-slip-gaji flex-shrink-0">
                                 <span>Detail Slip Gaji</span>
                                 <i class="fa-solid fa-chevron-right"></i>
                             </a>
