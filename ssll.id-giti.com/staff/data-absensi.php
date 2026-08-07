@@ -646,16 +646,17 @@ $asset_version = time();
                                                     </div>
 
                                                     <div class="d-flex gap-2 w-100 mt-3" id="action-buttons-<?php echo $item['id']; ?>">
-                                                         <?php if ($item['verif'] === 'Yes'): ?>
-                                                             <button class="btn btn-success flex-fill disabled fw-bold shadow-sm" style="opacity: 0.95;" disabled><i class="fa-solid fa-circle-check me-1"></i> APPROVED</button>
-                                                             <button class="btn btn-outline-danger flex-fill fw-bold" onclick="validateAttendance(<?php echo $item['id']; ?>, 'No', this)"><i class="fa-solid fa-xmark me-1"></i> Ubah ke Reject</button>
-                                                         <?php elseif ($item['verif'] === 'No'): ?>
-                                                             <button class="btn btn-outline-success flex-fill fw-bold" onclick="validateAttendance(<?php echo $item['id']; ?>, 'Yes', this)"><i class="fa-solid fa-check me-1"></i> Ubah ke Approve</button>
-                                                             <button class="btn btn-danger flex-fill disabled fw-bold shadow-sm" style="opacity: 0.95;" disabled><i class="fa-solid fa-circle-xmark me-1"></i> REJECTED</button>
-                                                         <?php else: ?>
-                                                             <button class="btn btn-approve-3d flex-fill" onclick="validateAttendance(<?php echo $item['id']; ?>, 'Yes', this)"><i class="fa-solid fa-check me-1"></i> Approve</button>
-                                                             <button class="btn btn-reject-3d flex-fill" onclick="validateAttendance(<?php echo $item['id']; ?>, 'No', this)"><i class="fa-solid fa-xmark me-1"></i> Reject</button>
-                                                     </div>
+                                                        <?php if ($item['verif'] === 'Yes'): ?>
+                                                            <button class="btn btn-success flex-fill disabled fw-bold shadow-sm" style="opacity: 0.95;" disabled><i class="fa-solid fa-circle-check me-1"></i> APPROVED</button>
+                                                            <button class="btn btn-outline-danger flex-fill fw-bold" onclick="validateAttendance(<?php echo $item['id']; ?>, 'No', this)"><i class="fa-solid fa-xmark me-1"></i> Ubah ke Reject</button>
+                                                        <?php elseif ($item['verif'] === 'No'): ?>
+                                                            <button class="btn btn-outline-success flex-fill fw-bold" onclick="validateAttendance(<?php echo $item['id']; ?>, 'Yes', this)"><i class="fa-solid fa-check me-1"></i> Ubah ke Approve</button>
+                                                            <button class="btn btn-danger flex-fill disabled fw-bold shadow-sm" style="opacity: 0.95;" disabled><i class="fa-solid fa-circle-xmark me-1"></i> REJECTED</button>
+                                                        <?php else: ?>
+                                                            <button class="btn btn-approve-3d flex-fill" onclick="validateAttendance(<?php echo $item['id']; ?>, 'Yes', this)"><i class="fa-solid fa-check me-1"></i> Approve</button>
+                                                            <button class="btn btn-reject-3d flex-fill" onclick="validateAttendance(<?php echo $item['id']; ?>, 'No', this)"><i class="fa-solid fa-xmark me-1"></i> Reject</button>
+                                                        <?php endif; ?>
+                                                    </div>
                                                 <?php else: ?>
                                                     <div class="text-center py-4 text-muted small fst-italic opacity-50">Data absen <?php echo $type; ?> belum tersedia</div>
                                                 <?php endif; ?>
