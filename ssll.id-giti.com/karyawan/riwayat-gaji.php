@@ -272,6 +272,14 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slip Gaji - <?php echo htmlspecialchars($nama_karyawan); ?> - <?php echo $periodeGajiTerpilihFormatted; ?></title>
+    
+    <!-- PWA Web App Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="/img/logo.png">
     <meta name="description" content="Website Penghitung Gaji Karyawan Grav-Tech" />
     <meta name="keywords" content="salary, gaji, gravitti technology, gravitti, grav-tech" />
     <meta name="author" content="Irviani" />
