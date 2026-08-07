@@ -70,6 +70,178 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
             color: #ffffff !important;
         }
 
+        /* Ultra-Premium Corporate Profile Styles */
+        .profile-hero-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #1d4ed8 100%) !important;
+            border-radius: var(--card-radius-lg);
+            padding: 2.25rem 1.5rem 2rem 1.5rem;
+            color: #ffffff;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-hero-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .profile-hero-avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-bottom: 1.2rem;
+        }
+
+        .profile-hero-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 2.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-hero-cam-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 36px;
+            height: 36px;
+            background: #2563eb;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            font-size: 0.88rem;
+            transition: all 0.2s ease;
+        }
+
+        .profile-hero-avatar-wrapper:hover .profile-hero-cam-badge {
+            transform: scale(1.12);
+            background: #1d4ed8;
+        }
+
+        .profile-badge-pill {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-weight: 700;
+            border-radius: 50px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+        }
+
+        .profile-badge-pill-success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(52, 211, 153, 0.35);
+            color: #6ee7b7;
+        }
+
+        /* 3D Action Buttons Grid */
+        .btn-3d-action-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+            color: #ffffff !important;
+            border-bottom: 4px solid #1d4ed8 !important;
+            border-radius: 16px !important;
+            font-weight: 800 !important;
+            height: 50px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 22px -4px rgba(37, 99, 235, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            text-decoration: none !important;
+            border: none !important;
+        }
+
+        .btn-3d-action-primary:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 12px 28px -4px rgba(37, 99, 235, 0.6) !important;
+            color: #ffffff !important;
+        }
+
+        .btn-3d-action-primary:active {
+            transform: translateY(2px) scale(0.98);
+            border-bottom-width: 1px !important;
+        }
+
+        .btn-3d-action-glass {
+            background: #ffffff !important;
+            color: #334155 !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-bottom: 3.5px solid #cbd5e1 !important;
+            border-radius: 14px !important;
+            font-weight: 800 !important;
+            height: 46px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04) !important;
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            text-decoration: none !important;
+        }
+
+        .btn-3d-action-glass:hover {
+            transform: translateY(-2px);
+            border-color: #93c5fd !important;
+            border-bottom-color: #2563eb !important;
+            color: #2563eb !important;
+        }
+
+        .btn-3d-action-glass:active {
+            transform: translateY(2px) scale(0.98);
+            border-bottom-width: 1px !important;
+        }
+
+        .btn-3d-action-danger {
+            background: #fef2f2 !important;
+            color: #dc2626 !important;
+            border: 1.5px solid #fecaca !important;
+            border-bottom: 3.5px solid #fca5a5 !important;
+            border-radius: 14px !important;
+            font-weight: 800 !important;
+            height: 46px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.06) !important;
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            text-decoration: none !important;
+        }
+
+        .btn-3d-action-danger:hover {
+            transform: translateY(-2px);
+            background: #fee2e2 !important;
+            color: #b91c1c !important;
+            border-bottom-color: #dc2626 !important;
+        }
+
+        .btn-3d-action-danger:active {
+            transform: translateY(2px) scale(0.98);
+            border-bottom-width: 1px !important;
+        }
+
         /* Profile Cards */
         .profile-card-main {
             background: rgba(255, 255, 255, 0.95);
@@ -221,61 +393,66 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                     
                     <!-- Left Column: Hero Card & Actions (col-lg-4) -->
                     <div class="col-lg-4">
-                        <div class="profile-card-main text-center p-4">
-                            <div class="avatar-container" id="photoButton" title="Klik untuk ubah foto profil">
+                        
+                        <!-- Integrated Executive Hero Card -->
+                        <div class="profile-hero-card">
+                            <div class="profile-hero-avatar-wrapper" id="photoButton" title="Klik untuk ubah foto profil">
                                 <?php if (!empty($photo) && file_exists('../uploads/' . $photo)): ?>
-                                    <img src="../uploads/<?php echo htmlspecialchars($photo); ?>" alt="Foto Profil" class="avatar-circle-large">
+                                    <img src="../uploads/<?php echo htmlspecialchars($photo); ?>" alt="Foto Profil" class="profile-hero-avatar">
                                 <?php else: ?>
-                                    <div class="avatar-circle-large"><?php echo $initials; ?></div>
+                                    <div class="profile-hero-avatar"><?php echo $initials; ?></div>
                                 <?php endif; ?>
-                                <div class="avatar-cam-badge">
+                                <div class="profile-hero-cam-badge">
                                     <i class="fa-solid fa-camera"></i>
                                 </div>
                             </div>
 
-                            <h4 class="fw-extrabold text-dark mb-1"><?php echo htmlspecialchars($nama); ?></h4>
-                            <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
-                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold rounded-pill px-3 py-1"><?php echo htmlspecialchars($jabatan); ?></span>
-                                <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold rounded-pill px-3 py-1"><i class="fa-solid fa-circle-check me-1"></i><?php echo htmlspecialchars($statusKaryawan); ?></span>
+                            <h3 class="fw-extrabold text-white mb-2" style="letter-spacing: -0.5px;"><?php echo htmlspecialchars($nama); ?></h3>
+                            <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 mb-4">
+                                <span class="profile-badge-pill"><i class="fa-solid fa-briefcase me-1.5 opacity-75"></i><?php echo htmlspecialchars($jabatan); ?></span>
+                                <span class="profile-badge-pill profile-badge-pill-success"><i class="fa-solid fa-circle-check me-1.5"></i><?php echo htmlspecialchars($statusKaryawan); ?></span>
                             </div>
 
                             <!-- Quick Action Buttons -->
-                            <div class="d-grid gap-2 mt-4">
-                                <button type="button" class="btn btn-primary rounded-3 fw-bold py-2.5 shadow-sm" onclick="triggerPWAInstall()">
-                                    <i class="fa-solid fa-mobile-screen-button me-2"></i>Install Aplikasi HP
+                            <div class="d-grid gap-2 text-start">
+                                <button type="button" class="btn btn-3d-action-primary w-100 mb-1" onclick="triggerPWAInstall()">
+                                    <i class="fa-solid fa-mobile-screen-button me-2 fs-5"></i>Install Aplikasi HP
                                 </button>
                                 <div class="row g-2">
                                     <div class="col-6">
-                                        <button type="button" class="btn btn-outline-secondary rounded-3 w-100 fw-bold py-2" onclick="changePasswordPrompt('<?php echo htmlspecialchars($nip); ?>')">
-                                            <i class="fa-solid fa-key me-1.5"></i>Password
+                                        <button type="button" class="btn btn-3d-action-glass w-100" onclick="changePasswordPrompt('<?php echo htmlspecialchars($nip); ?>')">
+                                            <i class="fa-solid fa-key me-1.5 text-warning"></i>Password
                                         </button>
                                     </div>
                                     <div class="col-6">
-                                        <a href="edit-profile.php" class="btn btn-outline-primary rounded-3 w-100 fw-bold py-2">
-                                            <i class="fa-solid fa-pen-to-square me-1.5"></i>Edit Profil
+                                        <a href="edit-profile.php" class="btn btn-3d-action-glass w-100">
+                                            <i class="fa-solid fa-pen-to-square me-1.5 text-primary"></i>Edit Profil
                                         </a>
                                     </div>
                                 </div>
-                                <a href="../logout.php" class="btn btn-outline-danger rounded-3 fw-bold py-2 mt-1" onclick="return confirm('Apakah Anda yakin ingin keluar (Log Out) dari akun ini?');">
-                                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
+                                <a href="../logout.php" class="btn btn-3d-action-danger w-100 mt-1" onclick="return confirm('Apakah Anda yakin ingin keluar (Log Out) dari akun ini?');">
+                                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out (Keluar)
                                 </a>
                             </div>
                         </div>
 
                         <!-- Financial Overview Summary Card -->
                         <div class="profile-card-main p-4">
-                            <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom"><i class="fa-solid fa-wallet text-success me-2"></i>Ringkasan Finansial</h6>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-extrabold text-dark mb-3 pb-2 border-bottom d-flex align-items-center justify-content-between">
+                                <span><i class="fa-solid fa-wallet text-emerald-600 me-2 fs-5"></i>Ringkasan Finansial</span>
+                                <span class="badge bg-emerald-subtle text-emerald-700 rounded-pill px-2.5 py-1 style='font-size: 0.72rem;'"><i class="fa-solid fa-shield-check me-1"></i>Official</span>
+                            </h6>
+                            <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-dashed">
                                 <span class="small text-muted fw-bold">GAJI POKOK</span>
-                                <span class="fw-bold text-success fs-6"><?php echo $gajiPokok; ?></span>
+                                <span class="fw-extrabold text-emerald-600 font-mono fs-6"><?php echo $gajiPokok; ?></span>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-dashed">
                                 <span class="small text-muted fw-bold">TUNJANGAN JABATAN</span>
-                                <span class="fw-semibold text-dark"><?php echo $tunjangan; ?></span>
+                                <span class="fw-bold text-dark font-mono"><?php echo $tunjangan; ?></span>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-items-center pt-2">
                                 <span class="small text-muted fw-bold">TUNJANGAN MASA KERJA</span>
-                                <span class="fw-semibold text-dark">
+                                <span class="fw-bold text-dark font-mono">
                                     <?php 
                                     include 'get-tmk.php';
                                     echo "Rp " . number_format($dataTMK['tunjangan_masa_kerja'], 0, ',', '.');
