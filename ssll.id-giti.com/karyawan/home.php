@@ -703,7 +703,7 @@ if ($hour < 11) {
                                 </div>
                                 <div class="text-end">
                                     <div class="small text-white-50 fw-semibold" style="font-size: 0.7rem;">GAJI POKOK</div>
-                                    <div class="fw-bold text-white small" id="salaryPokokAmount" data-real-amount="Rp <?php echo number_format($kar['gaji_pokok'] ?? 5500000, 0, ',', '.'); ?>">Rp <?php echo number_format($kar['gaji_pokok'] ?? 5500000, 0, ',', '.'); ?></div>
+                                    <div class="fw-bold text-white small" id="salaryPokokAmount" data-real-amount="<?php echo htmlspecialchars($info_gaji_bulan_ini_dash['gaji_pokok_rp']); ?>"><?php echo htmlspecialchars($info_gaji_bulan_ini_dash['gaji_pokok_rp']); ?></div>
                                 </div>
                             </div>
                         </div>

@@ -27,6 +27,7 @@ $link_ke_detail_absen_dash = "absen.php?nik=" . htmlspecialchars($nik) . "&bulan
 $info_gaji_bulan_ini_dash = [
     'periode' => $periode_display_dash,
     'gaji_bersih_rp' => "Rp 0",
+    'gaji_pokok_rp' => "Rp 0",
     'tanggal_bayar' => ""
 ];
 $link_ke_riwayat_gaji_dash = "riwayat-gaji.php?bulan=" . $current_month_dash . "&tahun=" . $current_year_dash;
@@ -330,6 +331,7 @@ if ($employee_dash) {
 
     $gajiBersihFinal_dash = $totalGaji_dash - $gaji1_dash;
     $info_gaji_bulan_ini_dash['gaji_bersih_rp'] = "Rp " . number_format($gajiBersihFinal_dash, 0, ',', '.');
+    $info_gaji_bulan_ini_dash['gaji_pokok_rp'] = "Rp " . number_format($gajiIt_dash, 0, ',', '.');
 }
 
 
