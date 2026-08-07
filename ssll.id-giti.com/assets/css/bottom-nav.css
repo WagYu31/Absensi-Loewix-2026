@@ -114,6 +114,8 @@
     font-size: 24px;
     position: absolute;
     top: -20px;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
     border: 4px solid #ffffff !important;
     box-shadow: 0 10px 25px rgba(37, 99, 235, 0.45), 0 3px 0 #1e40af !important;
     z-index: 5;
@@ -122,12 +124,12 @@
 
 .custom-nav__fab-button:hover,
 .custom-nav__fab-button.active {
-    transform: translateY(-4px) scale(1.06);
+    transform: translateX(-50%) translateY(-4px) scale(1.06) !important;
     box-shadow: 0 14px 30px rgba(37, 99, 235, 0.6), 0 4px 0 #1e40af !important;
 }
 
 .custom-nav__fab-button:active {
-    transform: translateY(0) scale(0.94);
+    transform: translateX(-50%) translateY(0) scale(0.94) !important;
     box-shadow: 0 6px 15px rgba(37, 99, 235, 0.35) !important;
 }
 
