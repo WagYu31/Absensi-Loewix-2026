@@ -368,7 +368,7 @@ $asset_version = '2026.08.06.2';
         <p class="small text-white-50">Mohon jangan tutup atau refresh halaman ini.</p>
     </div>
 
-    <!-- Query Today's Live Attendance Records -->
+    <!-- Query Today's Live Attendance Records from absen_manual (camera photo records) -->
     <?php
     $sql_today_check = "SELECT tipe_absen, TIME(tgl_absen) as jam, verif, image, lokasi_absen FROM absen_manual WHERE (nip='$nip' OR nip='$nik' OR nip='$pinAbsen') AND DATE(tgl_absen)='$todayDate' ORDER BY tgl_absen ASC";
     $res_today_check = $conn->query($sql_today_check);
@@ -380,7 +380,7 @@ $asset_version = '2026.08.06.2';
         }
     }
 
-    // Fallback: check table 'absen' if not found in 'absen_manual'
+    // Fallback display info for 'masuk' from table 'absen' if not found in 'absen_manual'
     if (empty($today_absen_data['masuk'])) {
         $sql_absen_masuk = "SELECT MIN(tgl_scan) as min_scan, TIME(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) as jam_str FROM absen WHERE (nip='$nip' OR nip='$nik' OR nip='$pinAbsen') AND (DATE_FORMAT(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s'), '%Y-%m-%d') = '$todayDate' OR DATE(tgl_scan) = '$todayDate')";
         $res_absen_masuk = $conn->query($sql_absen_masuk);
@@ -393,25 +393,7 @@ $asset_version = '2026.08.06.2';
                     'jam' => $jam_fmt,
                     'verif' => 'Yes',
                     'image' => '',
-                    'lokasi_absen' => 'Di Kantor'
-                ];
-            }
-        }
-    }
-
-    if (empty($today_absen_data['pulang']) && !empty($today_absen_data['masuk'])) {
-        $sql_absen_pulang = "SELECT MIN(tgl_scan) as min_scan, MAX(tgl_scan) as max_scan, TIME(STR_TO_DATE(MAX(tgl_scan), '%d-%m-%Y %H:%i:%s')) as jam_str FROM absen WHERE (nip='$nip' OR nip='$nik' OR nip='$pinAbsen') AND (DATE_FORMAT(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s'), '%Y-%m-%d') = '$todayDate' OR DATE(tgl_scan) = '$todayDate')";
-        $res_absen_pulang = $conn->query($sql_absen_pulang);
-        if ($res_absen_pulang && $res_absen_pulang->num_rows > 0) {
-            $r_pulang = $res_absen_pulang->fetch_assoc();
-            if (!empty($r_pulang['max_scan']) && $r_pulang['max_scan'] !== $r_pulang['min_scan']) {
-                $jam_fmt_p = !empty($r_pulang['jam_str']) ? $r_pulang['jam_str'] : date('H:i:s', strtotime($r_pulang['max_scan']));
-                $today_absen_data['pulang'] = [
-                    'tipe_absen' => 'pulang',
-                    'jam' => $jam_fmt_p,
-                    'verif' => 'Yes',
-                    'image' => '',
-                    'lokasi_absen' => 'Di Kantor'
+                    'lokasi_absen' => 'Presensi Mesin / Sistem'
                 ];
             }
         }
