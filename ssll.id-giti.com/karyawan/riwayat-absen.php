@@ -410,18 +410,46 @@ $nama_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "
                 <!-- Single DB Query & Monthly Summary Statistics -->
                 <?php
                 $nip_session = $_SESSION['nip'];
+                $nik_session = isset($nik) && !empty($nik) ? $nik : $nip_session;
+                $pin_session = isset($pinAbsen) && !empty($pinAbsen) ? $pinAbsen : $nip_session;
+
                 $limit_riwayat = 10;
                 $page_riwayat = isset($_GET['page_manual']) ? (int)$_GET['page_manual'] : 1;
                 $page_riwayat = max($page_riwayat, 1);
                 $offset_riwayat = ($page_riwayat - 1) * $limit_riwayat;
 
-                $where_clause = "nip='$nip_session' AND MONTH(tgl_absen)='$filter_bulan' AND YEAR(tgl_absen)='$filter_tahun'";
+                // Query data dari 2 tabel: absen (mesin/sistem) dan absen_manual (kamera/web)
+                $query_all = "
+                    SELECT 'masuk' AS tipe_absen, 
+                           DATE(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) AS tgl_date, 
+                           TIME(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) AS jam, 
+                           'Yes' AS verif, 
+                           '' AS image, 
+                           'Presensi Mesin / Sistem' AS lokasi_absen, 
+                           '' AS lokasi_koordinat,
+                           STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s') AS full_datetime
+                    FROM absen
+                    WHERE (nip = '$nik_session' OR nip = '$nip_session' OR pin = '$pin_session' OR pin = '$nik_session')
+                      AND MONTH(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) = '$filter_bulan'
+                      AND YEAR(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) = '$filter_tahun'
 
-                // 1 Single Optimized DB Query for the month
-                $query_all = "SELECT tipe_absen, DATE(tgl_absen) AS tgl_date, TIME(tgl_absen) AS jam, verif, image, lokasi_absen, lokasi_koordinat 
-                              FROM absen_manual 
-                              WHERE $where_clause 
-                              ORDER BY tgl_absen DESC";
+                    UNION ALL
+
+                    SELECT tipe_absen, 
+                           DATE(tgl_absen) AS tgl_date, 
+                           TIME(tgl_absen) AS jam, 
+                           verif, 
+                           image, 
+                           lokasi_absen, 
+                           lokasi_koordinat,
+                           tgl_absen AS full_datetime
+                    FROM absen_manual
+                    WHERE (nip = '$nip_session' OR nip = '$nik_session' OR nip = '$pin_session' OR pin = '$pin_session' OR pin = '$nik_session')
+                      AND MONTH(tgl_absen) = '$filter_bulan'
+                      AND YEAR(tgl_absen) = '$filter_tahun'
+
+                    ORDER BY full_datetime ASC
+                ";
                 $result_all = mysqli_query($conn, $query_all);
 
                 $grouped_by_date = [];
@@ -431,21 +459,39 @@ $nama_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "
                 if ($result_all && mysqli_num_rows($result_all) > 0) {
                     while ($row = mysqli_fetch_assoc($result_all)) {
                         $tdate = $row['tgl_date'];
+                        if (empty($tdate)) continue;
+
                         if (!isset($grouped_by_date[$tdate])) {
                             $grouped_by_date[$tdate] = ['masuk' => null, 'pulang' => null];
                         }
-                        if ($row['tipe_absen'] === 'masuk' && !$grouped_by_date[$tdate]['masuk']) {
-                            $grouped_by_date[$tdate]['masuk'] = $row;
-                            if (strtotime($row['jam']) > strtotime('09:05:00')) {
-                                $count_terlambat++;
+
+                        if ($row['tipe_absen'] === 'masuk') {
+                            if (!$grouped_by_date[$tdate]['masuk'] || $row['jam'] < $grouped_by_date[$tdate]['masuk']['jam']) {
+                                $grouped_by_date[$tdate]['masuk'] = $row;
                             }
-                        } elseif ($row['tipe_absen'] === 'pulang' && !$grouped_by_date[$tdate]['pulang']) {
-                            $grouped_by_date[$tdate]['pulang'] = $row;
+                        } elseif ($row['tipe_absen'] === 'pulang') {
+                            if (!$grouped_by_date[$tdate]['pulang'] || $row['jam'] > $grouped_by_date[$tdate]['pulang']['jam']) {
+                                $grouped_by_date[$tdate]['pulang'] = $row;
+                            }
+                        } else {
+                            if (!$grouped_by_date[$tdate]['masuk']) {
+                                $grouped_by_date[$tdate]['masuk'] = $row;
+                            } elseif ($row['jam'] > $grouped_by_date[$tdate]['masuk']['jam']) {
+                                $grouped_by_date[$tdate]['pulang'] = $row;
+                            }
                         }
                     }
 
-                    // Calculate total work seconds for month
+                    // Urutkan tanggal dari terbaru ke terlama
+                    krsort($grouped_by_date);
+
+                    // Calculate stats (terlambat & jam kerja)
                     foreach ($grouped_by_date as $td => $recs) {
+                        if ($recs['masuk']) {
+                            if (strtotime($recs['masuk']['jam']) > strtotime('09:05:00')) {
+                                $count_terlambat++;
+                            }
+                        }
                         if ($recs['masuk'] && $recs['pulang']) {
                             $tm = strtotime($td . ' ' . $recs['masuk']['jam']);
                             $tp = strtotime($td . ' ' . $recs['pulang']['jam']);
