@@ -153,6 +153,8 @@ $asset_version = '2026.08.06.2';
             border: 1px solid var(--hris-card-border) !important;
             box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05) !important;
             margin-bottom: 24px;
+            transform: none !important;
+            transition: none !important;
         }
 
         .presensi-action-card .section-title-presensi-card {
@@ -1098,29 +1100,7 @@ $asset_version = '2026.08.06.2';
             setInterval(updateClockDisplay, 1000);
             getUserLocation();
 
-            const card = document.getElementById('card3d');
-            if (card) {
-                function apply3DTilt(clientX, clientY) {
-                    const rect = card.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const centerY = rect.top + rect.height / 2;
-                    const xAxis = (centerX - clientX) / 18;
-                    const yAxis = (clientY - centerY) / 18;
-                    card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-                }
 
-                function reset3DTilt() {
-                    card.style.transition = 'transform 0.4s ease';
-                    card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-                    setTimeout(() => { card.style.transition = 'transform 0.15s ease-out'; }, 400);
-                }
-
-                card.addEventListener('mousemove', (e) => {
-                    apply3DTilt(e.clientX, e.clientY);
-                });
-
-                card.addEventListener('mouseleave', reset3DTilt);
-            }
 
             var currentPath = "<?php echo $current_page_basename; ?>";
             $('.sidebar-menu a').each(function() {
