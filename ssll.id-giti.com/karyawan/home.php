@@ -588,12 +588,6 @@ if ($hour < 11) {
                         </div>
                     </div>
 
-                    <div class="hero-action-wrapper">
-                        <a href="absen.php?nik=<?php echo htmlspecialchars($nik); ?>#form-absen" class="btn-absen-hero">
-                            <i class="fa-solid fa-camera"></i>
-                            <span>Absen Masuk Sekarang</span>
-                        </a>
-                    </div>
                 </div>
             </div>
 
