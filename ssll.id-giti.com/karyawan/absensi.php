@@ -252,6 +252,18 @@ $asset_version = '2026.08.06.2';
             opacity: 0.7;
         }
 
+        .btn-disabled-recorded,
+        .btn-disabled-recorded:disabled {
+            background: #e2e8f0 !important;
+            color: #64748b !important;
+            border: 1.5px solid #cbd5e1 !important;
+            box-shadow: none !important;
+            cursor: not-allowed !important;
+            pointer-events: none !important;
+            opacity: 0.9 !important;
+            font-weight: 700 !important;
+        }
+
         .btn-riwayat-absen {
             background: var(--warning-3d) !important;
             color: #ffffff !important;
@@ -459,20 +471,26 @@ $asset_version = '2026.08.06.2';
                                 </div>
 
                                 <div class="button-area-presensi mt-3">
-                                    <?php if (empty($today_absen_data['masuk'])): ?>
+                                    <!-- Tombol Masuk -->
+                                    <?php if (!empty($today_absen_data['masuk'])): ?>
+                                        <button class="btn btn-disabled-recorded w-100 mb-2 py-3" id="btnCheckIn" disabled>
+                                            <i class="fas fa-circle-check me-2 text-success"></i>MASUK (TERCATAT)
+                                        </button>
+                                    <?php else: ?>
                                         <button class="btn btn-check-in-presensi w-100 mb-2 py-3" id="btnCheckIn" disabled>
                                             <i class="fas fa-camera me-2"></i>MASUK (CHECK-IN)
                                         </button>
-                                    <?php elseif (empty($today_absen_data['pulang'])): ?>
+                                    <?php endif; ?>
+
+                                    <!-- Tombol Pulang -->
+                                    <?php if (!empty($today_absen_data['pulang'])): ?>
+                                        <button class="btn btn-disabled-recorded w-100 mb-2 py-3" id="btnCheckOut" disabled>
+                                            <i class="fas fa-circle-check me-2 text-success"></i>PULANG (TERCATAT)
+                                        </button>
+                                    <?php else: ?>
                                         <button class="btn btn-check-out-presensi w-100 mb-2 py-3" id="btnCheckOut" disabled>
                                             <i class="fas fa-door-open me-2"></i>PULANG (CHECK-OUT)
                                         </button>
-                                    <?php else: ?>
-                                        <div class="alert text-center py-3 mb-3 border-0 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff;">
-                                            <i class="fa-solid fa-circle-check fs-3 mb-1 d-block text-white"></i>
-                                            <div class="fw-extrabold fs-6">Presensi Hari Ini Telah Selesai</div>
-                                            <small class="opacity-80">Absen masuk dan pulang Anda telah tercatat dengan baik.</small>
-                                        </div>
                                     <?php endif; ?>
 
                                     <a href="riwayat-absen.php" class="btn btn-riwayat-absen w-100 py-3 text-decoration-none">
