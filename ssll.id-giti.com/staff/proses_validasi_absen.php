@@ -26,7 +26,7 @@ if (!in_array($status_verif, ['Yes', 'No'])) {
 $stmt_get = $conn->prepare("
     SELECT am.tgl_absen, am.nama, am.nip, k.pin_absen, k.nik 
     FROM absen_manual am
-    JOIN karyawan k ON am.nip = k.nip
+    JOIN karyawan k ON (am.nip = k.nip OR am.nip = k.pin_absen OR am.nip = k.nik OR am.pin = k.pin_absen OR am.pin = k.nik)
     WHERE am.id = ?
 ");
 $stmt_get->bind_param("i", $id_absen);
