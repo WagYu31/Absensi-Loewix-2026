@@ -70,53 +70,49 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
             color: #ffffff !important;
         }
 
-        /* Compact Modern Executive Profile Styles */
+        /* Taste-Driven Modern Executive Profile Styles */
         .dashboard-content-profile {
-            padding-top: 1.25rem !important;
+            padding-top: 85px !important; /* Prevents top header navbar overlap on mobile */
+            padding-bottom: 24px !important;
+        }
+
+        @media (min-width: 992px) {
+            .dashboard-content-profile {
+                padding-top: 24px !important;
+            }
         }
 
         .profile-hero-card {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #1d4ed8 100%) !important;
-            border-radius: 20px !important;
-            padding: 1.35rem 1.1rem 1.25rem 1.1rem !important;
-            color: #ffffff;
+            background: #ffffff !important;
+            border-radius: 22px !important;
+            padding: 1.5rem 1.2rem 1.35rem 1.2rem !important;
+            color: #0f172a;
             text-align: center;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18) !important;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.03) !important;
+            border: 1px solid #e2e8f0 !important;
             margin-bottom: 1rem !important;
-        }
-
-        .profile-hero-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 60%);
-            pointer-events: none;
         }
 
         .profile-hero-avatar-wrapper {
             position: relative;
             display: inline-block;
             cursor: pointer;
-            margin-bottom: 0.75rem !important;
+            margin-bottom: 0.85rem !important;
         }
 
         .profile-hero-avatar {
-            width: 86px !important;
-            height: 86px !important;
+            width: 90px !important;
+            height: 90px !important;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #ffffff !important;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border: 3.5px solid #ffffff !important;
+            box-shadow: 0 10px 24px -4px rgba(37, 99, 235, 0.28) !important;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: #ffffff;
             font-weight: 800;
-            font-size: 1.85rem !important;
+            font-size: 1.95rem !important;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -126,51 +122,49 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
             position: absolute;
             bottom: 0px;
             right: 0px;
-            width: 28px !important;
-            height: 28px !important;
-            background: #2563eb;
+            width: 30px !important;
+            height: 30px !important;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: #ffffff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid #ffffff !important;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-            font-size: 0.72rem !important;
-            transition: all 0.2s ease;
+            border: 2.5px solid #ffffff !important;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+            font-size: 0.78rem !important;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .profile-hero-avatar-wrapper:hover .profile-hero-cam-badge {
-            transform: scale(1.1);
-            background: #1d4ed8;
+            transform: scale(1.15);
         }
 
         .profile-badge-pill {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffffff;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #2563eb;
             font-weight: 700;
             border-radius: 50px;
-            padding: 4px 12px !important;
-            font-size: 0.75rem !important;
+            padding: 5px 14px !important;
+            font-size: 0.78rem !important;
         }
 
         .profile-badge-pill-success {
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid rgba(52, 211, 153, 0.35);
-            color: #6ee7b7;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #059669;
         }
 
         /* 3D Compact Action Buttons Grid */
         .btn-3d-action-primary {
-            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+            background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%) !important;
             color: #ffffff !important;
-            border-bottom: 3.5px solid #1d4ed8 !important;
+            border-bottom: 3.5px solid #1e40af !important;
             border-radius: 14px !important;
             font-weight: 800 !important;
             font-size: 0.88rem !important;
-            height: 42px !important;
+            height: 44px !important;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -192,14 +186,14 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
         }
 
         .btn-3d-action-glass {
-            background: #ffffff !important;
+            background: #f8fafc !important;
             color: #334155 !important;
             border: 1.2px solid #e2e8f0 !important;
             border-bottom: 3px solid #cbd5e1 !important;
             border-radius: 12px !important;
             font-weight: 800 !important;
             font-size: 0.82rem !important;
-            height: 38px !important;
+            height: 40px !important;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -221,27 +215,27 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
         }
 
         .btn-3d-action-danger {
-            background: #fef2f2 !important;
-            color: #dc2626 !important;
-            border: 1.2px solid #fecaca !important;
-            border-bottom: 3px solid #fca5a5 !important;
+            background: #fff1f2 !important;
+            color: #e11d48 !important;
+            border: 1.2px solid #fecdd3 !important;
+            border-bottom: 3px solid #fda4af !important;
             border-radius: 12px !important;
             font-weight: 800 !important;
             font-size: 0.82rem !important;
-            height: 38px !important;
+            height: 40px !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 3px 8px rgba(220, 38, 38, 0.06) !important;
+            box-shadow: 0 3px 8px rgba(225, 29, 72, 0.06) !important;
             transition: all 0.2s ease !important;
             text-decoration: none !important;
         }
 
         .btn-3d-action-danger:hover {
             transform: translateY(-2px);
-            background: #fee2e2 !important;
-            color: #b91c1c !important;
-            border-bottom-color: #dc2626 !important;
+            background: #ffe4e6 !important;
+            color: #be123c !important;
+            border-bottom-color: #e11d48 !important;
         }
 
         .btn-3d-action-danger:active {
@@ -406,7 +400,7 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                                 </div>
                             </div>
 
-                            <h4 class="fw-extrabold text-white mb-2 fs-5" style="letter-spacing: -0.4px;"><?php echo htmlspecialchars($nama); ?></h4>
+                            <h4 class="fw-extrabold text-dark mb-2 fs-5" style="letter-spacing: -0.4px;"><?php echo htmlspecialchars($nama); ?></h4>
                             <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 mb-3">
                                 <span class="profile-badge-pill"><i class="fa-solid fa-briefcase me-1.5 opacity-75"></i><?php echo htmlspecialchars($jabatan); ?></span>
                                 <span class="profile-badge-pill profile-badge-pill-success"><i class="fa-solid fa-circle-check me-1.5"></i><?php echo htmlspecialchars($statusKaryawan); ?></span>
