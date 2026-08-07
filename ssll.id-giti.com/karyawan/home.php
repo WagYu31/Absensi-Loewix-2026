@@ -174,16 +174,17 @@ if ($hour < 11) {
         }
 
         .pay-date-icon-badge {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: rgba(16, 185, 129, 0.18);
-            border: 1px solid rgba(52, 211, 153, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 12px !important;
+            background: rgba(16, 185, 129, 0.22) !important;
+            border: 1px solid rgba(52, 211, 153, 0.4) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            margin-right: 14px !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
         }
 
         .hero-action-wrapper {
@@ -722,17 +723,17 @@ if ($hour < 11) {
                         </div>
 
                         <!-- Footer Payment Date & CTA -->
-                        <div class="pt-2.5 border-top border-white border-opacity-20 d-flex align-items-center justify-content-between mt-3 gap-2">
-                            <div class="d-flex align-items-center gap-2.5">
+                        <div class="pt-3 border-top border-white border-opacity-20 d-flex align-items-center justify-content-between mt-3 gap-3 flex-wrap flex-sm-nowrap">
+                            <div class="d-flex align-items-center">
                                 <div class="pay-date-icon-badge">
-                                    <i class="fa-solid fa-calendar-day text-emerald-300 fs-6"></i>
+                                    <i class="fa-solid fa-calendar-days text-emerald-300 fs-5"></i>
                                 </div>
-                                <div>
-                                    <div class="text-white-50 uppercase fw-bold" style="font-size: 0.68rem; letter-spacing: 0.5px;">ESTIMASI TANGGAL BAYAR</div>
-                                    <div class="fw-extrabold text-white font-mono" style="font-size: 0.92rem; letter-spacing: -0.2px;"><?php echo htmlspecialchars(str_replace(['August','January','February','March','April','May','June','July','September','October','November','December'], ['Agustus','Januari','Februari','Maret','April','Mei','Juni','Juli','September','Oktober','November','Desember'], $info_gaji_bulan_ini_dash['tanggal_bayar'])); ?></div>
+                                <div class="ps-1">
+                                    <div class="text-white-50 uppercase fw-bold mb-0.5" style="font-size: 0.7rem; letter-spacing: 0.6px; line-height: 1.2;">ESTIMASI TANGGAL BAYAR</div>
+                                    <div class="fw-extrabold text-white font-mono" style="font-size: 0.98rem; letter-spacing: -0.2px; line-height: 1.2;"><?php echo htmlspecialchars(str_replace(['August','January','February','March','April','May','June','July','September','October','November','December'], ['Agustus','Januari','Februari','Maret','April','Mei','Juni','Juli','September','Oktober','November','Desember'], $info_gaji_bulan_ini_dash['tanggal_bayar'])); ?></div>
                                 </div>
                             </div>
-                            <a href="<?php echo $link_ke_riwayat_gaji_dash; ?>" class="btn-slip-gaji flex-shrink-0">
+                            <a href="<?php echo $link_ke_riwayat_gaji_dash; ?>" class="btn-slip-gaji flex-shrink-0 ms-auto ms-sm-0">
                                 <span>Detail Slip Gaji</span>
                                 <i class="fa-solid fa-chevron-right"></i>
                             </a>
