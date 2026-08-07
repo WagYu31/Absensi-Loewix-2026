@@ -862,9 +862,7 @@ if ($hour < 11) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        function triggerPWAInstall() {
-            alert("Aplikasi web siap diinstall di HP Anda. Silakan gunakan menu 'Add to Home Screen' pada browser Anda.");
-        }
+
 
         document.addEventListener("DOMContentLoaded", function() {
             const eyeBtn = document.getElementById("toggleSalaryEye");

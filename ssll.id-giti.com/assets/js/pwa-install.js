@@ -36,20 +36,18 @@
         if (document.getElementById('pwa-styles')) return;
 
         const css = `
-            /* PWA Top Banner */
+            /* PWA Top Banner - Matched to Senja Wisata Style */
             #pwa-install-banner {
                 position: fixed;
-                top: 12px;
-                left: 12px;
-                right: 12px;
-                z-index: 99999;
-                background: rgba(15, 23, 42, 0.96);
-                backdrop-filter: blur(20px) saturate(180%);
-                -webkit-backdrop-filter: blur(20px) saturate(180%);
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                z-index: 999999;
+                background: #1e293b;
                 border: 1px solid rgba(255, 255, 255, 0.15);
-                border-radius: 20px;
-                padding: 12px 16px;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+                border-radius: 16px;
+                padding: 10px 14px;
+                box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
                 color: #ffffff;
                 display: flex;
                 align-items: center;
@@ -64,11 +62,11 @@
             }
 
             .pwa-app-icon {
-                width: 44px;
-                height: 44px;
-                border-radius: 12px;
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
                 object-fit: cover;
-                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
                 flex-shrink: 0;
             }
 
@@ -79,10 +77,13 @@
 
             .pwa-title {
                 font-weight: 800;
-                font-size: 0.9rem;
+                font-size: 0.88rem;
                 color: #ffffff;
                 line-height: 1.2;
-                margin-bottom: 2px;
+                margin-bottom: 1px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .pwa-desc {
@@ -94,31 +95,31 @@
             }
 
             .btn-pwa-install {
-                background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%) !important;
+                background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
                 color: #ffffff !important;
                 font-weight: 800 !important;
-                font-size: 0.8rem !important;
-                padding: 8px 16px !important;
-                border-radius: 14px !important;
+                font-size: 0.82rem !important;
+                padding: 6px 16px !important;
+                border-radius: 12px !important;
                 border: none !important;
-                box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4), 0 2px 0 #1d4ed8 !important;
+                box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4) !important;
                 transition: all 0.2s ease !important;
                 flex-shrink: 0;
                 cursor: pointer;
             }
 
             .btn-pwa-install:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 20px rgba(37, 99, 235, 0.6) !important;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 16px rgba(249, 115, 22, 0.6) !important;
             }
 
             .btn-pwa-close {
                 background: transparent;
                 border: none;
-                color: #64748b;
+                color: #94a3b8;
                 font-size: 1.2rem;
                 cursor: pointer;
-                padding: 4px;
+                padding: 2px 6px;
                 line-height: 1;
             }
 
@@ -130,7 +131,7 @@
             .pwa-modal-backdrop {
                 position: fixed;
                 inset: 0;
-                z-index: 100000;
+                z-index: 1000000;
                 background: rgba(15, 23, 42, 0.75);
                 backdrop-filter: blur(8px);
                 -webkit-backdrop-filter: blur(8px);
@@ -226,15 +227,20 @@
         if (!isStandalone) {
             const banner = document.createElement('div');
             banner.id = 'pwa-install-banner';
-            banner.style.display = 'none';
+            // Show by default on mobile unless dismissed
+            banner.style.display = sessionStorage.getItem('pwa_dismissed') ? 'none' : 'flex';
             banner.innerHTML = `
-                <img src="/img/logo.png" class="pwa-app-icon" onerror="this.src='/img/giti.png';">
-                <div class="pwa-text-info">
-                    <div class="pwa-title">Install Absensi Loewix</div>
-                    <div class="pwa-desc">Pasang aplikasi di HP Anda</div>
+                <div class="d-flex align-items-center gap-2.5" style="min-width: 0;">
+                    <img src="/img/logo.png" class="pwa-app-icon" onerror="this.src='/img/giti.png';">
+                    <div class="pwa-text-info">
+                        <div class="pwa-title">Instal Absensi Loewix</div>
+                        <div class="pwa-desc">ssll.id-giti.com</div>
+                    </div>
                 </div>
-                <button id="pwa-btn-trigger" class="btn-pwa-install">Install <i class="fa-solid fa-download ms-1"></i></button>
-                <button id="pwa-btn-dismiss" class="btn-pwa-close">&times;</button>
+                <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                    <button id="pwa-btn-trigger" class="btn-pwa-install">Instal</button>
+                    <button id="pwa-btn-dismiss" class="btn-pwa-close">&times;</button>
+                </div>
             `;
             document.body.appendChild(banner);
 
@@ -246,10 +252,6 @@
             document.getElementById('pwa-btn-trigger').addEventListener('click', () => {
                 window.triggerPWAInstall();
             });
-
-            if (isIOS && !sessionStorage.getItem('pwa_dismissed')) {
-                banner.style.display = 'flex';
-            }
         }
 
         // Build iOS Modal Guide
@@ -328,16 +330,7 @@
     // 5. Global helper function to trigger install anytime
     window.triggerPWAInstall = function () {
         if (isStandalone) {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Aplikasi Terinstall',
-                    text: 'Aplikasi Absensi Loewix sudah terpasang dan berjalan di HP Anda!',
-                    confirmButtonColor: '#2563eb'
-                });
-            } else {
-                alert("Aplikasi Absensi Loewix sudah terpasang dan berjalan di HP Anda!");
-            }
+            alert("Aplikasi Absensi Loewix sudah terpasang dan berjalan di HP Anda!");
             return;
         }
 

@@ -472,9 +472,7 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
             });
         });
 
-        function triggerPWAInstall() {
-            alert("Aplikasi web siap diinstall di HP Anda. Silakan gunakan menu 'Add to Home Screen' pada browser Anda.");
-        }
+
 
         function changePasswordPrompt(nip) {
             var oldPassword = prompt("Masukkan Password Lama:");
