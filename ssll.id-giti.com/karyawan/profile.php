@@ -70,18 +70,22 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
             color: #ffffff !important;
         }
 
-        /* Ultra-Premium Corporate Profile Styles */
+        /* Compact Modern Executive Profile Styles */
+        .dashboard-content-profile {
+            padding-top: 1.25rem !important;
+        }
+
         .profile-hero-card {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #1d4ed8 100%) !important;
-            border-radius: var(--card-radius-lg);
-            padding: 2.25rem 1.5rem 2rem 1.5rem;
+            border-radius: 20px !important;
+            padding: 1.35rem 1.1rem 1.25rem 1.1rem !important;
             color: #ffffff;
             text-align: center;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.22);
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18) !important;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem !important;
         }
 
         .profile-hero-card::before {
@@ -99,20 +103,20 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
             position: relative;
             display: inline-block;
             cursor: pointer;
-            margin-bottom: 1.2rem;
+            margin-bottom: 0.75rem !important;
         }
 
         .profile-hero-avatar {
-            width: 120px;
-            height: 120px;
+            width: 86px !important;
+            height: 86px !important;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #ffffff;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+            border: 3px solid #ffffff !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: #ffffff;
             font-weight: 800;
-            font-size: 2.6rem;
+            font-size: 1.85rem !important;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -120,24 +124,24 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
 
         .profile-hero-cam-badge {
             position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 36px;
-            height: 36px;
+            bottom: 0px;
+            right: 0px;
+            width: 28px !important;
+            height: 28px !important;
             background: #2563eb;
             color: #ffffff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2.5px solid #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            font-size: 0.88rem;
+            border: 2px solid #ffffff !important;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+            font-size: 0.72rem !important;
             transition: all 0.2s ease;
         }
 
         .profile-hero-avatar-wrapper:hover .profile-hero-cam-badge {
-            transform: scale(1.12);
+            transform: scale(1.1);
             background: #1d4ed8;
         }
 
@@ -148,8 +152,8 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
             color: #ffffff;
             font-weight: 700;
             border-radius: 50px;
-            padding: 6px 16px;
-            font-size: 0.8rem;
+            padding: 4px 12px !important;
+            font-size: 0.75rem !important;
         }
 
         .profile-badge-pill-success {
@@ -158,47 +162,49 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
             color: #6ee7b7;
         }
 
-        /* 3D Action Buttons Grid */
+        /* 3D Compact Action Buttons Grid */
         .btn-3d-action-primary {
             background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
             color: #ffffff !important;
-            border-bottom: 4px solid #1d4ed8 !important;
-            border-radius: 16px !important;
+            border-bottom: 3.5px solid #1d4ed8 !important;
+            border-radius: 14px !important;
             font-weight: 800 !important;
-            height: 50px !important;
+            font-size: 0.88rem !important;
+            height: 42px !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 22px -4px rgba(37, 99, 235, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
-            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            box-shadow: 0 6px 16px -4px rgba(37, 99, 235, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+            transition: all 0.2s ease !important;
             text-decoration: none !important;
             border: none !important;
         }
 
         .btn-3d-action-primary:hover {
-            transform: translateY(-2px) scale(1.01);
-            box-shadow: 0 12px 28px -4px rgba(37, 99, 235, 0.6) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.6) !important;
             color: #ffffff !important;
         }
 
         .btn-3d-action-primary:active {
-            transform: translateY(2px) scale(0.98);
+            transform: translateY(1px);
             border-bottom-width: 1px !important;
         }
 
         .btn-3d-action-glass {
             background: #ffffff !important;
             color: #334155 !important;
-            border: 1.5px solid #e2e8f0 !important;
-            border-bottom: 3.5px solid #cbd5e1 !important;
-            border-radius: 14px !important;
+            border: 1.2px solid #e2e8f0 !important;
+            border-bottom: 3px solid #cbd5e1 !important;
+            border-radius: 12px !important;
             font-weight: 800 !important;
-            height: 46px !important;
+            font-size: 0.82rem !important;
+            height: 38px !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04) !important;
-            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            box-shadow: 0 3px 8px rgba(15, 23, 42, 0.04) !important;
+            transition: all 0.2s ease !important;
             text-decoration: none !important;
         }
 
@@ -210,23 +216,24 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
         }
 
         .btn-3d-action-glass:active {
-            transform: translateY(2px) scale(0.98);
+            transform: translateY(1px);
             border-bottom-width: 1px !important;
         }
 
         .btn-3d-action-danger {
             background: #fef2f2 !important;
             color: #dc2626 !important;
-            border: 1.5px solid #fecaca !important;
-            border-bottom: 3.5px solid #fca5a5 !important;
-            border-radius: 14px !important;
+            border: 1.2px solid #fecaca !important;
+            border-bottom: 3px solid #fca5a5 !important;
+            border-radius: 12px !important;
             font-weight: 800 !important;
-            height: 46px !important;
+            font-size: 0.82rem !important;
+            height: 38px !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.06) !important;
-            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            box-shadow: 0 3px 8px rgba(220, 38, 38, 0.06) !important;
+            transition: all 0.2s ease !important;
             text-decoration: none !important;
         }
 
@@ -238,7 +245,7 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
         }
 
         .btn-3d-action-danger:active {
-            transform: translateY(2px) scale(0.98);
+            transform: translateY(1px);
             border-bottom-width: 1px !important;
         }
 
@@ -378,15 +385,7 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
     <?php include 'nav/sidebar.php'; ?>
 
     <div class="main-content-wrapper p-0">
-        <!-- Header Banner -->
-        <div class="header-banner page-specific-header no-print">
-            <div class="container-fluid px-lg-4">
-                <h1>Profil Saya</h1>
-                <p class="small opacity-80 mb-0">Lihat dan kelola informasi pribadi serta kepegawaian Anda.</p>
-            </div>
-        </div>
-
-        <div class="dashboard-content">
+        <div class="dashboard-content dashboard-content-profile">
             <div class="container-fluid px-lg-4">
 
                 <div class="row g-4">
@@ -407,8 +406,8 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                                 </div>
                             </div>
 
-                            <h3 class="fw-extrabold text-white mb-2" style="letter-spacing: -0.5px;"><?php echo htmlspecialchars($nama); ?></h3>
-                            <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 mb-4">
+                            <h4 class="fw-extrabold text-white mb-2 fs-5" style="letter-spacing: -0.4px;"><?php echo htmlspecialchars($nama); ?></h4>
+                            <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 mb-3">
                                 <span class="profile-badge-pill"><i class="fa-solid fa-briefcase me-1.5 opacity-75"></i><?php echo htmlspecialchars($jabatan); ?></span>
                                 <span class="profile-badge-pill profile-badge-pill-success"><i class="fa-solid fa-circle-check me-1.5"></i><?php echo htmlspecialchars($statusKaryawan); ?></span>
                             </div>
