@@ -181,19 +181,20 @@
 /* Safe-Area Bottom Offset for Phones */
 @media (max-width: 991.98px) {
     body {
-        padding-bottom: 110px !important;
+        padding-bottom: 0 !important;
     }
 
     .main-content-wrapper {
-        padding-bottom: 110px !important;
+        padding-bottom: 90px !important;
     }
 
     .dashboard-content {
-        padding-bottom: 40px !important;
+        padding-bottom: 20px !important;
     }
 
     .footer {
-        padding-bottom: 100px !important;
+        padding-bottom: 20px !important;
+        margin-top: 15px !important;
         margin-bottom: 0 !important;
     }
 }

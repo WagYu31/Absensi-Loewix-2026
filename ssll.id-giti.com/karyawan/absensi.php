@@ -620,7 +620,7 @@ $asset_version = '2026.08.06.2';
 
                 </div>
 
-                <div class="footer mt-5 pb-4 text-center">
+                <div class="footer mt-3 pb-2 text-center">
                     <small class="text-muted fw-medium">Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>.<br>Version 1.2.0</small>
                 </div>
             </div>
