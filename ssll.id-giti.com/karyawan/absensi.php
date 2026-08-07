@@ -201,81 +201,104 @@ $asset_version = '2026.08.06.2';
             color: #0f172a !important;
         }
 
-        /* Tactile 3D Buttons */
+        /* Ultra-Tactile 3D Buttons System */
         .button-area-presensi .btn {
             font-size: 0.95rem !important;
             font-weight: 800 !important;
-            height: 52px !important;
-            border-radius: var(--btn-radius) !important;
-            letter-spacing: 0.4px;
+            height: 54px !important;
+            border-radius: 16px !important;
+            letter-spacing: 0.5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease !important;
-            border: none !important;
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
             cursor: pointer;
+            position: relative;
+            user-select: none;
         }
 
         .btn-check-in-presensi {
-            background: var(--success-3d) !important;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
             color: #ffffff !important;
-            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3) !important;
+            border-bottom: 4px solid #047857 !important;
+            box-shadow: 0 8px 22px -4px rgba(16, 185, 129, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
         }
 
         .btn-check-in-presensi:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 24px rgba(16, 185, 129, 0.45) !important;
+            transform: translateY(-3px) scale(1.01);
+            border-bottom-color: #065f46 !important;
+            box-shadow: 0 12px 28px -4px rgba(16, 185, 129, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
             color: #ffffff !important;
         }
 
-        .btn-check-in-presensi:disabled {
-            background: #cbd5e1 !important;
-            color: #64748b !important;
-            box-shadow: none !important;
-            opacity: 0.7;
+        .btn-check-in-presensi:active:not(:disabled) {
+            transform: translateY(2px) scale(0.98);
+            border-bottom-width: 1px !important;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
         }
 
         .btn-check-out-presensi {
-            background: var(--danger-3d) !important;
+            background: linear-gradient(135deg, #e11d48 0%, #f43f5e 100%) !important;
             color: #ffffff !important;
-            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.3) !important;
+            border-bottom: 4px solid #be123c !important;
+            box-shadow: 0 8px 22px -4px rgba(225, 29, 72, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
         }
 
         .btn-check-out-presensi:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 24px rgba(239, 68, 68, 0.45) !important;
+            transform: translateY(-3px) scale(1.01);
+            border-bottom-color: #9f1239 !important;
+            box-shadow: 0 12px 28px -4px rgba(225, 29, 72, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
             color: #ffffff !important;
         }
 
+        .btn-check-out-presensi:active:not(:disabled) {
+            transform: translateY(2px) scale(0.98);
+            border-bottom-width: 1px !important;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3) !important;
+        }
+
+        .btn-check-in-presensi:disabled,
         .btn-check-out-presensi:disabled {
             background: #cbd5e1 !important;
             color: #64748b !important;
+            border: 1px solid #cbd5e1 !important;
+            border-bottom: 3.5px solid #94a3b8 !important;
             box-shadow: none !important;
             opacity: 0.7;
         }
 
         .btn-disabled-recorded,
         .btn-disabled-recorded:disabled {
-            background: #e2e8f0 !important;
-            color: #64748b !important;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+            color: #334155 !important;
             border: 1.5px solid #cbd5e1 !important;
-            box-shadow: none !important;
+            border-bottom: 3.5px solid #cbd5e1 !important;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04) !important;
             cursor: not-allowed !important;
             pointer-events: none !important;
-            opacity: 0.9 !important;
-            font-weight: 700 !important;
+            opacity: 0.95 !important;
+            font-weight: 800 !important;
         }
 
         .btn-riwayat-absen {
-            background: var(--warning-3d) !important;
+            background: linear-gradient(135deg, #ea580c 0%, #f97316 100%) !important;
             color: #ffffff !important;
-            box-shadow: 0 6px 18px rgba(234, 88, 12, 0.3) !important;
+            border-bottom: 4px solid #c2410c !important;
+            box-shadow: 0 8px 22px -4px rgba(234, 88, 12, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
         }
 
         .btn-riwayat-absen:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 24px rgba(234, 88, 12, 0.45) !important;
+            transform: translateY(-3px) scale(1.01);
+            border-bottom-color: #9a3412 !important;
+            box-shadow: 0 12px 28px -4px rgba(234, 88, 12, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
             color: #ffffff !important;
+        }
+
+        .btn-riwayat-absen:active {
+            transform: translateY(2px) scale(0.98);
+            border-bottom-width: 1px !important;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3) !important;
         }
 
         /* Right Panel Today Live Status Card */
