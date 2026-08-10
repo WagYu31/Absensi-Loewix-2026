@@ -313,50 +313,64 @@ $asset_version = time();
         }
 
         .fc .fc-toolbar.fc-header-toolbar {
-            margin-bottom: 1.25rem;
-            flex-wrap: wrap;
-            gap: 12px;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 8px !important;
+            margin-bottom: 1.25rem !important;
+        }
+
+        .fc .fc-toolbar-chunk {
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
         }
 
         .fc .fc-toolbar-title {
-            font-size: 1.4rem !important;
+            font-size: 1.3rem !important;
             font-weight: 800 !important;
             color: #0f172a !important;
-            letter-spacing: -0.4px;
+            letter-spacing: -0.4px !important;
+            margin: 0 !important;
         }
 
-        .fc .fc-button {
-            background: #ffffff !important;
+        .fc .fc-button-group {
+            display: inline-flex !important;
+            border-radius: 12px !important;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06) !important;
+            overflow: hidden !important;
             border: 1px solid #cbd5e1 !important;
+        }
+
+        .fc .fc-button-group .fc-button {
+            border: none !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+            background: #ffffff !important;
             color: #334155 !important;
             font-weight: 700 !important;
             font-size: 0.82rem !important;
-            border-radius: 12px !important;
-            padding: 6px 14px !important;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
-            transition: all 0.2s ease !important;
-            text-transform: capitalize !important;
+            padding: 6px 12px !important;
+            box-shadow: none !important;
+            transition: all 0.15s ease !important;
         }
 
-        .fc .fc-button:hover {
-            transform: translateY(-1px);
+        .fc .fc-button-group .fc-button:not(:last-child) {
+            border-right: 1px solid #e2e8f0 !important;
+        }
+
+        .fc .fc-button-group .fc-button:hover {
             background: #f8fafc !important;
-            border-color: #94a3b8 !important;
-            color: #0f172a !important;
+            color: #2563eb !important;
         }
 
-        .fc .fc-button-primary:not(:disabled).fc-button-active,
-        .fc .fc-button-primary:not(:disabled):active {
-            background: var(--primary-3d) !important;
-            border-color: #2563eb !important;
-            color: #ffffff !important;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
-        }
-
+        .fc .fc-button-group .fc-today-button,
         .fc .fc-today-button {
             background: rgba(37, 99, 235, 0.08) !important;
             color: #2563eb !important;
-            border-color: rgba(37, 99, 235, 0.2) !important;
+            font-weight: 800 !important;
+            border-color: transparent !important;
         }
 
         .fc-theme-standard .fc-scrollgrid {
@@ -469,15 +483,22 @@ $asset_version = time();
 
             .fc .fc-toolbar.fc-header-toolbar {
                 display: flex !important;
-                flex-direction: column !important;
+                flex-direction: row !important;
                 align-items: center !important;
-                gap: 10px !important;
+                justify-content: space-between !important;
+                gap: 6px !important;
+                margin-bottom: 1rem !important;
             }
 
             .fc .fc-toolbar-title {
-                font-size: 1.15rem !important;
+                font-size: 1.05rem !important;
                 font-weight: 800 !important;
-                text-align: center !important;
+                text-align: left !important;
+            }
+
+            .fc .fc-button-group .fc-button {
+                font-size: 0.75rem !important;
+                padding: 5px 9px !important;
             }
 
             .fc .fc-col-header-cell {
@@ -844,8 +865,8 @@ $asset_version = time();
             locale: 'id',
             initialView: (window.innerWidth < 768) ? 'dayGridMonth' : 'dayGridMonth',
             headerToolbar: (window.innerWidth < 768) 
-                ? { left: 'prev,next', center: 'title', right: 'today' }
-                : { left: 'prev,next today', center: 'title', right: 'dayGridMonth,listWeek' },
+                ? { left: 'title', right: 'prev,today,next' }
+                : { left: 'title', right: 'prev,today,next dayGridMonth,listWeek' },
             events: 'api_get_events.php',
             
             eventsSet: function(info) {
