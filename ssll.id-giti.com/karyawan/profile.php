@@ -444,8 +444,11 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                                 <span class="badge bg-emerald-subtle text-emerald-700 rounded-pill px-2.5 py-1 style='font-size: 0.72rem;'"><i class="fa-solid fa-shield-check me-1"></i>Official</span>
                             </h6>
                             <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-dashed">
-                                <span class="small text-muted fw-bold">GAJI POKOK</span>
-                                <span class="fw-extrabold text-emerald-600 font-mono fs-6"><?php echo $gajiPokok; ?></span>
+                                <span class="small text-muted fw-bold d-flex align-items-center">
+                                    GAJI POKOK
+                                    <i class="fa-solid fa-eye text-emerald-600 ms-1.5" id="iconToggleGaji" onclick="toggleGajiPokok()" title="Sembunyikan / Tampilkan Gaji" style="cursor: pointer; font-size: 0.95rem;"></i>
+                                </span>
+                                <span class="fw-extrabold text-emerald-600 font-mono fs-6" id="valGajiPokok" data-original="<?php echo htmlspecialchars($gajiPokok); ?>"><?php echo $gajiPokok; ?></span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-dashed">
                                 <span class="small text-muted fw-bold">TUNJANGAN JABATAN</span>
@@ -677,6 +680,22 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                     alert("Terjadi kesalahan saat memvalidasi password lama.");
                 }
             });
+        }
+
+        function toggleGajiPokok() {
+            var valElem = document.getElementById("valGajiPokok");
+            var iconElem = document.getElementById("iconToggleGaji");
+            if (!valElem || !iconElem) return;
+            
+            if (valElem.getAttribute("data-hidden") === "true") {
+                valElem.innerText = valElem.getAttribute("data-original");
+                valElem.setAttribute("data-hidden", "false");
+                iconElem.className = "fa-solid fa-eye text-emerald-600 ms-1.5";
+            } else {
+                valElem.innerText = "Rp ••••••••";
+                valElem.setAttribute("data-hidden", "true");
+                iconElem.className = "fa-solid fa-eye-slash text-muted ms-1.5";
+            }
         }
     </script>
 </body>
