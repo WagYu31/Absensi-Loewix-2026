@@ -460,20 +460,19 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                                         </svg>
                                     </button>
                                 </span>
-                                <span class="fw-extrabold text-emerald-600 font-mono fs-6" id="valGajiPokok" data-original="<?php echo htmlspecialchars($gajiPokok); ?>"><?php echo $gajiPokok; ?></span>
+                                <span class="fw-extrabold text-emerald-600 font-mono fs-6 financial-val" data-original="<?php echo htmlspecialchars($gajiPokok); ?>"><?php echo $gajiPokok; ?></span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-dashed">
                                 <span class="small text-muted fw-bold">TUNJANGAN JABATAN</span>
-                                <span class="fw-bold text-dark font-mono"><?php echo $tunjangan; ?></span>
+                                <span class="fw-bold text-dark font-mono financial-val" data-original="<?php echo htmlspecialchars($tunjangan); ?>"><?php echo $tunjangan; ?></span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center pt-2">
                                 <span class="small text-muted fw-bold">TUNJANGAN MASA KERJA</span>
-                                <span class="fw-bold text-dark font-mono">
-                                    <?php 
-                                    include 'get-tmk.php';
-                                    echo "Rp " . number_format($dataTMK['tunjangan_masa_kerja'], 0, ',', '.');
-                                    ?>
-                                </span>
+                                <?php 
+                                include 'get-tmk.php';
+                                $valTMK = "Rp " . number_format($dataTMK['tunjangan_masa_kerja'], 0, ',', '.');
+                                ?>
+                                <span class="fw-bold text-dark font-mono financial-val" data-original="<?php echo htmlspecialchars($valTMK); ?>"><?php echo $valTMK; ?></span>
                             </div>
                         </div>
                     </div>
@@ -695,35 +694,36 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
         }
 
         function toggleGajiPokok() {
-            var valElem = document.getElementById("valGajiPokok");
+            var valElems = document.querySelectorAll(".financial-val");
             var svgElemRow = document.getElementById("iconToggleGajiSvg");
             var svgElemHeader = document.getElementById("iconToggleGajiSvgHeader");
-            if (!valElem) return;
+            if (!valElems.length) return;
             
-            if (valElem.getAttribute("data-hidden") === "true") {
-                valElem.innerText = valElem.getAttribute("data-original");
-                valElem.setAttribute("data-hidden", "false");
-                var eyeOpen = '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle>';
-                if (svgElemRow) {
-                    svgElemRow.innerHTML = eyeOpen;
-                    svgElemRow.setAttribute("stroke", "#059669");
+            var isHidden = valElems[0].getAttribute("data-hidden") === "true";
+            
+            valElems.forEach(function(elem) {
+                if (isHidden) {
+                    elem.innerText = elem.getAttribute("data-original");
+                    elem.setAttribute("data-hidden", "false");
+                } else {
+                    elem.innerText = "Rp ••••••••";
+                    elem.setAttribute("data-hidden", "true");
                 }
-                if (svgElemHeader) {
-                    svgElemHeader.innerHTML = eyeOpen;
-                    svgElemHeader.setAttribute("stroke", "#059669");
-                }
-            } else {
-                valElem.innerText = "Rp ••••••••";
-                valElem.setAttribute("data-hidden", "true");
-                var eyeSlash = '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" x2="22" y1="2" y2="22"></line>';
-                if (svgElemRow) {
-                    svgElemRow.innerHTML = eyeSlash;
-                    svgElemRow.setAttribute("stroke", "#9ca3af");
-                }
-                if (svgElemHeader) {
-                    svgElemHeader.innerHTML = eyeSlash;
-                    svgElemHeader.setAttribute("stroke", "#9ca3af");
-                }
+            });
+            
+            var eyeOpen = '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle>';
+            var eyeSlash = '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" x2="22" y1="2" y2="22"></line>';
+            
+            var newSvg = isHidden ? eyeOpen : eyeSlash;
+            var newColor = isHidden ? "#059669" : "#9ca3af";
+            
+            if (svgElemRow) {
+                svgElemRow.innerHTML = newSvg;
+                svgElemRow.setAttribute("stroke", newColor);
+            }
+            if (svgElemHeader) {
+                svgElemHeader.innerHTML = newSvg;
+                svgElemHeader.setAttribute("stroke", newColor);
             }
         }
     </script>
