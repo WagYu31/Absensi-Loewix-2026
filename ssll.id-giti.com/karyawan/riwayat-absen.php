@@ -418,23 +418,8 @@ $nama_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "
                 $page_riwayat = max($page_riwayat, 1);
                 $offset_riwayat = ($page_riwayat - 1) * $limit_riwayat;
 
-                // Query data dari 2 tabel: absen (mesin/sistem) dan absen_manual (kamera/web)
+                // Query data dari 2 tabel: absen_manual (kamera/web) DAHULU, lalu absen (mesin/sistem)
                 $query_all = "
-                    SELECT 'masuk' AS tipe_absen, 
-                           DATE(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) AS tgl_date, 
-                           TIME(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) AS jam, 
-                           'Yes' AS verif, 
-                           '' AS image, 
-                           'Presensi Mesin / Sistem' AS lokasi_absen, 
-                           '' AS lokasi_koordinat,
-                           STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s') AS full_datetime
-                    FROM absen
-                    WHERE (nip = '$nik_session' OR nip = '$nip_session' OR pin = '$pin_session' OR pin = '$nik_session')
-                      AND MONTH(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) = '$filter_bulan'
-                      AND YEAR(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) = '$filter_tahun'
-
-                    UNION ALL
-
                     SELECT tipe_absen, 
                            DATE(tgl_absen) AS tgl_date, 
                            TIME(tgl_absen) AS jam, 
@@ -447,6 +432,21 @@ $nama_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "
                     WHERE (nip = '$nip_session' OR nip = '$nik_session' OR nip = '$pin_session' OR pin = '$pin_session' OR pin = '$nik_session')
                       AND MONTH(tgl_absen) = '$filter_bulan'
                       AND YEAR(tgl_absen) = '$filter_tahun'
+
+                    UNION ALL
+
+                    SELECT 'masuk' AS tipe_absen, 
+                           DATE(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) AS tgl_date, 
+                           TIME(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) AS jam, 
+                           'Yes' AS verif, 
+                           '' AS image, 
+                           'Presensi Mesin / Sistem' AS lokasi_absen, 
+                           '' AS lokasi_koordinat,
+                           STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s') AS full_datetime
+                    FROM absen
+                    WHERE (nip = '$nik_session' OR nip = '$nip_session' OR pin = '$pin_session' OR pin = '$nik_session')
+                      AND MONTH(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) = '$filter_bulan'
+                      AND YEAR(STR_TO_DATE(tgl_scan, '%d-%m-%Y %H:%i:%s')) = '$filter_tahun'
 
                     ORDER BY full_datetime ASC
                 ";
@@ -465,19 +465,41 @@ $nama_bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "
                             $grouped_by_date[$tdate] = ['masuk' => null, 'pulang' => null];
                         }
 
-                        if ($row['tipe_absen'] === 'masuk') {
-                            if (!$grouped_by_date[$tdate]['masuk'] || $row['jam'] < $grouped_by_date[$tdate]['masuk']['jam']) {
+                        $type = strtolower($row['tipe_absen']);
+
+                        if ($type === 'masuk') {
+                            if (!$grouped_by_date[$tdate]['masuk']) {
                                 $grouped_by_date[$tdate]['masuk'] = $row;
+                            } else {
+                                $current_has_img = !empty($grouped_by_date[$tdate]['masuk']['image']);
+                                $new_has_img = !empty($row['image']);
+
+                                if ($new_has_img && !$current_has_img) {
+                                    $grouped_by_date[$tdate]['masuk'] = $row;
+                                } elseif ($new_has_img === $current_has_img && $row['jam'] < $grouped_by_date[$tdate]['masuk']['jam']) {
+                                    $grouped_by_date[$tdate]['masuk'] = $row;
+                                }
                             }
-                        } elseif ($row['tipe_absen'] === 'pulang') {
-                            if (!$grouped_by_date[$tdate]['pulang'] || $row['jam'] > $grouped_by_date[$tdate]['pulang']['jam']) {
+                        } elseif ($type === 'pulang') {
+                            if (!$grouped_by_date[$tdate]['pulang']) {
                                 $grouped_by_date[$tdate]['pulang'] = $row;
+                            } else {
+                                $current_has_img = !empty($grouped_by_date[$tdate]['pulang']['image']);
+                                $new_has_img = !empty($row['image']);
+
+                                if ($new_has_img && !$current_has_img) {
+                                    $grouped_by_date[$tdate]['pulang'] = $row;
+                                } elseif ($new_has_img === $current_has_img && $row['jam'] > $grouped_by_date[$tdate]['pulang']['jam']) {
+                                    $grouped_by_date[$tdate]['pulang'] = $row;
+                                }
                             }
                         } else {
                             if (!$grouped_by_date[$tdate]['masuk']) {
                                 $grouped_by_date[$tdate]['masuk'] = $row;
                             } elseif ($row['jam'] > $grouped_by_date[$tdate]['masuk']['jam']) {
-                                $grouped_by_date[$tdate]['pulang'] = $row;
+                                if (!$grouped_by_date[$tdate]['pulang'] || empty($grouped_by_date[$tdate]['pulang']['image'])) {
+                                    $grouped_by_date[$tdate]['pulang'] = $row;
+                                }
                             }
                         }
                     }
