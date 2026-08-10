@@ -508,7 +508,7 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                                 </div>
                                 <div class="detail-item-row border-bottom-0">
                                     <div class="detail-label">Email</div>
-                                    <div class="detail-value"><a href="mailto:<?php echo htmlspecialchars($email); ?>" class="text-decoration-none text-dark fw-medium"><i class="fa-solid fa-envelope me-1.5 text-secondary"></i><?php echo htmlspecialchars($email); ?></a></div>
+                                    <div class="detail-value"><a href="mailto:<?php echo htmlspecialchars($email); ?>" class="text-decoration-none text-dark fw-medium"><i class="fa-solid fa-envelope me-1.5 text-secondary"></i><span class="sensitive-val" data-original="<?php echo htmlspecialchars($email); ?>" data-mask="••••••••@••••.com"><?php echo htmlspecialchars($email); ?></span></a></div>
                                 </div>
                             </div>
                         </div>
@@ -553,7 +553,7 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                                         </div>
                                         <div class="detail-item-row">
                                             <div class="detail-label" style="width: 50%;">No. Rekening</div>
-                                            <div class="detail-value font-mono fw-bold text-primary" style="width: 50%;"><?php echo htmlspecialchars($nomorRekening); ?></div>
+                                            <div class="detail-value font-mono fw-bold text-primary" style="width: 50%;"><span class="sensitive-val" data-original="<?php echo htmlspecialchars($nomorRekening); ?>" data-mask="••••••••••••"><?php echo htmlspecialchars($nomorRekening); ?></span></div>
                                         </div>
                                         <div class="detail-item-row border-bottom-0">
                                             <div class="detail-label" style="width: 50%;">Pemilik Rekening</div>
@@ -573,7 +573,7 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                                 <div class="row align-items-center g-3">
                                     <div class="col-md-6">
                                         <div class="small text-muted fw-bold uppercase mb-1">NOMOR KTP</div>
-                                        <div class="fs-5 fw-bold text-dark font-mono"><?php echo htmlspecialchars($nomorKTP); ?></div>
+                                        <div class="fs-5 fw-bold text-dark font-mono"><span class="sensitive-val" data-original="<?php echo htmlspecialchars($nomorKTP); ?>" data-mask="••••••••••••••••"><?php echo htmlspecialchars($nomorKTP); ?></span></div>
                                     </div>
                                     <div class="col-md-6 text-md-end">
                                         <?php if (!empty($gambarKTP) && file_exists('../uploads/' . $gambarKTP)): ?>
@@ -695,11 +695,17 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
 
         function toggleGajiPokok() {
             var valElems = document.querySelectorAll(".financial-val");
+            var sensitiveElems = document.querySelectorAll(".sensitive-val");
             var svgElemRow = document.getElementById("iconToggleGajiSvg");
             var svgElemHeader = document.getElementById("iconToggleGajiSvgHeader");
-            if (!valElems.length) return;
+            if (!valElems.length && !sensitiveElems.length) return;
             
-            var isHidden = valElems[0].getAttribute("data-hidden") === "true";
+            var isHidden = false;
+            if (valElems.length > 0) {
+                isHidden = valElems[0].getAttribute("data-hidden") === "true";
+            } else if (sensitiveElems.length > 0) {
+                isHidden = sensitiveElems[0].getAttribute("data-hidden") === "true";
+            }
             
             valElems.forEach(function(elem) {
                 if (isHidden) {
@@ -707,6 +713,17 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                     elem.setAttribute("data-hidden", "false");
                 } else {
                     elem.innerText = "Rp ••••••••";
+                    elem.setAttribute("data-hidden", "true");
+                }
+            });
+
+            sensitiveElems.forEach(function(elem) {
+                if (isHidden) {
+                    elem.innerText = elem.getAttribute("data-original");
+                    elem.setAttribute("data-hidden", "false");
+                } else {
+                    var mask = elem.getAttribute("data-mask") || "••••••••••••";
+                    elem.innerText = mask;
                     elem.setAttribute("data-hidden", "true");
                 }
             });

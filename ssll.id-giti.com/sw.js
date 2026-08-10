@@ -1,6 +1,6 @@
 /* sw.js - Absensi Loewix PWA Service Worker */
 
-const CACHE_NAME = 'absensi-loewix-v8';
+const CACHE_NAME = 'absensi-loewix-v9';
 const ASSETS_TO_CACHE = [
   '/img/pwa-icon-192.png',
   '/img/pwa-icon-512.png',
