@@ -313,35 +313,36 @@ $asset_version = time();
         }
 
         .fc .fc-toolbar.fc-header-toolbar {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             flex-wrap: wrap;
             gap: 12px;
         }
 
         .fc .fc-toolbar-title {
-            font-size: 1.5rem !important;
+            font-size: 1.4rem !important;
             font-weight: 800 !important;
-            color: #1e293b !important;
-            letter-spacing: -0.5px;
+            color: #0f172a !important;
+            letter-spacing: -0.4px;
         }
 
         .fc .fc-button {
             background: #ffffff !important;
-            border: 1.5px solid #cbd5e1 !important;
-            color: #475569 !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #334155 !important;
             font-weight: 700 !important;
-            font-size: 0.85rem !important;
+            font-size: 0.82rem !important;
             border-radius: 12px !important;
             padding: 6px 14px !important;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03), 0 2px 0 #cbd5e1 !important;
-            transition: all 0.15s ease-out !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+            transition: all 0.2s ease !important;
             text-transform: capitalize !important;
         }
 
         .fc .fc-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), 0 3px 0 #94a3b8 !important;
-            color: #1e293b !important;
+            transform: translateY(-1px);
+            background: #f8fafc !important;
+            border-color: #94a3b8 !important;
+            color: #0f172a !important;
         }
 
         .fc .fc-button-primary:not(:disabled).fc-button-active,
@@ -349,13 +350,13 @@ $asset_version = time();
             background: var(--primary-3d) !important;
             border-color: #2563eb !important;
             color: #ffffff !important;
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35), 0 3px 0 #1d4ed8 !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
         }
 
         .fc .fc-today-button {
-            background: rgba(37, 99, 235, 0.1) !important;
+            background: rgba(37, 99, 235, 0.08) !important;
             color: #2563eb !important;
-            border-color: rgba(37, 99, 235, 0.25) !important;
+            border-color: rgba(37, 99, 235, 0.2) !important;
         }
 
         .fc-theme-standard .fc-scrollgrid {
@@ -368,77 +369,90 @@ $asset_version = time();
             background: #f8fafc !important;
             font-weight: 800 !important;
             color: #475569 !important;
-            padding: 0.85rem 0 !important;
-            font-size: 0.85rem !important;
+            padding: 0.75rem 0 !important;
+            font-size: 0.82rem !important;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border-bottom: 2px solid #e2e8f0 !important;
         }
 
+        .fc .fc-col-header-cell a {
+            text-decoration: none !important;
+            color: inherit !important;
+        }
+
+        .fc .fc-col-header-cell.fc-day-sun a,
+        .fc .fc-col-header-cell.fc-day-sun {
+            color: #ef4444 !important;
+        }
+
         .fc .fc-daygrid-day-frame {
-            min-height: 115px !important;
+            min-height: 110px !important;
             padding: 4px;
         }
 
         .fc .fc-daygrid-day.fc-day-today {
-            background-color: rgba(37, 99, 235, 0.06) !important;
+            background-color: rgba(37, 99, 235, 0.05) !important;
         }
 
-        .fc .fc-daygrid-day-number {
-            padding: 0.4rem 0.6rem !important;
+        .fc .fc-daygrid-day-number,
+        .fc a.fc-daygrid-day-number {
+            padding: 0.3rem 0.5rem !important;
             font-weight: 800 !important;
             color: #334155 !important;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
+            text-decoration: none !important;
         }
 
         .fc-event {
-            border-radius: 10px !important;
-            padding: 5px 10px !important;
-            font-size: 0.78rem !important;
+            border-radius: 8px !important;
+            padding: 4px 8px !important;
+            font-size: 0.75rem !important;
             font-weight: 700 !important;
             color: #ffffff !important;
             border: none !important;
             margin-top: 3px !important;
             transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .fc-event:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25) !important;
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
         }
 
         .event-libur-merah {
-            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
-            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3), 0 2px 0 #991b1b !important;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
         }
 
         .event-spesial-kuning {
-            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
             color: #ffffff !important;
-            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3), 0 2px 0 #b45309 !important;
         }
 
         .event-ultah-biru {
-            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
-            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3), 0 2px 0 #1d4ed8 !important;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
         }
 
         /* Ultra Responsive Mobile Overrides */
         @media (max-width: 768px) {
+            .main-content-wrapper {
+                padding-bottom: 120px !important;
+            }
+
+            .page-specific-header {
+                padding: 1.5rem 1rem 3.5rem 1rem !important;
+                border-radius: 0 0 24px 24px !important;
+                margin-bottom: -40px !important;
+            }
+
+            .page-specific-header h1 {
+                font-size: 1.3rem !important;
+            }
+
             .birthday-banner-3d {
                 padding: 1.25rem 1rem !important;
                 border-radius: 20px !important;
-            }
-
-            .birthday-banner-3d .d-flex.justify-content-between {
-                flex-direction: column !important;
-                align-items: flex-start !important;
-            }
-
-            .bday-icon-wrapper {
-                width: 48px !important;
-                height: 48px !important;
-                border-radius: 16px !important;
             }
 
             .bday-card-item {
@@ -446,46 +460,48 @@ $asset_version = time();
                 padding: 8px 12px !important;
             }
 
-            .bday-card-item .fw-bold {
-                max-width: 150px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
             .main-calendar-card {
-                padding: 1rem 0.75rem !important;
+                padding: 1rem 0.65rem !important;
                 border-radius: 20px !important;
+                margin-left: 0.25rem !important;
+                margin-right: 0.25rem !important;
             }
 
             .fc .fc-toolbar.fc-header-toolbar {
+                display: flex !important;
                 flex-direction: column !important;
                 align-items: center !important;
-                gap: 8px !important;
+                gap: 10px !important;
             }
 
             .fc .fc-toolbar-title {
-                font-size: 1.2rem !important;
+                font-size: 1.15rem !important;
+                font-weight: 800 !important;
+                text-align: center !important;
             }
 
-            .fc .fc-button {
-                font-size: 0.75rem !important;
-                padding: 4px 10px !important;
+            .fc .fc-col-header-cell {
+                font-size: 0.72rem !important;
+                padding: 0.5rem 0 !important;
             }
 
             .fc .fc-daygrid-day-frame {
-                min-height: 70px !important;
+                min-height: 64px !important;
                 padding: 2px !important;
             }
 
-            .fc .fc-daygrid-day-number {
-                padding: 0.2rem 0.4rem !important;
-                font-size: 0.75rem !important;
+            .fc .fc-daygrid-day-number,
+            .fc a.fc-daygrid-day-number {
+                padding: 0.15rem 0.3rem !important;
+                font-size: 0.72rem !important;
+                text-decoration: none !important;
             }
 
             .fc-event {
-                font-size: 0.68rem !important;
+                font-size: 0.64rem !important;
                 padding: 2px 4px !important;
+                border-radius: 6px !important;
+                margin-top: 1px !important;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
