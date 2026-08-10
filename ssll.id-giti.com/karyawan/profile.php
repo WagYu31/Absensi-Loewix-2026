@@ -412,6 +412,13 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                             <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 mb-3">
                                 <span class="profile-badge-pill"><i class="fa-solid fa-briefcase me-1.5 opacity-75"></i><?php echo htmlspecialchars($jabatan); ?></span>
                                 <span class="profile-badge-pill profile-badge-pill-success"><i class="fa-solid fa-circle-check me-1.5"></i><?php echo htmlspecialchars($statusKaryawan); ?></span>
+                                <button type="button" class="profile-badge-pill bg-white border border-success text-success shadow-sm d-inline-flex align-items-center justify-content-center" onclick="toggleGajiPokok()" title="Sembunyikan / Tampilkan Gaji Pokok" style="cursor: pointer; text-decoration: none; padding: 4px 10px; font-weight: 600;">
+                                    <svg id="iconToggleGajiSvgHeader" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    <span style="font-size: 0.82rem;">Gaji</span>
+                                </button>
                             </div>
 
                             <!-- Quick Action Buttons -->
@@ -689,19 +696,34 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
 
         function toggleGajiPokok() {
             var valElem = document.getElementById("valGajiPokok");
-            var svgElem = document.getElementById("iconToggleGajiSvg");
-            if (!valElem || !svgElem) return;
+            var svgElemRow = document.getElementById("iconToggleGajiSvg");
+            var svgElemHeader = document.getElementById("iconToggleGajiSvgHeader");
+            if (!valElem) return;
             
             if (valElem.getAttribute("data-hidden") === "true") {
                 valElem.innerText = valElem.getAttribute("data-original");
                 valElem.setAttribute("data-hidden", "false");
-                svgElem.innerHTML = '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle>';
-                svgElem.setAttribute("stroke", "#059669");
+                var eyeOpen = '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle>';
+                if (svgElemRow) {
+                    svgElemRow.innerHTML = eyeOpen;
+                    svgElemRow.setAttribute("stroke", "#059669");
+                }
+                if (svgElemHeader) {
+                    svgElemHeader.innerHTML = eyeOpen;
+                    svgElemHeader.setAttribute("stroke", "#059669");
+                }
             } else {
                 valElem.innerText = "Rp ••••••••";
                 valElem.setAttribute("data-hidden", "true");
-                svgElem.innerHTML = '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" x2="22" y1="2" y2="22"></line>';
-                svgElem.setAttribute("stroke", "#9ca3af");
+                var eyeSlash = '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" x2="22" y1="2" y2="22"></line>';
+                if (svgElemRow) {
+                    svgElemRow.innerHTML = eyeSlash;
+                    svgElemRow.setAttribute("stroke", "#9ca3af");
+                }
+                if (svgElemHeader) {
+                    svgElemHeader.innerHTML = eyeSlash;
+                    svgElemHeader.setAttribute("stroke", "#9ca3af");
+                }
             }
         }
     </script>
