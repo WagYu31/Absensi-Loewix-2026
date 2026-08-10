@@ -447,7 +447,10 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
                                 <span class="small text-muted fw-bold d-inline-flex align-items-center">
                                     GAJI POKOK
                                     <button type="button" class="btn btn-sm p-0 border-0 bg-transparent ms-2 shadow-none d-inline-flex align-items-center" onclick="toggleGajiPokok()" title="Sembunyikan / Tampilkan Gaji" style="cursor: pointer; text-decoration: none; line-height: 1;">
-                                        <i class="fa-solid fa-eye" id="iconToggleGaji" style="color: #059669; font-size: 1.1rem;"></i>
+                                        <svg id="iconToggleGajiSvg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
+                                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
                                     </button>
                                 </span>
                                 <span class="fw-extrabold text-emerald-600 font-mono fs-6" id="valGajiPokok" data-original="<?php echo htmlspecialchars($gajiPokok); ?>"><?php echo $gajiPokok; ?></span>
@@ -686,19 +689,19 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
 
         function toggleGajiPokok() {
             var valElem = document.getElementById("valGajiPokok");
-            var iconElem = document.getElementById("iconToggleGaji");
-            if (!valElem || !iconElem) return;
+            var svgElem = document.getElementById("iconToggleGajiSvg");
+            if (!valElem || !svgElem) return;
             
             if (valElem.getAttribute("data-hidden") === "true") {
                 valElem.innerText = valElem.getAttribute("data-original");
                 valElem.setAttribute("data-hidden", "false");
-                iconElem.className = "fa-solid fa-eye";
-                iconElem.style.color = "#059669";
+                svgElem.innerHTML = '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle>';
+                svgElem.setAttribute("stroke", "#059669");
             } else {
                 valElem.innerText = "Rp ••••••••";
                 valElem.setAttribute("data-hidden", "true");
-                iconElem.className = "fa-solid fa-eye-slash";
-                iconElem.style.color = "#9ca3af";
+                svgElem.innerHTML = '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" x2="22" y1="2" y2="22"></line>';
+                svgElem.setAttribute("stroke", "#9ca3af");
             }
         }
     </script>
