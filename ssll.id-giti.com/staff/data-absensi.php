@@ -470,9 +470,16 @@ $asset_version = time();
 
     <div class="main-content-wrapper p-0">
         <div class="header-banner page-specific-header no-print">
-            <div class="container-fluid px-lg-4">
-                <h1><i class="fa-solid fa-clipboard-user me-2 text-primary-light"></i>Validasi Absensi Manual</h1>
-                <p class="small opacity-80 mb-0">Verifikasi kehadiran foto & titik lokasi harian seluruh karyawan.</p>
+            <div class="container-fluid px-lg-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <h1><i class="fa-solid fa-clipboard-user me-2 text-primary-light"></i>Validasi Absensi Manual</h1>
+                    <p class="small opacity-80 mb-0">Verifikasi kehadiran foto & titik lokasi harian seluruh karyawan.</p>
+                </div>
+                <div>
+                    <a href="sync_photos_to_db.php" class="btn btn-outline-light btn-sm rounded-pill fw-bold px-3 py-1.5 shadow-sm" onclick="return confirm('Proses ini akan memindai folder server dan mensinkronkan seluruh foto presensi ke database. Lanjutkan?')">
+                        <i class="fa-solid fa-rotate me-1.5"></i>Sync Foto Presensi
+                    </a>
+                </div>
             </div>
         </div>
 
