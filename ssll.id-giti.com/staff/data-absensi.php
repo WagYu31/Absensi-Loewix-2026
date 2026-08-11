@@ -73,22 +73,36 @@ for ($i = 1; $i <= $daysInMonth; $i++) {
     }
 }
 
-$today = date('Y-m-d');
-$currentMonthYear = date('m-Y', strtotime($today)) === "$bulan-$tahun";
-$defaultDate = "";
-
-if ($currentMonthYear && isWorkingDay($today, $holidays)) {
-    $defaultDate = $today;
-} else {
-    for ($i = count($workingDays) - 1; $i >= 0; $i--) {
-        if ($workingDays[$i]['date'] <= $today || !$currentMonthYear) {
-            $defaultDate = $workingDays[$i]['date'];
-            break;
-        }
+$datesWithData = [];
+$res_data_dates = $conn->query("SELECT DATE(tgl_absen) as tgl, COUNT(*) as total FROM absen_manual WHERE MONTH(tgl_absen) = '$bulan' AND YEAR(tgl_absen) = '$tahun' GROUP BY DATE(tgl_absen)");
+if ($res_data_dates) {
+    while ($rdd = $res_data_dates->fetch_assoc()) {
+        $datesWithData[$rdd['tgl']] = (int)$rdd['total'];
     }
 }
 
-$selectedDate = $_GET['tgl'] ?? $defaultDate;
+$today = date('Y-m-d');
+$currentMonthYear = date('m-Y', strtotime($today)) === "$bulan-$tahun";
+
+if (isset($_GET['tgl']) && !empty($_GET['tgl'])) {
+    $selectedDate = $_GET['tgl'];
+} else if ($currentMonthYear && isWorkingDay($today, $holidays)) {
+    $selectedDate = $today;
+} else {
+    $firstDataDate = "";
+    foreach ($workingDays as $wd) {
+        if (isset($datesWithData[$wd['date']])) {
+            $firstDataDate = $wd['date'];
+            break;
+        }
+    }
+    
+    if (!empty($firstDataDate)) {
+        $selectedDate = $firstDataDate;
+    } else {
+        $selectedDate = !empty($workingDays) ? $workingDays[0]['date'] : "$tahun-$bulan-01";
+    }
+}
 
 $sql = "SELECT am.*, k.nama, k.nik, k.pas_photo 
         FROM absen_manual am
@@ -281,11 +295,36 @@ $asset_version = time();
         .date-btn .day-num { font-size: 1.1rem; font-weight: 800; line-height: 1.1; }
         .date-btn .day-name { font-size: 0.65rem; text-transform: uppercase; font-weight: 700; opacity: 0.75; }
 
+        .date-btn.has-data {
+            border-color: #93c5fd !important;
+            background: #eff6ff !important;
+        }
+
+        .date-btn.has-data .day-num {
+            color: #1d4ed8 !important;
+        }
+
+        .date-btn .data-indicator-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #10b981;
+            border-radius: 50%;
+            margin-top: 3px;
+            box-shadow: 0 0 6px #10b981;
+        }
+
         .date-btn.active {
             background: var(--primary-3d) !important;
             color: #ffffff !important;
             border-color: #2563eb !important;
             box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35), 0 3px 0 #1d4ed8 !important;
+        }
+        .date-btn.active .day-num {
+            color: #ffffff !important;
+        }
+        .date-btn.active.has-data .data-indicator-dot {
+            background-color: #38bdf8;
+            box-shadow: 0 0 6px #38bdf8;
         }
         .date-btn.active .day-name { opacity: 0.9; }
 
@@ -514,10 +553,16 @@ $asset_version = time();
                     <div class="date-wrapper">
                         <?php foreach ($dateChunks as $chunk): ?>
                         <div class="date-row">
-                            <?php foreach ($chunk as $wd): ?>
-                                <a href="?bulan=<?php echo $bulan; ?>&tahun=<?php echo $tahun; ?>&karyawan=<?php echo urlencode($filter_karyawan); ?>&lokasi=<?php echo urlencode($filter_lokasi); ?>&tipe=<?php echo urlencode($filter_tipe); ?>&tgl=<?php echo $wd['date']; ?>" class="date-btn <?php echo ($selectedDate === $wd['date']) ? 'active' : ''; ?>">
+                            <?php foreach ($chunk as $wd): 
+                                $hasData = isset($datesWithData[$wd['date']]);
+                                $dataCount = $datesWithData[$wd['date']] ?? 0;
+                            ?>
+                                <a href="?bulan=<?php echo $bulan; ?>&tahun=<?php echo $tahun; ?>&karyawan=<?php echo urlencode($filter_karyawan); ?>&lokasi=<?php echo urlencode($filter_lokasi); ?>&tipe=<?php echo urlencode($filter_tipe); ?>&tgl=<?php echo $wd['date']; ?>" class="date-btn <?php echo ($selectedDate === $wd['date']) ? 'active' : ''; ?> <?php echo $hasData ? 'has-data' : ''; ?>" title="<?php echo $hasData ? $dataCount . ' foto presensi' : 'Tidak ada foto'; ?>">
                                     <span class="day-num"><?php echo $wd['day']; ?></span>
                                     <span class="day-name"><?php echo $nama_hari_map[$wd['dayName']]; ?></span>
+                                    <?php if ($hasData): ?>
+                                        <span class="data-indicator-dot"></span>
+                                    <?php endif; ?>
                                 </a>
                             <?php endforeach; ?>
                         </div>
