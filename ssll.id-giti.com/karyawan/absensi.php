@@ -506,9 +506,6 @@ $asset_version = '2026.08.06.2';
                                         <button class="btn btn-check-out-presensi w-100 mb-2 py-3" id="btnCheckOut" disabled>
                                             <i class="fas fa-door-open me-2"></i>PULANG (CHECK-OUT)
                                         </button>
-                                        <div id="checkoutLockNotice" class="text-center text-danger small d-none mb-2 fw-bold" style="font-size:0.8rem;">
-                                            <i class="fas fa-lock me-1"></i>Absen pulang terkunci sebelum jam 15:00 WIB
-                                        </div>
                                     <?php endif; ?>
 
                                     <a href="riwayat-absen.php" class="btn btn-riwayat-absen w-100 py-3 text-decoration-none">
@@ -848,9 +845,6 @@ $asset_version = '2026.08.06.2';
             
             const isCheckOutTime = !isCheckInTime;
 
-            const checkoutMinHour = <?php echo $isSaturday ? 13 : 15; ?>;
-            const isCheckOutTimeAllowed = (currentHour >= checkoutMinHour) || isTestMode;
-
             if (!hasCheckedInToday && isLocationActive) { 
                 if ($('#btnCheckIn').length) $('#btnCheckIn').prop('disabled', false); 
             } else { 
@@ -858,20 +852,9 @@ $asset_version = '2026.08.06.2';
             }
 
             if (hasCheckedInToday && !hasCheckedOutToday && isLocationActive) { 
-                if (isCheckOutTimeAllowed) {
-                    if ($('#btnCheckOut').length) {
-                        $('#btnCheckOut').prop('disabled', false);
-                        $('#checkoutLockNotice').addClass('d-none');
-                    }
-                } else {
-                    if ($('#btnCheckOut').length) {
-                        $('#btnCheckOut').prop('disabled', true);
-                        $('#checkoutLockNotice').removeClass('d-none').html('<i class="fas fa-lock me-1 text-danger"></i>Absen pulang terkunci (Dapat di-klik mulai jam ' + checkoutMinHour + ':00 WIB)');
-                    }
-                }
+                if ($('#btnCheckOut').length) $('#btnCheckOut').prop('disabled', false); 
             } else { 
                 if ($('#btnCheckOut').length) $('#btnCheckOut').prop('disabled', true); 
-                if (!hasCheckedInToday || hasCheckedOutToday) $('#checkoutLockNotice').addClass('d-none');
             }
         }
 
@@ -909,11 +892,26 @@ $asset_version = '2026.08.06.2';
             if (isCheckOutBtn) {
                 const now = new Date();
                 const currentHour = now.getHours();
+                const currentMinute = now.getMinutes();
                 const isTestMode = <?php echo ($final_shifting === 'TEST') ? 'true' : 'false'; ?>;
                 const checkoutMinHour = <?php echo $isSaturday ? 13 : 15; ?>;
                 if (!isTestMode && currentHour < checkoutMinHour) {
                     e.preventDefault();
-                    alert('🔒 Absen Pulang Terkunci!\nAbsen pulang baru dapat dilakukan mulai pukul ' + checkoutMinHour + ':00 WIB.');
+                    // Calculate remaining time
+                    const remainMins = (checkoutMinHour - currentHour - 1) * 60 + (60 - currentMinute);
+                    const remainH = Math.floor(remainMins / 60);
+                    const remainM = remainMins % 60;
+                    let remainStr = '';
+                    if (remainH > 0) remainStr += remainH + ' jam ';
+                    remainStr += remainM + ' menit lagi';
+                    $('#lockModalTime').text(checkoutMinHour + ':00 WIB');
+                    $('#lockModalRemain').text(remainStr);
+                    // Animate progress ring
+                    const pct = ((currentHour * 60 + currentMinute) / (checkoutMinHour * 60)) * 100;
+                    const dashVal = (pct / 100) * 251.2;
+                    $('#lockProgressRing').css('stroke-dashoffset', 251.2 - dashVal);
+                    $('#lockProgressPct').text(Math.round(pct) + '%');
+                    $('#checkoutLockModal').addClass('show');
                     return false;
                 }
             }
@@ -1157,5 +1155,109 @@ $asset_version = '2026.08.06.2';
             });
         });
     </script>
+
+    <!-- Premium Checkout Lock Modal -->
+    <div id="checkoutLockModal" class="checkout-lock-overlay">
+        <div class="checkout-lock-card">
+            <div class="lock-icon-wrapper">
+                <svg width="90" height="90" viewBox="0 0 90 90">
+                    <circle cx="45" cy="45" r="40" fill="none" stroke="#1e293b" stroke-width="5"/>
+                    <circle id="lockProgressRing" cx="45" cy="45" r="40" fill="none" stroke="url(#lockGrad)" stroke-width="5" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="251.2" transform="rotate(-90 45 45)" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);"/>
+                    <defs><linearGradient id="lockGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+                </svg>
+                <div class="lock-icon-center">
+                    <i class="fas fa-lock"></i>
+                    <span id="lockProgressPct" class="lock-pct">0%</span>
+                </div>
+            </div>
+            <h5 class="lock-title">Belum Waktunya Pulang</h5>
+            <p class="lock-desc">Absen pulang dapat dilakukan mulai pukul</p>
+            <div class="lock-time-badge" id="lockModalTime">15:00 WIB</div>
+            <div class="lock-remain" id="lockModalRemain">-- menit lagi</div>
+            <button class="lock-dismiss-btn" onclick="$('#checkoutLockModal').removeClass('show');">Mengerti</button>
+        </div>
+    </div>
+
+    <style>
+        .checkout-lock-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0); z-index: 10000;
+            display: flex; justify-content: center; align-items: center;
+            pointer-events: none; opacity: 0;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(0px);
+        }
+        .checkout-lock-overlay.show {
+            background: rgba(15, 23, 42, 0.75);
+            pointer-events: auto; opacity: 1;
+            backdrop-filter: blur(12px);
+        }
+        .checkout-lock-card {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 28px;
+            padding: 32px 28px 26px;
+            max-width: 340px; width: 88%;
+            text-align: center;
+            backdrop-filter: blur(24px);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transform: scale(0.7) translateY(40px);
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .checkout-lock-overlay.show .checkout-lock-card {
+            transform: scale(1) translateY(0);
+        }
+        .lock-icon-wrapper {
+            position: relative; width: 90px; height: 90px; margin: 0 auto 18px;
+        }
+        .lock-icon-center {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+        }
+        .lock-icon-center i {
+            font-size: 1.4rem; color: #f59e0b;
+            animation: lockPulse 2s ease-in-out infinite;
+        }
+        @keyframes lockPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.8; }
+        }
+        .lock-pct {
+            font-size: 0.65rem; font-weight: 800; color: rgba(255,255,255,0.7); letter-spacing: 0.5px;
+        }
+        .lock-title {
+            color: #ffffff; font-weight: 800; font-size: 1.2rem; margin-bottom: 6px;
+        }
+        .lock-desc {
+            color: rgba(255, 255, 255, 0.6); font-size: 0.85rem; margin-bottom: 10px;
+        }
+        .lock-time-badge {
+            display: inline-block; background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: #ffffff; font-weight: 800; font-size: 1.5rem;
+            padding: 8px 28px; border-radius: 16px; letter-spacing: 1px;
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+            margin-bottom: 10px;
+        }
+        .lock-remain {
+            color: #fbbf24; font-weight: 700; font-size: 0.88rem; margin-bottom: 22px;
+            letter-spacing: 0.3px;
+        }
+        .lock-dismiss-btn {
+            width: 100%; padding: 13px; border: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff; font-weight: 800; font-size: 0.95rem;
+            border-radius: 14px; cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
+        }
+        .lock-dismiss-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+        .lock-dismiss-btn:active {
+            transform: translateY(1px);
+        }
+    </style>
 </body>
 </html>
