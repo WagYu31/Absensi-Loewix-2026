@@ -506,6 +506,9 @@ $asset_version = '2026.08.06.2';
                                         <button class="btn btn-check-out-presensi w-100 mb-2 py-3" id="btnCheckOut" disabled>
                                             <i class="fas fa-door-open me-2"></i>PULANG (CHECK-OUT)
                                         </button>
+                                        <div id="checkoutLockNotice" class="text-center text-danger small d-none mb-2 fw-bold" style="font-size:0.8rem;">
+                                            <i class="fas fa-lock me-1"></i>Absen pulang terkunci sebelum jam 15:00 WIB
+                                        </div>
                                     <?php endif; ?>
 
                                     <a href="riwayat-absen.php" class="btn btn-riwayat-absen w-100 py-3 text-decoration-none">
@@ -845,6 +848,9 @@ $asset_version = '2026.08.06.2';
             
             const isCheckOutTime = !isCheckInTime;
 
+            const checkoutMinHour = <?php echo $isSaturday ? 13 : 15; ?>;
+            const isCheckOutTimeAllowed = (currentHour >= checkoutMinHour) || isTestMode;
+
             if (!hasCheckedInToday && isLocationActive) { 
                 if ($('#btnCheckIn').length) $('#btnCheckIn').prop('disabled', false); 
             } else { 
@@ -852,9 +858,20 @@ $asset_version = '2026.08.06.2';
             }
 
             if (hasCheckedInToday && !hasCheckedOutToday && isLocationActive) { 
-                if ($('#btnCheckOut').length) $('#btnCheckOut').prop('disabled', false); 
+                if (isCheckOutTimeAllowed) {
+                    if ($('#btnCheckOut').length) {
+                        $('#btnCheckOut').prop('disabled', false);
+                        $('#checkoutLockNotice').addClass('d-none');
+                    }
+                } else {
+                    if ($('#btnCheckOut').length) {
+                        $('#btnCheckOut').prop('disabled', true);
+                        $('#checkoutLockNotice').removeClass('d-none').html('<i class="fas fa-lock me-1 text-danger"></i>Absen pulang terkunci (Dapat di-klik mulai jam ' + checkoutMinHour + ':00 WIB)');
+                    }
+                }
             } else { 
                 if ($('#btnCheckOut').length) $('#btnCheckOut').prop('disabled', true); 
+                if (!hasCheckedInToday || hasCheckedOutToday) $('#checkoutLockNotice').addClass('d-none');
             }
         }
 
@@ -885,9 +902,23 @@ $asset_version = '2026.08.06.2';
             isLiveWebcam = false;
         }
 
-        $('#btnCheckIn, #btnCheckOut').click(function() {
+        $('#btnCheckIn, #btnCheckOut').click(function(e) {
             if ($(this).prop('disabled')) return;
-            attendanceType = $(this).attr('id') === 'btnCheckIn' ? 'masuk' : 'pulang';
+
+            const isCheckOutBtn = $(this).attr('id') === 'btnCheckOut';
+            if (isCheckOutBtn) {
+                const now = new Date();
+                const currentHour = now.getHours();
+                const isTestMode = <?php echo ($final_shifting === 'TEST') ? 'true' : 'false'; ?>;
+                const checkoutMinHour = <?php echo $isSaturday ? 13 : 15; ?>;
+                if (!isTestMode && currentHour < checkoutMinHour) {
+                    e.preventDefault();
+                    alert('🔒 Absen Pulang Terkunci!\nAbsen pulang baru dapat dilakukan mulai pukul ' + checkoutMinHour + ':00 WIB.');
+                    return false;
+                }
+            }
+
+            attendanceType = isCheckOutBtn ? 'pulang' : 'masuk';
             $('#attendanceTypeTitle').html('<i class="fas fa-camera me-2 text-primary"></i>Ambil Foto Absen ' + (attendanceType === 'masuk' ? 'Masuk' : 'Pulang'));
             $('#cameraModal').modal('show');
         });

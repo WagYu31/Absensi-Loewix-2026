@@ -94,6 +94,26 @@ if ($user_shift_code === 'TEST' || $session_nip === 'TEST001') {
     $verif_status = 'Yes';
 }
 
+// Enforce time lock for Absen Pulang (Cannot clock out before 15:00 WIB, or 13:00 on Saturday)
+if (strtolower($type) === 'pulang') {
+    if (empty($user_shift_code)) {
+        $res_kar_shift = $conn->query("SELECT shifting FROM karyawan WHERE nip = '$session_nip' OR nik = '$session_nip' LIMIT 1");
+        if ($res_kar_shift && $res_kar_shift->num_rows > 0) {
+            $user_shift_code = $res_kar_shift->fetch_assoc()['shifting'];
+        }
+    }
+
+    if ($user_shift_code !== 'TEST' && $session_nip !== 'TEST001') {
+        $current_hour = (int)date('H');
+        $is_saturday = (date('N') == 6);
+        $min_checkout_hour = $is_saturday ? 13 : 15;
+        
+        if ($current_hour < $min_checkout_hour) {
+            sendJsonResponse(false, '🔒 Absen pulang terkunci! Absen pulang baru dapat dilakukan mulai pukul ' . $min_checkout_hour . ':00 WIB.');
+        }
+    }
+}
+
 $stmt_karyawan = $conn->prepare("SELECT nama, nik FROM karyawan WHERE nip = ?");
 if (!$stmt_karyawan) {
     sendJsonResponse(false, 'Kesalahan koneksi database: ' . $conn->error);
