@@ -169,6 +169,7 @@ $today->setTime(0, 0, 0);
     <script src="https://kit.fontawesome.com/a97d5963a4.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../assets/css/main-styles.css">
     <link rel="stylesheet" href="../assets/css/sidebar.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
         :root {
@@ -321,7 +322,7 @@ $today->setTime(0, 0, 0);
                                     <tbody>
                                         <?php $no = $offset + 1; foreach ($pengajuan_cuti_list as $cuti): 
                                             $tgl_mulai_cuti = new DateTime($cuti['tgl_mulai']);
-                                            $is_editable = $cuti['verif'] != "Disetujui";
+                                            $is_editable = $cuti['verif'] == "Pending";
                                             $words = explode(' ', trim($cuti['nama']));
                                             $init = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
                                             $durasi = hitungDurasiCuti($cuti['tgl_mulai'], $cuti['tgl_selesai'], $holidays);
@@ -506,6 +507,10 @@ $today->setTime(0, 0, 0);
 
             $('#formTerima').on('submit', function(e) {
                 e.preventDefault();
+                var modalEl = document.getElementById('modalTerima');
+                var modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) modalInstance.hide();
+
                 $.ajax({
                     url: 'process_cuti.php',
                     type: 'POST',
@@ -513,9 +518,21 @@ $today->setTime(0, 0, 0);
                     dataType: 'json',
                     success: function(response) {
                         if(response.status === 'success') {
-                            location.reload();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Setujui Berhasil',
+                                text: 'Pengajuan cuti berhasil disetujui.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(function() {
+                                location.reload();
+                            });
                         } else {
-                            alert('Gagal: ' + response.message);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: response.message
+                            });
                         }
                     }
                 });
@@ -523,6 +540,10 @@ $today->setTime(0, 0, 0);
 
             $('#formTolak').on('submit', function(e) {
                 e.preventDefault();
+                var modalEl = document.getElementById('modalTolak');
+                var modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) modalInstance.hide();
+
                 $.ajax({
                     url: 'process_cuti.php',
                     type: 'POST',
@@ -530,9 +551,21 @@ $today->setTime(0, 0, 0);
                     dataType: 'json',
                     success: function(response) {
                         if(response.status === 'success') {
-                            location.reload();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Tolak Berhasil',
+                                text: 'Pengajuan cuti berhasil ditolak.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(function() {
+                                location.reload();
+                            });
                         } else {
-                            alert('Gagal: ' + response.message);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: response.message
+                            });
                         }
                     }
                 });
@@ -541,21 +574,45 @@ $today->setTime(0, 0, 0);
             $('.btn-delete').on('click', function() {
                 var id = $(this).data('id');
                 var nama = $(this).data('nama');
-                if(confirm('Apakah Anda yakin ingin menghapus data pengajuan cuti dari ' + nama + '?')) {
-                    $.ajax({
-                        url: 'process_cuti.php',
-                        type: 'POST',
-                        data: { action: 'delete', cuti_id: id },
-                        dataType: 'json',
-                        success: function(response) {
-                            if(response.status === 'success') {
-                                $('#cuti-row-' + id).fadeOut();
-                            } else {
-                                alert('Gagal menghapus: ' + response.message);
+                
+                Swal.fire({
+                    title: 'Hapus Data Pengajuan Cuti',
+                    text: 'Apakah Anda yakin ingin menghapus data pengajuan cuti dari ' + nama + '?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'process_cuti.php',
+                            type: 'POST',
+                            data: { action: 'delete', cuti_id: id },
+                            dataType: 'json',
+                            success: function(response) {
+                                if(response.status === 'success') {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Hapus Berhasil',
+                                        text: 'Data pengajuan cuti berhasil dihapus.',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    }).then(function() {
+                                        $('#cuti-row-' + id).fadeOut();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Gagal',
+                                        text: response.message
+                                    });
+                                }
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             });
         });
     </script>
