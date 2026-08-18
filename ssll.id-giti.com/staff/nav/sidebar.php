@@ -411,6 +411,7 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
         <div class="collapse sidebar-submenu" id="menuKepegawaian">
             <a href="data-karyawan.php"><i class="fa-solid fa-house-chimney-user sub-icon"></i><span class="nav-text">Data Karyawan</span></a>
             <a href="kalender_kerja.php"><i class="fa-solid fa-calendar-days sub-icon"></i><span class="nav-text">Kalender Kerja</span></a>
+            <a href="pengumuman.php"><i class="fa-solid fa-bullhorn sub-icon"></i><span class="nav-text">Kelola Pengumuman</span></a>
         </div>
 
         <a class="sidebar-nav-item" data-bs-toggle="collapse" href="#menuKehadiran" role="button" aria-expanded="false">
@@ -473,6 +474,7 @@ body.sidebar-mobile-open .sidebar-backdrop-overlay {
         <ul class="dropdown-menu shadow">
             <li><a class="dropdown-item" href="data-karyawan.php"><i class="fa-solid fa-house-chimney-user"></i> Data Karyawan</a></li>
             <li><a class="dropdown-item" href="kalender_kerja.php"><i class="fa-solid fa-calendar"></i> Kalender Kerja</a></li>
+            <li><a class="dropdown-item" href="pengumuman.php"><i class="fa-solid fa-bullhorn"></i> Kelola Pengumuman</a></li>
         </ul>
     </div>
 
