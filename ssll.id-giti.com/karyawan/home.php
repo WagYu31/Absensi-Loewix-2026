@@ -601,6 +601,113 @@ if ($hour < 11) {
 
             <?php include "data.php"; ?>
 
+
+
+            <!-- 3. QUICK ACTION MENU GRID -->
+            <div class="mb-4">
+                <h6 class="fw-extrabold text-dark mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>Akses Cepat Menu Karyawan</h6>
+                <div class="qa-grid">
+                    
+                    <a href="profile.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-blue">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Profil Saya</div>
+                            <div class="qa-text-sub">Data & Kepegawaian</div>
+                        </div>
+                    </a>
+
+                    <a href="absen.php?nik=<?php echo htmlspecialchars($nik); ?>#form-absen" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-green">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Absen Masuk</div>
+                            <div class="qa-text-sub">Kamera Presensi</div>
+                        </div>
+                    </a>
+
+                    <a href="riwayat-gaji.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-amber">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Riwayat Gaji</div>
+                            <div class="qa-text-sub">Slip & Rincian</div>
+                        </div>
+                    </a>
+
+                    <a href="cuti.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-purple">
+                            <i class="fa-solid fa-calendar-minus"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Ajukan Cuti</div>
+                            <div class="qa-text-sub">Izin & Sakit</div>
+                        </div>
+                    </a>
+
+                    <a href="kalender_kerja.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-rose">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Kalender Kerja</div>
+                            <div class="qa-text-sub">Libur & Agenda</div>
+                        </div>
+                    </a>
+
+                    <a href="peringkat-kinerja.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-teal">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Kinerja Saya</div>
+                            <div class="qa-text-sub">Performa & Skor</div>
+                        </div>
+                    </a>
+
+                    <a href="help.php" class="qa-card-item">
+                        <div class="qa-icon-wrapper icon-sky">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Pusat Bantuan</div>
+                            <div class="qa-text-sub">Panduan & CS</div>
+                        </div>
+                    </a>
+
+                    <a href="profile.php" class="qa-card-item" onclick="triggerPWAInstall(); return false;">
+                        <div class="qa-icon-wrapper icon-emerald">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                        </div>
+                        <div>
+                            <div class="qa-text-title">Install HP</div>
+                            <div class="qa-text-sub">Aplikasi PWA</div>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- 4. PENGUMUMAN WIDGET -->
+            <div class="exec-card p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                    <h6 class="fw-extrabold text-dark mb-0">
+                        <i class="fa-solid fa-bullhorn text-danger me-2"></i>Pengumuman Terbaru
+                    </h6>
+                    <a href="pengumuman.php" class="small fw-bold text-primary text-decoration-none">
+                        Lihat Semua <i class="fa-solid fa-chevron-right ms-1"></i>
+                    </a>
+                </div>
+
+                <div class="text-center py-3 text-muted">
+                    <i class="fa-solid fa-bell-slash text-slate-300 fs-3 mb-2 d-block"></i>
+                    <p class="mb-0 small fw-medium">Tidak ada pengumuman terbaru saat ini.</p>
+                </div>
+            </div>
+
             <!-- 2. MAIN DASHBOARD METRICS & SALARY (ROW 1) -->
             <div class="row g-4 mb-4">
                 <!-- Attendance Metrics (Col 7) -->
@@ -741,111 +848,6 @@ if ($hour < 11) {
                             </a>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- 3. QUICK ACTION MENU GRID -->
-            <div class="mb-4">
-                <h6 class="fw-extrabold text-dark mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>Akses Cepat Menu Karyawan</h6>
-                <div class="qa-grid">
-                    
-                    <a href="profile.php" class="qa-card-item">
-                        <div class="qa-icon-wrapper icon-blue">
-                            <i class="fa-solid fa-user"></i>
-                        </div>
-                        <div>
-                            <div class="qa-text-title">Profil Saya</div>
-                            <div class="qa-text-sub">Data & Kepegawaian</div>
-                        </div>
-                    </a>
-
-                    <a href="absen.php?nik=<?php echo htmlspecialchars($nik); ?>#form-absen" class="qa-card-item">
-                        <div class="qa-icon-wrapper icon-green">
-                            <i class="fa-solid fa-camera"></i>
-                        </div>
-                        <div>
-                            <div class="qa-text-title">Absen Masuk</div>
-                            <div class="qa-text-sub">Kamera Presensi</div>
-                        </div>
-                    </a>
-
-                    <a href="riwayat-gaji.php" class="qa-card-item">
-                        <div class="qa-icon-wrapper icon-amber">
-                            <i class="fa-solid fa-receipt"></i>
-                        </div>
-                        <div>
-                            <div class="qa-text-title">Riwayat Gaji</div>
-                            <div class="qa-text-sub">Slip & Rincian</div>
-                        </div>
-                    </a>
-
-                    <a href="cuti.php" class="qa-card-item">
-                        <div class="qa-icon-wrapper icon-purple">
-                            <i class="fa-solid fa-calendar-minus"></i>
-                        </div>
-                        <div>
-                            <div class="qa-text-title">Ajukan Cuti</div>
-                            <div class="qa-text-sub">Izin & Sakit</div>
-                        </div>
-                    </a>
-
-                    <a href="kalender_kerja.php" class="qa-card-item">
-                        <div class="qa-icon-wrapper icon-rose">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </div>
-                        <div>
-                            <div class="qa-text-title">Kalender Kerja</div>
-                            <div class="qa-text-sub">Libur & Agenda</div>
-                        </div>
-                    </a>
-
-                    <a href="peringkat-kinerja.php" class="qa-card-item">
-                        <div class="qa-icon-wrapper icon-teal">
-                            <i class="fa-solid fa-chart-line"></i>
-                        </div>
-                        <div>
-                            <div class="qa-text-title">Kinerja Saya</div>
-                            <div class="qa-text-sub">Performa & Skor</div>
-                        </div>
-                    </a>
-
-                    <a href="help.php" class="qa-card-item">
-                        <div class="qa-icon-wrapper icon-sky">
-                            <i class="fa-solid fa-headset"></i>
-                        </div>
-                        <div>
-                            <div class="qa-text-title">Pusat Bantuan</div>
-                            <div class="qa-text-sub">Panduan & CS</div>
-                        </div>
-                    </a>
-
-                    <a href="profile.php" class="qa-card-item" onclick="triggerPWAInstall(); return false;">
-                        <div class="qa-icon-wrapper icon-emerald">
-                            <i class="fa-solid fa-mobile-screen-button"></i>
-                        </div>
-                        <div>
-                            <div class="qa-text-title">Install HP</div>
-                            <div class="qa-text-sub">Aplikasi PWA</div>
-                        </div>
-                    </a>
-
-                </div>
-            </div>
-
-            <!-- 4. PENGUMUMAN WIDGET -->
-            <div class="exec-card p-4 mb-4">
-                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-                    <h6 class="fw-extrabold text-dark mb-0">
-                        <i class="fa-solid fa-bullhorn text-danger me-2"></i>Pengumuman Terbaru
-                    </h6>
-                    <a href="pengumuman.php" class="small fw-bold text-primary text-decoration-none">
-                        Lihat Semua <i class="fa-solid fa-chevron-right ms-1"></i>
-                    </a>
-                </div>
-
-                <div class="text-center py-3 text-muted">
-                    <i class="fa-solid fa-bell-slash text-slate-300 fs-3 mb-2 d-block"></i>
-                    <p class="mb-0 small fw-medium">Tidak ada pengumuman terbaru saat ini.</p>
                 </div>
             </div>
 
