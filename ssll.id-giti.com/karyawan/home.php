@@ -104,6 +104,207 @@ if ($hour < 11) {
             vertical-align: middle !important;
         }
 
+        /* =======================================================
+           ULTRA-MODERN ANNOUNCEMENT & EXECUTIVE CARD UPGRADES
+           ======================================================= */
+        
+        /* Pulse Live Indicator */
+        .live-pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            animation: livePulseAnim 1.8s infinite cubic-bezier(0.66, 0, 0, 1);
+        }
+        @keyframes livePulseAnim {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* Announcement Widget Card */
+        .announcement-widget-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05), 0 4px 12px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .announcement-widget-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3.5px;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #3b82f6);
+        }
+
+        /* Announcement Item Row */
+        .announcement-item-row {
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+            margin-bottom: 8px;
+        }
+        .announcement-item-row:last-child {
+            margin-bottom: 0;
+        }
+        .announcement-item-row:hover {
+            transform: translateY(-2px);
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.08);
+        }
+
+        .announcement-icon-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1px solid #bfdbfe;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+            transition: transform 0.25s ease;
+        }
+        .announcement-item-row:hover .announcement-icon-avatar {
+            transform: scale(1.08) rotate(3deg);
+        }
+
+        .btn-read-announcement {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 0.78rem;
+            padding: 7px 16px;
+            border-radius: 50px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .btn-read-announcement:hover {
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+            color: #ffffff !important;
+        }
+
+        /* Modern Premium Modal Styles */
+        .modal-backdrop.show {
+            background-color: rgba(15, 23, 42, 0.75) !important;
+            backdrop-filter: blur(8px) !important;
+        }
+        .modern-announcement-modal .modal-content {
+            border-radius: 28px !important;
+            border: 1px solid rgba(255, 255, 255, 0.8) !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(25px) !important;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.03) !important;
+            overflow: hidden;
+            animation: modalPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes modalPopIn {
+            0% { transform: scale(0.92) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .modern-announcement-modal .modal-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+            color: #ffffff !important;
+            padding: 1.5rem 1.75rem !important;
+            border-bottom: none !important;
+            position: relative;
+        }
+        .modern-announcement-modal .modal-header .modal-title {
+            color: #ffffff !important;
+            font-size: 1.2rem !important;
+            font-weight: 800 !important;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .modern-announcement-modal .btn-close-modal {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        .modern-announcement-modal .btn-close-modal:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(90deg);
+            color: #ffffff;
+        }
+        .modern-announcement-modal .modal-body {
+            padding: 1.75rem !important;
+        }
+        .modern-announcement-modal .meta-badge-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 14px;
+            border-radius: 14px;
+            font-size: 0.82rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .modern-announcement-modal .announcement-body-card {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: 18px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+            color: #1e293b;
+            font-size: 0.98rem;
+            line-height: 1.7;
+            letter-spacing: -0.1px;
+        }
+        .modern-announcement-modal .modal-footer {
+            background: #f8fafc !important;
+            border-top: 1px solid #f1f5f9 !important;
+            padding: 1rem 1.75rem !important;
+        }
+        .btn-dismiss-announcement {
+            background: #e2e8f0;
+            color: #334155;
+            font-weight: 700;
+            font-size: 0.88rem;
+            padding: 9px 24px;
+            border-radius: 50px;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        .btn-dismiss-announcement:hover {
+            background: #cbd5e1;
+            color: #0f172a;
+            transform: translateY(-1px);
+        }
+
         /* Executive Hero Card Styling */
         .hero-banner-container {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f2b48 100%);
@@ -628,51 +829,59 @@ if ($hour < 11) {
 
 
             <!-- 4. PENGUMUMAN WIDGET -->
-            <div class="exec-card p-4 mb-4">
-                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-                    <h6 class="fw-extrabold text-dark mb-0">
-                        <i class="fa-solid fa-bullhorn text-danger me-2"></i>Pengumuman Terbaru
-                    </h6>
-                    <a href="pengumuman.php" class="small fw-bold text-primary text-decoration-none">
-                        Lihat Semua <i class="fa-solid fa-chevron-right ms-1"></i>
+            <div class="announcement-widget-card p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2.5">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="live-pulse-dot"></span>
+                        <h6 class="fw-extrabold text-dark mb-0 d-flex align-items-center gap-2" style="letter-spacing: -0.2px;">
+                            <i class="fa-solid fa-bullhorn text-danger"></i>Pengumuman Terbaru
+                        </h6>
+                    </div>
+                    <a href="pengumuman.php" class="small fw-bold text-primary text-decoration-none d-inline-flex align-items-center gap-1">
+                        Lihat Semua <i class="fa-solid fa-chevron-right fs-xs"></i>
                     </a>
                 </div>
 
                 <?php if (empty($pengumuman_list)): ?>
-                    <div class="text-center py-3 text-muted">
+                    <div class="text-center py-4 text-muted">
                         <i class="fa-solid fa-bell-slash text-slate-300 fs-3 mb-2 d-block"></i>
                         <p class="mb-0 small fw-medium">Tidak ada pengumuman terbaru saat ini.</p>
                     </div>
                 <?php else: ?>
                     <div class="announcement-list-home">
                         <?php foreach ($pengumuman_list as $item): ?>
-                            <div class="p-2 mb-2 border-bottom d-flex align-items-center justify-content-between gap-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                            <div class="announcement-item-row d-flex align-items-center justify-content-between gap-3">
+                                <div class="d-flex align-items-center gap-3" style="min-width: 0;">
+                                    <div class="announcement-icon-avatar">
                                         <?php if (!empty($item['gambar']) && file_exists('../uploads/pengumuman/' . $item['gambar'])): ?>
                                             <img src="../uploads/pengumuman/<?php echo htmlspecialchars($item['gambar']); ?>" class="rounded-3" style="width: 100%; height: 100%; object-fit: cover;">
                                         <?php else: ?>
-                                            <div class="text-primary fs-5"><i class="fa-solid fa-bullhorn"></i></div>
+                                            <i class="fa-solid fa-bullhorn"></i>
                                         <?php endif; ?>
                                     </div>
-                                    <div>
-                                        <a href="#" class="fw-bold text-dark text-decoration-none d-block small mb-0.5 hover-primary" data-bs-toggle="modal" data-bs-target="#announcementHomeModal_<?php echo $item['id']; ?>">
+                                    <div style="min-width: 0;">
+                                        <a href="#" class="fw-bold text-dark text-decoration-none d-block small mb-1 hover-primary text-truncate" data-bs-toggle="modal" data-bs-target="#announcementHomeModal_<?php echo $item['id']; ?>" style="font-size: 0.92rem;">
                                             <?php echo $item['judul']; ?>
                                         </a>
-                                        <span class="text-muted" style="font-size: 0.72rem;"><?php echo date('d M Y', strtotime($item['created_at'])); ?></span>
-                                        <?php
-                                        $jenis_lower = strtolower($item['jenis']);
-                                        if ($jenis_lower === 'penting') {
-                                            echo '<span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1.5" style="font-size:0.6rem;">Penting</span>';
-                                        } elseif ($jenis_lower === 'acara') {
-                                            echo '<span class="badge bg-warning-subtle text-dark border border-warning ms-1.5" style="font-size:0.6rem;">Acara</span>';
-                                        } else {
-                                            echo '<span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1.5" style="font-size:0.6rem;">Info</span>';
-                                        }
-                                        ?>
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <span class="text-muted" style="font-size: 0.75rem;"><i class="fa-regular fa-calendar me-1"></i><?php echo date('d M Y', strtotime($item['created_at'])); ?></span>
+                                            <?php
+                                            $jenis_lower = strtolower($item['jenis']);
+                                            if ($jenis_lower === 'penting') {
+                                                echo '<span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-bold rounded-pill px-2.5 py-0.5" style="font-size:0.68rem;"><i class="fa-solid fa-circle-exclamation me-1"></i>Penting</span>';
+                                            } elseif ($jenis_lower === 'acara') {
+                                                echo '<span class="badge bg-warning-subtle text-dark border border-warning fw-bold rounded-pill px-2.5 py-0.5" style="font-size:0.68rem;"><i class="fa-solid fa-calendar-star me-1"></i>Acara</span>';
+                                            } else {
+                                                echo '<span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold rounded-pill px-2.5 py-0.5" style="font-size:0.68rem;"><i class="fa-solid fa-circle-info me-1"></i>Info</span>';
+                                            }
+                                            ?>
+                                        </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1 fw-bold" style="font-size:0.75rem;" data-bs-toggle="modal" data-bs-target="#announcementHomeModal_<?php echo $item['id']; ?>">Baca</button>
+                                <button class="btn-read-announcement" data-bs-toggle="modal" data-bs-target="#announcementHomeModal_<?php echo $item['id']; ?>">
+                                    <span>Baca</span>
+                                    <i class="fa-solid fa-arrow-right-long fs-xs"></i>
+                                </button>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -966,30 +1175,49 @@ if ($hour < 11) {
     <!-- Modals for Home Announcements -->
     <?php if (!empty($pengumuman_list)): ?>
         <?php foreach ($pengumuman_list as $item_modal): ?>
-            <div class="modal fade" id="announcementHomeModal_<?php echo $item_modal['id']; ?>" tabindex="-1" aria-hidden="true" style="z-index: 1100;">
+            <div class="modal fade modern-announcement-modal" id="announcementHomeModal_<?php echo $item_modal['id']; ?>" tabindex="-1" aria-hidden="true" style="z-index: 1100;">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content rounded-4 border-0 shadow">
-                        <div class="modal-header">
-                            <h5 class="modal-title fw-bold text-dark"><?php echo $item_modal['judul']; ?></h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-content shadow-lg border-0">
+                        <div class="modal-header d-flex align-items-center justify-content-between">
+                            <h5 class="modal-title m-0">
+                                <i class="fa-solid fa-bullhorn text-warning me-2"></i><?php echo $item_modal['judul']; ?>
+                            </h5>
+                            <button type="button" class="btn-close-modal" data-bs-dismiss="modal" aria-label="Close">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
                         </div>
                         <div class="modal-body">
-                            <div class="mb-3 text-muted small">
-                                <i class="fa-regular fa-calendar me-1"></i> Diposting: <?php echo date('d F Y, H:i', strtotime($item_modal['created_at'])); ?>
-                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2"><?php echo htmlspecialchars($item_modal['jenis']); ?></span>
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                                <div class="meta-badge-box">
+                                    <i class="fa-regular fa-calendar-days text-primary"></i>
+                                    <span>Diposting: <?php echo date('d F Y, H:i', strtotime($item_modal['created_at'])); ?> WIB</span>
+                                </div>
+                                <?php
+                                $modal_jenis_lower = strtolower($item_modal['jenis']);
+                                if ($modal_jenis_lower === 'penting') {
+                                    echo '<span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-bold rounded-pill px-3 py-1.5"><i class="fa-solid fa-triangle-exclamation me-1.5"></i>PENTING</span>';
+                                } elseif ($modal_jenis_lower === 'acara') {
+                                    echo '<span class="badge bg-warning-subtle text-dark border border-warning fw-bold rounded-pill px-3 py-1.5"><i class="fa-solid fa-calendar-check me-1.5"></i>ACARA</span>';
+                                } else {
+                                    echo '<span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold rounded-pill px-3 py-1.5"><i class="fa-solid fa-info-circle me-1.5"></i>INFORMASI</span>';
+                                }
+                                ?>
                             </div>
+
                             <?php if (!empty($item_modal['gambar']) && file_exists('../uploads/pengumuman/' . $item_modal['gambar'])): ?>
                                 <div class="mb-3 text-center">
-                                    <img src="../uploads/pengumuman/<?php echo htmlspecialchars($item_modal['gambar']); ?>" class="img-fluid rounded-3" style="max-height: 380px; object-fit: contain;">
+                                    <img src="../uploads/pengumuman/<?php echo htmlspecialchars($item_modal['gambar']); ?>" class="img-fluid rounded-4 shadow-sm" style="max-height: 380px; width: 100%; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px;">
                                 </div>
                             <?php endif; ?>
-                            <hr class="my-3">
-                            <div class="announcement-content text-dark" style="line-height: 1.6; font-size: 0.95rem;">
+
+                            <div class="announcement-body-card">
                                 <?php echo $item_modal['isi']; ?>
                             </div>
                         </div>
-                        <div class="modal-footer bg-light">
-                            <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Tutup</button>
+                        <div class="modal-footer d-flex justify-content-end">
+                            <button type="button" class="btn-dismiss-announcement" data-bs-dismiss="modal">
+                                <i class="fa-solid fa-check me-1.5"></i>Tutup Pengumuman
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -88,6 +88,108 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
             display: inline-block !important;
             vertical-align: middle !important;
         }
+
+        /* Modern Executive Glass Modal */
+        .modal-backdrop.show {
+            background-color: rgba(15, 23, 42, 0.75) !important;
+            backdrop-filter: blur(8px) !important;
+        }
+        .modern-announcement-modal .modal-content {
+            border-radius: 28px !important;
+            border: 1px solid rgba(255, 255, 255, 0.8) !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(25px) !important;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.03) !important;
+            overflow: hidden;
+            animation: modalPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes modalPopIn {
+            0% { transform: scale(0.92) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .modern-announcement-modal .modal-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+            color: #ffffff !important;
+            padding: 1.5rem 1.75rem !important;
+            border-bottom: none !important;
+            position: relative;
+        }
+        .modern-announcement-modal .modal-header .modal-title {
+            color: #ffffff !important;
+            font-size: 1.2rem !important;
+            font-weight: 800 !important;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .modern-announcement-modal .btn-close-modal {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        .modern-announcement-modal .btn-close-modal:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(90deg);
+            color: #ffffff;
+        }
+        .modern-announcement-modal .modal-body {
+            padding: 1.75rem !important;
+        }
+        .modern-announcement-modal .meta-badge-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 14px;
+            border-radius: 14px;
+            font-size: 0.82rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .modern-announcement-modal .announcement-body-card {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: 18px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+            color: #1e293b;
+            font-size: 0.98rem;
+            line-height: 1.7;
+            letter-spacing: -0.1px;
+        }
+        .modern-announcement-modal .modal-footer {
+            background: #f8fafc !important;
+            border-top: 1px solid #f1f5f9 !important;
+            padding: 1rem 1.75rem !important;
+        }
+        .btn-dismiss-announcement {
+            background: #e2e8f0;
+            color: #334155;
+            font-weight: 700;
+            font-size: 0.88rem;
+            padding: 9px 24px;
+            border-radius: 50px;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        .btn-dismiss-announcement:hover {
+            background: #cbd5e1;
+            color: #0f172a;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 
@@ -194,51 +296,52 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
 
     <?php if (!empty($pengumuman_semua_list)): ?>
         <?php foreach ($pengumuman_semua_list as $item_modal): ?>
-            <div class="modal fade" id="announcementDetailModal_<?php echo htmlspecialchars($item_modal['id']); ?>" tabindex="-1" aria-labelledby="announcementDetailModalLabel_<?php echo htmlspecialchars($item_modal['id']); ?>" aria-hidden="true">
-                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="announcementDetailModalLabel_<?php echo htmlspecialchars($item_modal['id']); ?>">
-                                <?php echo $item_modal['judul']; ?>
+            <div class="modal fade modern-announcement-modal" id="announcementDetailModal_<?php echo htmlspecialchars($item_modal['id']); ?>" tabindex="-1" aria-labelledby="announcementDetailModalLabel_<?php echo htmlspecialchars($item_modal['id']); ?>" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content shadow-lg border-0">
+                        <div class="modal-header d-flex align-items-center justify-content-between">
+                            <h5 class="modal-title m-0" id="announcementDetailModalLabel_<?php echo htmlspecialchars($item_modal['id']); ?>">
+                                <i class="fa-solid fa-bullhorn text-warning me-2"></i><?php echo $item_modal['judul']; ?>
                             </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close-modal" data-bs-dismiss="modal" aria-label="Close">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
                         </div>
                         <div class="modal-body">
-                            <div class="mb-3 modal-announcement-meta">
-                                <small class="text-muted">
-                                    <i class="fa-regular fa-calendar-alt me-1"></i> Diposting:
-                                    <?php
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                                <div class="meta-badge-box">
+                                    <i class="fa-regular fa-calendar-days text-primary"></i>
+                                    <span>Diposting: <?php
                                     try {
                                         echo (new DateTime($item_modal['created_at']))->format('d F Y, H:i');
                                     } catch (Exception $e) {
                                         echo htmlspecialchars($item_modal['created_at']);
                                     }
-                                    ?>
-                                    <?php if (!empty($item_modal['jenis'])): ?>
-                                        | <span class="badge bg-primary-subtle text-primary-emphasis border border-primary-subtle ms-1">
-                                            <i class="fa-solid fa-tag me-1"></i><?php echo htmlspecialchars($item_modal['jenis']); ?>
-                                        </span>
-                                    <?php endif; ?>
-                                </small>
+                                    ?> WIB</span>
+                                </div>
+                                <?php
+                                $modal_jenis_lower = strtolower($item_modal['jenis']);
+                                if ($modal_jenis_lower === 'penting') {
+                                    echo '<span class="badge bg-danger-subtle text-danger border border-danger-subtle fw-bold rounded-pill px-3 py-1.5"><i class="fa-solid fa-triangle-exclamation me-1.5"></i>PENTING</span>';
+                                } elseif ($modal_jenis_lower === 'acara') {
+                                    echo '<span class="badge bg-warning-subtle text-dark border border-warning fw-bold rounded-pill px-3 py-1.5"><i class="fa-solid fa-calendar-check me-1.5"></i>ACARA</span>';
+                                } else {
+                                    echo '<span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold rounded-pill px-3 py-1.5"><i class="fa-solid fa-info-circle me-1.5"></i>INFORMASI</span>';
+                                }
+                                ?>
                             </div>
 
                             <?php if (!empty($item_modal['gambar'])): ?>
                                 <div class="mb-3 text-center">
                                     <img src="../uploads/pengumuman/<?php echo htmlspecialchars($item_modal['gambar']); ?>"
                                         alt="Gambar Pengumuman: <?php echo htmlspecialchars($item_modal['judul']); ?>"
-                                        class="img-fluid rounded modal-announcement-image"
-                                        style="max-height: 450px; object-fit: contain; border: 1px solid #eee;">
+                                        class="img-fluid rounded-4 shadow-sm"
+                                        style="max-height: 420px; width: 100%; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px;">
                                 </div>
                             <?php endif; ?>
 
-                            <hr class="my-3">
-                            <div class="modal-announcement-content">
-                                <?php
-                                // Jika isi adalah plain text dengan newline
-                                // echo nl2br(htmlspecialchars($item_modal['isi'])); 
-                                // Jika isi adalah HTML yang sudah aman dari editor WYSIWYG
-                                echo $item_modal['isi'];
-                                ?>
+                            <div class="announcement-body-card">
+                                <?php echo $item_modal['isi']; ?>
                             </div>
 
                             <?php
@@ -250,18 +353,20 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                 }
                             ?>
                                 <hr class="my-3">
-                                <h6 class="modal-subtitle-section">Media Terkait:</h6>
+                                <h6 class="fw-bold text-dark mb-2"><i class="fa-brands fa-youtube text-danger me-2"></i>Media Terkait:</h6>
                                 <?php if ($youtube_embed_url): ?>
-                                    <div class="ratio ratio-16x9">
+                                    <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm">
                                         <iframe src="<?php echo htmlspecialchars($youtube_embed_url); ?>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                                     </div>
                                 <?php else: ?>
-                                    <p><a href="<?php echo htmlspecialchars($media_url); ?>" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-link me-1"></i>Lihat Media Tambahan</a></p>
+                                    <p><a href="<?php echo htmlspecialchars($media_url); ?>" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm rounded-pill"><i class="fa-solid fa-link me-1"></i>Lihat Media Tambahan</a></p>
                                 <?php endif; ?>
                             <?php endif; ?>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+                        <div class="modal-footer d-flex justify-content-end">
+                            <button type="button" class="btn-dismiss-announcement" data-bs-dismiss="modal">
+                                <i class="fa-solid fa-check me-1.5"></i>Tutup Pengumuman
+                            </button>
                         </div>
                     </div>
                 </div>
