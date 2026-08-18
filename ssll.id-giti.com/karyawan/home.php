@@ -613,6 +613,58 @@ if ($hour < 11) {
 
 
 
+            <!-- 4. PENGUMUMAN WIDGET -->
+            <div class="exec-card p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                    <h6 class="fw-extrabold text-dark mb-0">
+                        <i class="fa-solid fa-bullhorn text-danger me-2"></i>Pengumuman Terbaru
+                    </h6>
+                    <a href="pengumuman.php" class="small fw-bold text-primary text-decoration-none">
+                        Lihat Semua <i class="fa-solid fa-chevron-right ms-1"></i>
+                    </a>
+                </div>
+
+                <?php if (empty($pengumuman_list)): ?>
+                    <div class="text-center py-3 text-muted">
+                        <i class="fa-solid fa-bell-slash text-slate-300 fs-3 mb-2 d-block"></i>
+                        <p class="mb-0 small fw-medium">Tidak ada pengumuman terbaru saat ini.</p>
+                    </div>
+                <?php else: ?>
+                    <div class="announcement-list-home">
+                        <?php foreach ($pengumuman_list as $item): ?>
+                            <div class="p-2 mb-2 border-bottom d-flex align-items-center justify-content-between gap-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                                        <?php if (!empty($item['gambar']) && file_exists('../uploads/pengumuman/' . $item['gambar'])): ?>
+                                            <img src="../uploads/pengumuman/<?php echo htmlspecialchars($item['gambar']); ?>" class="rounded-3" style="width: 100%; height: 100%; object-fit: cover;">
+                                        <?php else: ?>
+                                            <div class="text-primary fs-5"><i class="fa-solid fa-bullhorn"></i></div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div>
+                                        <a href="#" class="fw-bold text-dark text-decoration-none d-block small mb-0.5 hover-primary" data-bs-toggle="modal" data-bs-target="#announcementHomeModal_<?php echo $item['id']; ?>">
+                                            <?php echo htmlspecialchars($item['judul']); ?>
+                                        </a>
+                                        <span class="text-muted" style="font-size: 0.72rem;"><?php echo date('d M Y', strtotime($item['created_at'])); ?></span>
+                                        <?php
+                                        $jenis_lower = strtolower($item['jenis']);
+                                        if ($jenis_lower === 'penting') {
+                                            echo '<span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1.5" style="font-size:0.6rem;">Penting</span>';
+                                        } elseif ($jenis_lower === 'acara') {
+                                            echo '<span class="badge bg-warning-subtle text-dark border border-warning ms-1.5" style="font-size:0.6rem;">Acara</span>';
+                                        } else {
+                                            echo '<span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1.5" style="font-size:0.6rem;">Info</span>';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1 fw-bold" style="font-size:0.75rem;" data-bs-toggle="modal" data-bs-target="#announcementHomeModal_<?php echo $item['id']; ?>">Baca</button>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
             <!-- 3. QUICK ACTION MENU GRID -->
             <div class="mb-4">
                 <h6 class="fw-extrabold text-dark mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>Akses Cepat Menu Karyawan</h6>
@@ -701,57 +753,7 @@ if ($hour < 11) {
                 </div>
             </div>
 
-            <!-- 4. PENGUMUMAN WIDGET -->
-            <div class="exec-card p-4 mb-4">
-                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
-                    <h6 class="fw-extrabold text-dark mb-0">
-                        <i class="fa-solid fa-bullhorn text-danger me-2"></i>Pengumuman Terbaru
-                    </h6>
-                    <a href="pengumuman.php" class="small fw-bold text-primary text-decoration-none">
-                        Lihat Semua <i class="fa-solid fa-chevron-right ms-1"></i>
-                    </a>
-                </div>
 
-                <?php if (empty($pengumuman_list)): ?>
-                    <div class="text-center py-3 text-muted">
-                        <i class="fa-solid fa-bell-slash text-slate-300 fs-3 mb-2 d-block"></i>
-                        <p class="mb-0 small fw-medium">Tidak ada pengumuman terbaru saat ini.</p>
-                    </div>
-                <?php else: ?>
-                    <div class="announcement-list-home">
-                        <?php foreach ($pengumuman_list as $item): ?>
-                            <div class="p-2 mb-2 border-bottom d-flex align-items-center justify-content-between gap-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
-                                        <?php if (!empty($item['gambar']) && file_exists('../uploads/pengumuman/' . $item['gambar'])): ?>
-                                            <img src="../uploads/pengumuman/<?php echo htmlspecialchars($item['gambar']); ?>" class="rounded-3" style="width: 100%; height: 100%; object-fit: cover;">
-                                        <?php else: ?>
-                                            <div class="text-primary fs-5"><i class="fa-solid fa-bullhorn"></i></div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div>
-                                        <a href="#" class="fw-bold text-dark text-decoration-none d-block small mb-0.5 hover-primary" data-bs-toggle="modal" data-bs-target="#announcementHomeModal_<?php echo $item['id']; ?>">
-                                            <?php echo htmlspecialchars($item['judul']); ?>
-                                        </a>
-                                        <span class="text-muted" style="font-size: 0.72rem;"><?php echo date('d M Y', strtotime($item['created_at'])); ?></span>
-                                        <?php
-                                        $jenis_lower = strtolower($item['jenis']);
-                                        if ($jenis_lower === 'penting') {
-                                            echo '<span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1.5" style="font-size:0.6rem;">Penting</span>';
-                                        } elseif ($jenis_lower === 'acara') {
-                                            echo '<span class="badge bg-warning-subtle text-dark border border-warning ms-1.5" style="font-size:0.6rem;">Acara</span>';
-                                        } else {
-                                            echo '<span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1.5" style="font-size:0.6rem;">Info</span>';
-                                        }
-                                        ?>
-                                    </div>
-                                </div>
-                                <button class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1 fw-bold" style="font-size:0.75rem;" data-bs-toggle="modal" data-bs-target="#announcementHomeModal_<?php echo $item['id']; ?>">Baca</button>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
 
             <!-- 2. MAIN DASHBOARD METRICS & SALARY (ROW 1) -->
             <div class="row g-4 mb-4">
