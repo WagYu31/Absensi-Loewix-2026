@@ -196,6 +196,97 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
             padding: 5px 12px;
             border-radius: 8px;
         }
+        
+        /* Premium Emoji & Sticker Board CSS */
+        .picker-btn-toggle {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #4b5563;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            transition: all 0.2s ease;
+        }
+        .picker-btn-toggle:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
+        .board-container {
+            border: 1px solid #e5e7eb;
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .board-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+        .board-tab-link {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #6b7280;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .board-tab-link.active {
+            background: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+        }
+        .board-content-pane {
+            max-height: 180px;
+            overflow-y: auto;
+            display: grid;
+            gap: 8px;
+        }
+        .emoji-grid {
+            grid-template-columns: repeat(10, 1fr);
+            font-size: 1.35rem;
+            user-select: none;
+        }
+        .emoji-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            transition: background 0.15s;
+        }
+        .emoji-item:hover {
+            background: #e5e7eb;
+        }
+        .sticker-grid {
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        .sticker-item {
+            cursor: pointer;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            background: #ffffff;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .sticker-item:hover {
+            border-color: #3b82f6;
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        .sticker-item img {
+            width: 46px;
+            height: 46px;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body>
@@ -347,8 +438,29 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-secondary">Isi Pengumuman</label>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label fw-bold small text-secondary mb-0">Isi Pengumuman</label>
+                                <button type="button" class="btn btn-sm picker-btn-toggle rounded-pill px-2.5 py-1" onclick="toggleEmojiStickerBoard()">
+                                    <i class="fa-solid fa-face-smile text-warning me-1.5"></i>Sisipkan Emoji & Stiker
+                                </button>
+                            </div>
                             <textarea class="form-control rounded-3" name="isi" id="formIsi" rows="6" placeholder="Ketik pesan atau detail pengumuman secara lengkap..." required></textarea>
+                            
+                            <!-- Hidden tabbed emoji and animated sticker board -->
+                            <div id="emojiStickerBoard" class="board-container d-none">
+                                <div class="board-tabs">
+                                    <button type="button" class="board-tab-link active" onclick="switchBoardTab('emojis')"><i class="fa-regular fa-face-grin-stars me-1 text-warning"></i> Emoji</button>
+                                    <button type="button" class="board-tab-link" onclick="switchBoardTab('stickers')"><i class="fa-solid fa-bolt me-1 text-danger"></i> Stiker Bergerak (GIF)</button>
+                                </div>
+                                
+                                <div id="paneEmojis" class="board-content-pane emoji-grid">
+                                    <!-- Populated dynamically via JS -->
+                                </div>
+                                
+                                <div id="paneStickers" class="board-content-pane sticker-grid d-none">
+                                    <!-- Populated dynamically via JS -->
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -405,6 +517,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
             $('#formJudul').val('');
             $('#formIsi').val('');
             $('#formGambar').val('');
+            $('#emojiStickerBoard').addClass('d-none');
             $('#announcementModalLabel').html('<i class="fa-solid fa-bullhorn me-2"></i>Buat Pengumuman Baru');
             $('#submitBtn').text('Terbitkan');
             annModal.show();
@@ -417,6 +530,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
             $('#formJudul').val(item.judul);
             $('#formIsi').val(item.isi);
             $('#formGambar').val('');
+            $('#emojiStickerBoard').addClass('d-none');
             $('#announcementModalLabel').html('<i class="fa-solid fa-pen-to-square me-2"></i>Edit Pengumuman');
             $('#submitBtn').text('Simpan Perubahan');
             annModal.show();
@@ -439,6 +553,85 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                 }
             });
         }
+
+        // Emoji & Sticker board helper functions
+        const emojisList = [
+            '😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','👋','🤚','🖐','✋','🖖','👌','🤌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👍','👎','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✍️','💅','🤳','💪','🦾','👂','🦻','👃','🧠','🫀','🫁','🦷','🦴','👀','👁','👅','👄','💋','🩸','📢','🔔','🔥','✨','🎉','🎊','🎈','🎁','🎀','🏆','🥇','🥈','🥉','💡','💻','📅','📌','📍','🚀','🎯'
+        ];
+
+        const stickersList = [
+            { name: 'Megaphone', url: 'https://media.giphy.com/media/VbnUQpnihPSIgIXNVv/giphy.gif' },
+            { name: 'Fire / Semangat', url: 'https://media.giphy.com/media/l0IybQ67MfjacTI52/giphy.gif' },
+            { name: 'Congrats Popper', url: 'https://media.giphy.com/media/26tP21a9ZCZBY3jG0/giphy.gif' },
+            { name: 'Congrats Sparkle', url: 'https://media.giphy.com/media/3o7qE1YN7aBOFPRw8E/giphy.gif' },
+            { name: 'Rocket Launch', url: 'https://media.giphy.com/media/tXL4FHPSnVJ0A/giphy.gif' },
+            { name: 'Bullseye Target', url: 'https://media.giphy.com/media/3o7TKSjRrfIPjei1fG/giphy.gif' },
+            { name: 'Siren Warning', url: 'https://media.giphy.com/media/l3q2zVr6cu95nF6O4/giphy.gif' },
+            { name: 'Trophy Victory', url: 'https://media.giphy.com/media/xT0xezQGU5xCDSK316/giphy.gif' },
+            { name: 'Birthday Cake', url: 'https://media.giphy.com/media/3o85xGocUH8TCQDDry/giphy.gif' },
+            { name: 'Like Thumbs Up', url: 'https://media.giphy.com/media/l41YkxvU8c7J7Bba0/giphy.gif' }
+        ];
+
+        // Populate board
+        function initEmojiStickerBoard() {
+            // Emojis
+            let emojiHtml = '';
+            emojisList.forEach(emoji => {
+                emojiHtml += `<div class="emoji-item" onclick="insertValueToEditor('${emoji}', false)">${emoji}</div>`;
+            });
+            $('#paneEmojis').html(emojiHtml);
+
+            // Stickers
+            let stickerHtml = '';
+            stickersList.forEach(stk => {
+                stickerHtml += `
+                    <div class="sticker-item" onclick="insertValueToEditor('${stk.url}', true)" title="${stk.name}">
+                        <img src="${stk.url}" alt="${stk.name}">
+                    </div>
+                `;
+            });
+            $('#paneStickers').html(stickerHtml);
+        }
+
+        function toggleEmojiStickerBoard() {
+            $('#emojiStickerBoard').toggleClass('d-none');
+        }
+
+        function switchBoardTab(tab) {
+            $('.board-tab-link').removeClass('active');
+            if (tab === 'emojis') {
+                $('.board-tab-link').first().addClass('active');
+                $('#paneEmojis').removeClass('d-none');
+                $('#paneStickers').addClass('d-none');
+            } else {
+                $('.board-tab-link').last().addClass('active');
+                $('#paneEmojis').addClass('d-none');
+                $('#paneStickers').removeClass('d-none');
+            }
+        }
+
+        function insertValueToEditor(val, isSticker) {
+            const textarea = document.getElementById('formIsi');
+            let insertText = val;
+            if (isSticker) {
+                insertText = `<img src="${val}" style="width: 80px; height: 80px; display: inline-block; vertical-align: middle;" />`;
+            }
+
+            // Insert at cursor position
+            if (textarea.selectionStart || textarea.selectionStart === 0) {
+                const startPos = textarea.selectionStart;
+                const endPos = textarea.selectionEnd;
+                textarea.value = textarea.value.substring(0, startPos) + insertText + textarea.value.substring(endPos, textarea.value.length);
+                textarea.focus();
+                textarea.selectionStart = startPos + insertText.length;
+                textarea.selectionEnd = startPos + insertText.length;
+            } else {
+                textarea.value += insertText;
+            }
+        }
+
+        // Initialize board
+        initEmojiStickerBoard();
     </script>
 </body>
 </html>
