@@ -9,6 +9,16 @@ if (!isset($_SESSION['nip']) || $_SESSION['role'] !== 'karyawan') {
 include '../conn.php';
 include 'get-kar-login-data.php';
 
+// Ambil 3 pengumuman terbaru
+$pengumuman_list = [];
+$sql_pengumuman = "SELECT id, judul, isi, jenis, created_at, gambar, media FROM pengumuman WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT 3";
+$res_pengumuman = $conn->query($sql_pengumuman);
+if ($res_pengumuman && $res_pengumuman->num_rows > 0) {
+    while ($row_p = $res_pengumuman->fetch_assoc()) {
+        $pengumuman_list[] = $row_p;
+    }
+}
+
 $current_page_basename = basename($_SERVER['PHP_SELF']);
 $asset_version = time();
 
@@ -702,10 +712,45 @@ if ($hour < 11) {
                     </a>
                 </div>
 
-                <div class="text-center py-3 text-muted">
-                    <i class="fa-solid fa-bell-slash text-slate-300 fs-3 mb-2 d-block"></i>
-                    <p class="mb-0 small fw-medium">Tidak ada pengumuman terbaru saat ini.</p>
-                </div>
+                <?php if (empty($pengumuman_list)): ?>
+                    <div class="text-center py-3 text-muted">
+                        <i class="fa-solid fa-bell-slash text-slate-300 fs-3 mb-2 d-block"></i>
+                        <p class="mb-0 small fw-medium">Tidak ada pengumuman terbaru saat ini.</p>
+                    </div>
+                <?php else: ?>
+                    <div class="announcement-list-home">
+                        <?php foreach ($pengumuman_list as $item): ?>
+                            <div class="p-2 mb-2 border-bottom d-flex align-items-center justify-content-between gap-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                                        <?php if (!empty($item['gambar']) && file_exists('../uploads/pengumuman/' . $item['gambar'])): ?>
+                                            <img src="../uploads/pengumuman/<?php echo htmlspecialchars($item['gambar']); ?>" class="rounded-3" style="width: 100%; height: 100%; object-fit: cover;">
+                                        <?php else: ?>
+                                            <div class="text-primary fs-5"><i class="fa-solid fa-bullhorn"></i></div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div>
+                                        <a href="#" class="fw-bold text-dark text-decoration-none d-block small mb-0.5 hover-primary" data-bs-toggle="modal" data-bs-target="#announcementHomeModal_<?php echo $item['id']; ?>">
+                                            <?php echo htmlspecialchars($item['judul']); ?>
+                                        </a>
+                                        <span class="text-muted" style="font-size: 0.72rem;"><?php echo date('d M Y', strtotime($item['created_at'])); ?></span>
+                                        <?php
+                                        $jenis_lower = strtolower($item['jenis']);
+                                        if ($jenis_lower === 'penting') {
+                                            echo '<span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1.5" style="font-size:0.6rem;">Penting</span>';
+                                        } elseif ($jenis_lower === 'acara') {
+                                            echo '<span class="badge bg-warning-subtle text-dark border border-warning ms-1.5" style="font-size:0.6rem;">Acara</span>';
+                                        } else {
+                                            echo '<span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1.5" style="font-size:0.6rem;">Info</span>';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1 fw-bold" style="font-size:0.75rem;" data-bs-toggle="modal" data-bs-target="#announcementHomeModal_<?php echo $item['id']; ?>">Baca</button>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <!-- 2. MAIN DASHBOARD METRICS & SALARY (ROW 1) -->
@@ -901,6 +946,39 @@ if ($hour < 11) {
             }
         });
     </script>
-</body>
 
+    <!-- Modals for Home Announcements -->
+    <?php if (!empty($pengumuman_list)): ?>
+        <?php foreach ($pengumuman_list as $item_modal): ?>
+            <div class="modal fade" id="announcementHomeModal_<?php echo $item_modal['id']; ?>" tabindex="-1" aria-hidden="true" style="z-index: 1100;">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content rounded-4 border-0 shadow">
+                        <div class="modal-header">
+                            <h5 class="modal-title fw-bold text-dark"><?php echo htmlspecialchars($item_modal['judul']); ?></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3 text-muted small">
+                                <i class="fa-regular fa-calendar me-1"></i> Diposting: <?php echo date('d F Y, H:i', strtotime($item_modal['created_at'])); ?>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2"><?php echo htmlspecialchars($item_modal['jenis']); ?></span>
+                            </div>
+                            <?php if (!empty($item_modal['gambar']) && file_exists('../uploads/pengumuman/' . $item_modal['gambar'])): ?>
+                                <div class="mb-3 text-center">
+                                    <img src="../uploads/pengumuman/<?php echo htmlspecialchars($item_modal['gambar']); ?>" class="img-fluid rounded-3" style="max-height: 380px; object-fit: contain;">
+                                </div>
+                            <?php endif; ?>
+                            <hr class="my-3">
+                            <div class="announcement-content text-dark" style="line-height: 1.6; font-size: 0.95rem;">
+                                <?php echo $item_modal['isi']; ?>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-light">
+                            <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</body>
 </html>
