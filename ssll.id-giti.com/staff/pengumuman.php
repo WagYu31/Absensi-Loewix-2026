@@ -197,6 +197,14 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
             border-radius: 8px;
         }
         
+        /* Scale inline stickers inside headings and links */
+        table td img, .modal-title img {
+            max-height: 24px !important;
+            width: auto !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+        
         /* Premium Emoji & Sticker Board CSS */
         .picker-btn-toggle {
             font-size: 0.8rem;
@@ -356,7 +364,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>
-                                                    <div class="fw-bold text-dark"><?php echo htmlspecialchars($item['judul']); ?></div>
+                                                    <div class="fw-bold text-dark"><?php echo $item['judul']; ?></div>
                                                 </td>
                                                 <td>
                                                     <span class="text-secondary"><?php echo htmlspecialchars(substr(strip_tags($item['isi']), 0, 80)) . (strlen(strip_tags($item['isi'])) > 80 ? '...' : ''); ?></span>

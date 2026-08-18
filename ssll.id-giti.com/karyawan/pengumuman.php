@@ -74,6 +74,21 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
     <link rel="stylesheet" href="../assets/css/bottom-nav.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/pengumuman-styles.css">
+    <style>
+        /* Scale inline stickers inside headings and links */
+        .announcement-item-title a img {
+            max-height: 24px !important;
+            width: auto !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+        .modal-title img {
+            max-height: 28px !important;
+            width: auto !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -104,7 +119,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                 <div class="card-body">
                                     <h5 class="card-title announcement-item-title">
                                         <a href="#" data-bs-toggle="modal" data-bs-target="#announcementDetailModal_<?php echo htmlspecialchars($item['id']); ?>">
-                                            <?php echo htmlspecialchars($item['judul']); ?>
+                                            <?php echo $item['judul']; ?>
                                         </a>
                                     </h5>
                                     <div class="announcement-item-meta mb-2">
@@ -184,7 +199,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="announcementDetailModalLabel_<?php echo htmlspecialchars($item_modal['id']); ?>">
-                                <?php echo htmlspecialchars($item_modal['judul']); ?>
+                                <?php echo $item_modal['judul']; ?>
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>

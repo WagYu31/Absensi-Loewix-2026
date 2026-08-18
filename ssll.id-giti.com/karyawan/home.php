@@ -90,6 +90,20 @@ if ($hour < 11) {
             padding-bottom: 110px !important;
         }
 
+        /* Scale inline stickers inside headings and links */
+        .announcement-list-home a img {
+            max-height: 24px !important;
+            width: auto !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+        .modal-title img {
+            max-height: 28px !important;
+            width: auto !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+
         /* Executive Hero Card Styling */
         .hero-banner-container {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f2b48 100%);
@@ -643,7 +657,7 @@ if ($hour < 11) {
                                     </div>
                                     <div>
                                         <a href="#" class="fw-bold text-dark text-decoration-none d-block small mb-0.5 hover-primary" data-bs-toggle="modal" data-bs-target="#announcementHomeModal_<?php echo $item['id']; ?>">
-                                            <?php echo htmlspecialchars($item['judul']); ?>
+                                            <?php echo $item['judul']; ?>
                                         </a>
                                         <span class="text-muted" style="font-size: 0.72rem;"><?php echo date('d M Y', strtotime($item['created_at'])); ?></span>
                                         <?php
@@ -956,7 +970,7 @@ if ($hour < 11) {
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content rounded-4 border-0 shadow">
                         <div class="modal-header">
-                            <h5 class="modal-title fw-bold text-dark"><?php echo htmlspecialchars($item_modal['judul']); ?></h5>
+                            <h5 class="modal-title fw-bold text-dark"><?php echo $item_modal['judul']; ?></h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
