@@ -555,7 +555,21 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                                 $words = explode(' ', trim($karyawan['nama']));
                                                 $init = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
                                         ?>
-                                        <tr class="gaji-row">
+                                        <tr class="gaji-row"
+                                            data-no="<?php echo $no; ?>"
+                                            data-nik="<?php echo htmlspecialchars($karyawan['nik']); ?>"
+                                            data-nama="<?php echo htmlspecialchars($karyawan['nama']); ?>"
+                                            data-gaji-pokok="<?php echo htmlspecialchars($data['gaji']); ?>"
+                                            data-gaji-mingguan="<?php echo htmlspecialchars($gaji_mingguan); ?>"
+                                            data-total-tunjangan="<?php echo htmlspecialchars($total_tunjangan); ?>"
+                                            data-total-denda="<?php echo htmlspecialchars($data['denda']); ?>"
+                                            data-total-denda-cuti="<?php echo htmlspecialchars($total_denda_cuti); ?>"
+                                            data-bayar-cashbon="<?php echo htmlspecialchars($bayar_cashbon); ?>"
+                                            data-nama-bank="<?php echo htmlspecialchars($karyawan['nama_bank'] ?? '-'); ?>"
+                                            data-nama-pemilik-rekening="<?php echo htmlspecialchars($karyawan['nama_pemilik_rekening'] ?? '-'); ?>"
+                                            data-nomor-rekening="<?php echo htmlspecialchars($karyawan['nomor_rekening'] ?? '-'); ?>"
+                                            data-total-gaji="<?php echo htmlspecialchars($total_gaji); ?>"
+                                        >
                                             <td class="ps-3 text-secondary fw-semibold"><?php echo $no++; ?></td>
                                             <td class="fw-semibold text-secondary"><?php echo htmlspecialchars($karyawan['nik']); ?></td>
                                             <td>
@@ -657,17 +671,96 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
             }
         }
 
-        function exportTableToExcel(tableID, filename = ''){
-            var dataType = 'application/vnd.ms-excel';
-            var tableSelect = document.getElementById(tableID);
+        function exportTableToExcel(tableID, filename = '') {
+            const dataType = 'application/vnd.ms-excel';
+            const tableSelect = document.getElementById(tableID);
             if (!tableSelect) return;
-            var tableHTML = tableSelect.outerHTML;
             
+            let finalTableHTML = `
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>NIK</th>
+                            <th>NAMA</th>
+                            <th>Gaji Pokok</th>
+                            <th>Gaji Mingguan</th>
+                            <th>Total Tunjangan</th>
+                            <th>Total Denda</th>
+                            <th>Total Denda Cuti</th>
+                            <th>Bayar Cashbon</th>
+                            <th>Nama Bank</th>
+                            <th>Nama Pemilik Rekening</th>
+                            <th>Nomor Rekening</th>
+                            <th>Total Gaji</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            const rows = tableSelect.querySelectorAll('tbody tr');
+            rows.forEach((row) => {
+                if (row.querySelector('td[colspan]')) {
+                    return; 
+                }
+
+                const no = row.dataset.no;
+                const nik = row.dataset.nik;
+                const nama = row.dataset.nama;
+                const gajiPokok = Math.round(parseFloat(row.dataset.gajiPokok || 0));
+                const gajiMingguan = Math.round(parseFloat(row.dataset.gajiMingguan || 0));
+                const totalTunjangan = Math.round(parseFloat(row.dataset.totalTunjangan || 0));
+                const totalDenda = Math.round(parseFloat(row.dataset.totalDenda || 0));
+                const totalDendaCuti = Math.round(parseFloat(row.dataset.totalDendaCuti || 0));
+                const bayarCashbon = Math.round(parseFloat(row.dataset.bayarCashbon || 0));
+                const namaBank = row.dataset.namaBank || '-';
+                const namaPemilikRekening = row.dataset.namaPemilikRekening || '-';
+                const nomorRekening = row.dataset.nomorRekening || '-';
+                const totalGaji = Math.round(parseFloat(row.dataset.totalGaji || 0));
+
+                finalTableHTML += `
+                    <tr>
+                        <td>${no}</td>
+                        <td>${nik}</td>
+                        <td style="text-transform:capitalize;">${nama}</td>
+                        <td data-format="Currency">Rp ${gajiPokok.toLocaleString('id-ID')}</td>
+                        <td data-format="Currency">${gajiMingguan > 0 ? 'Rp ' + gajiMingguan.toLocaleString('id-ID') : '-'}</td>
+                        <td data-format="Currency">Rp ${totalTunjangan.toLocaleString('id-ID')}</td>
+                        <td data-format="Currency">Rp ${totalDenda.toLocaleString('id-ID')}</td>
+                        <td data-format="Currency">Rp ${totalDendaCuti.toLocaleString('id-ID')}</td>
+                        <td data-format="Currency">Rp ${bayarCashbon.toLocaleString('id-ID')}</td>
+                        <td>${namaBank}</td>
+                        <td>${namaPemilikRekening}</td>
+                        <td style="mso-number-format:'\\@';">${nomorRekening}</td>
+                        <td data-format="Currency">Rp ${totalGaji.toLocaleString('id-ID')}</td>
+                    </tr>
+                `;
+            });
+            
+            finalTableHTML += `</tbody>`;
+
+            const tfoot = tableSelect.querySelector('tfoot');
+            if (tfoot) {
+                const grandTotalCell = tfoot.querySelector('td:nth-last-child(2)'); 
+                if (grandTotalCell) {
+                    const grandTotalValue = Math.round(parseFloat(grandTotalCell.innerText.replace(/Rp\s*|\./g, '').replace(',', '.') || 0));
+                    finalTableHTML += `
+                        <tfoot>
+                            <tr>
+                                <td colspan="12" style="text-align:right; font-weight:bold;">Grand Total</td>
+                                <td data-format="Currency">Rp ${grandTotalValue.toLocaleString('id-ID')}</td>
+                            </tr>
+                        </tfoot>
+                    `;
+                }
+            }
+            finalTableHTML += `</table>`;
+
             filename = filename ? filename + '.xls' : 'excel_data.xls';
             
-            var blob = new Blob(['\ufeff' + tableHTML], { type: dataType });
-            var downloadLink = document.createElement("a");
-            var url = URL.createObjectURL(blob);
+            const blob = new Blob(['\ufeff' + finalTableHTML], { type: dataType });
+            const downloadLink = document.createElement("a");
+            const url = URL.createObjectURL(blob);
             downloadLink.href = url;
             downloadLink.download = filename;
             document.body.appendChild(downloadLink);
@@ -677,23 +770,54 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
         }
 
         function exportTableToCSV(filename) {
+            filename = filename ? filename : 'laporan-gaji.csv';
             var csv = [];
-            var rows = document.querySelectorAll("#tabel-gaji tr");
             
-            for (var i = 0; i < rows.length; i++) {
-                var row = [], cols = rows[i].querySelectorAll("td, th");
-                for (var j = 0; j < cols.length - 1; j++) {
-                    var text = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
-                    row.push('"' + text + '"');
+            csv.push('"No","NIK","NAMA","Gaji Pokok","Gaji Mingguan","Total Tunjangan","Total Denda","Total Denda Cuti","Bayar Cashbon","Nama Bank","Nama Pemilik Rekening","Nomor Rekening","Total Gaji"');
+            
+            var tableSelect = document.getElementById('tabel-gaji');
+            var rows = tableSelect.querySelectorAll('tbody tr');
+            rows.forEach((row) => {
+                if (row.querySelector('td[colspan]')) {
+                    return; 
                 }
-                csv.push(row.join(","));
-            }
+
+                var no = row.dataset.no || '';
+                var nik = row.dataset.nik || '';
+                var nama = row.dataset.nama || '';
+                var gajiPokok = Math.round(parseFloat(row.dataset.gajiPokok || 0));
+                var gajiMingguan = Math.round(parseFloat(row.dataset.gajiMingguan || 0));
+                var totalTunjangan = Math.round(parseFloat(row.dataset.totalTunjangan || 0));
+                var totalDenda = Math.round(parseFloat(row.dataset.totalDenda || 0));
+                var totalDendaCuti = Math.round(parseFloat(row.dataset.totalDendaCuti || 0));
+                var bayarCashbon = Math.round(parseFloat(row.dataset.bayarCashbon || 0));
+                var namaBank = row.dataset.namaBank || '-';
+                var namaPemilikRekening = row.dataset.namaPemilikRekening || '-';
+                var nomorRekening = row.dataset.nomorRekening || '-';
+                var totalGaji = Math.round(parseFloat(row.dataset.totalGaji || 0));
+
+                csv.push([
+                    '"' + no + '"',
+                    '"' + nik + '"',
+                    '"' + nama.replace(/"/g, '""') + '"',
+                    '"Rp ' + gajiPokok.toLocaleString('id-ID') + '"',
+                    '"' + (gajiMingguan > 0 ? 'Rp ' + gajiMingguan.toLocaleString('id-ID') : '-') + '"',
+                    '"Rp ' + totalTunjangan.toLocaleString('id-ID') + '"',
+                    '"Rp ' + totalDenda.toLocaleString('id-ID') + '"',
+                    '"Rp ' + totalDendaCuti.toLocaleString('id-ID') + '"',
+                    '"Rp ' + bayarCashbon.toLocaleString('id-ID') + '"',
+                    '"' + namaBank.replace(/"/g, '""') + '"',
+                    '"' + namaPemilikRekening.replace(/"/g, '""') + '"',
+                    '"' + nomorRekening.replace(/"/g, '""') + '"',
+                    '"Rp ' + totalGaji.toLocaleString('id-ID') + '"'
+                ].join(','));
+            });
 
             var blob = new Blob(['\ufeff' + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
             var downloadLink = document.createElement("a");
             var url = URL.createObjectURL(blob);
-            downloadLink.download = filename;
             downloadLink.href = url;
+            downloadLink.download = filename;
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
