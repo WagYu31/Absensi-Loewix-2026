@@ -31,13 +31,11 @@ if (!function_exists('syncCashbonForPeriod')) {
                 $bayar = round($jumlah / $cicil);
 
                 // Cek apakah sudah pernah ada record potongan di bulan/tahun target ini
-                $qCheckExist = "SELECT id_bayar_cashbon, cicilan FROM bayar_cashbon WHERE id_cashbon = '$id_cashbon' AND (DATE_FORMAT(tanggal, '%Y-%m') = '$target_periode' OR (MONTH(tanggal) = $bulan_int AND YEAR(tanggal) = $tahun_int)) LIMIT 1";
+                $qCheckExist = "SELECT cicilan FROM bayar_cashbon WHERE id_cashbon = '$id_cashbon' AND nip = '$nipcb' AND (DATE_FORMAT(tanggal, '%Y-%m') = '$target_periode' OR (MONTH(tanggal) = $bulan_int AND YEAR(tanggal) = $tahun_int)) LIMIT 1";
                 $resultExist = mysqli_query($conn, $qCheckExist);
 
                 if ($resultExist && mysqli_num_rows($resultExist) > 0) {
-                    $rowExist = mysqli_fetch_assoc($resultExist);
-                    $id_bayar = $rowExist['id_bayar_cashbon'];
-                    $updt = "UPDATE bayar_cashbon SET bayar = '$bayar', tanggal = '$dateInPeriod' WHERE id_bayar_cashbon = '$id_bayar'";
+                    $updt = "UPDATE bayar_cashbon SET bayar = '$bayar', tanggal = '$dateInPeriod' WHERE id_cashbon = '$id_cashbon' AND nip = '$nipcb' AND (DATE_FORMAT(tanggal, '%Y-%m') = '$target_periode' OR (MONTH(tanggal) = $bulan_int AND YEAR(tanggal) = $tahun_int))";
                     mysqli_query($conn, $updt);
                 } else {
                     // Cari nomor cicilan berikutnya
