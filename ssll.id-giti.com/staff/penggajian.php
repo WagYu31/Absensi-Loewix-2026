@@ -565,7 +565,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                             data-total-denda="<?php echo htmlspecialchars($data['denda']); ?>"
                                             data-total-denda-cuti="<?php echo htmlspecialchars($total_denda_cuti); ?>"
                                             data-bayar-cashbon="<?php echo htmlspecialchars($bayar_cashbon); ?>"
-                                            data-nama-bank="<?php echo htmlspecialchars($karyawan['nama_bank'] ?? '-'); ?>"
+                                            data-nama-bank="<?php echo htmlspecialchars(strtoupper(trim($karyawan['nama_bank'] ?? '-'))); ?>"
                                             data-nama-pemilik-rekening="<?php echo htmlspecialchars($karyawan['nama_pemilik_rekening'] ?? '-'); ?>"
                                             data-nomor-rekening="<?php echo htmlspecialchars($karyawan['nomor_rekening'] ?? '-'); ?>"
                                             data-total-gaji="<?php echo htmlspecialchars($total_gaji); ?>"
@@ -713,7 +713,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                 const totalDenda = Math.round(parseFloat(row.dataset.totalDenda || 0));
                 const totalDendaCuti = Math.round(parseFloat(row.dataset.totalDendaCuti || 0));
                 const bayarCashbon = Math.round(parseFloat(row.dataset.bayarCashbon || 0));
-                const namaBank = row.dataset.namaBank || '-';
+                const namaBank = (row.dataset.namaBank || '-').toUpperCase();
                 const namaPemilikRekening = row.dataset.namaPemilikRekening || '-';
                 const nomorRekening = row.dataset.nomorRekening || '-';
                 const totalGaji = Math.round(parseFloat(row.dataset.totalGaji || 0));
@@ -791,7 +791,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                 var totalDenda = Math.round(parseFloat(row.dataset.totalDenda || 0));
                 var totalDendaCuti = Math.round(parseFloat(row.dataset.totalDendaCuti || 0));
                 var bayarCashbon = Math.round(parseFloat(row.dataset.bayarCashbon || 0));
-                var namaBank = row.dataset.namaBank || '-';
+                var namaBank = (row.dataset.namaBank || '-').toUpperCase();
                 var namaPemilikRekening = row.dataset.namaPemilikRekening || '-';
                 var nomorRekening = row.dataset.nomorRekening || '-';
                 var totalGaji = Math.round(parseFloat(row.dataset.totalGaji || 0));
