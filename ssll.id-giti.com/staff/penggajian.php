@@ -77,14 +77,19 @@ while ($row = $result_rincian->fetch_assoc()) {
 $stmt_rincian->close();
 
 // --- BULK HIGH-PERFORMANCE QUERY 1: CASHBON PAYMENT ---
+include_once 'generate-cb.php';
+syncCashbonForPeriod($conn, $bulan_gaji, $tahun_gaji);
+
 $pembayaran_cashbon_map = [];
 $sql_cb_bulk = "SELECT nip, SUM(bayar) as total_bayar FROM bayar_cashbon WHERE MONTH(tanggal) = ? AND YEAR(tanggal) = ? GROUP BY nip";
 $stmt_cb = $conn->prepare($sql_cb_bulk);
-$stmt_cb->bind_param("ss", $bulan_gaji, $tahun_gaji);
+$bulan_int = (int)$bulan_gaji;
+$tahun_int = (int)$tahun_gaji;
+$stmt_cb->bind_param("ii", $bulan_int, $tahun_int);
 $stmt_cb->execute();
 $res_cb = $stmt_cb->get_result();
 while ($r = $res_cb->fetch_assoc()) {
-    $pembayaran_cashbon_map[$r['nip']] = $r['total_bayar'];
+    $pembayaran_cashbon_map[$r['nip']] = (float)$r['total_bayar'];
 }
 $stmt_cb->close();
 
