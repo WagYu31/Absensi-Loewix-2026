@@ -285,8 +285,23 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
             border: 1px solid rgba(226, 232, 240, 0.9);
             border-radius: var(--card-radius-lg);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
-            overflow: hidden;
             margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .card-gaji-toolbar {
+            overflow: visible !important;
+            z-index: 40 !important;
+        }
+
+        .card-gaji-table {
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .dropdown-menu {
+            z-index: 1060 !important;
+            box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
         }
 
         .emp-avatar {
@@ -355,7 +370,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                 ?>
                 
                 <!-- Action Controls Toolbar Card -->
-                <div class="card-gaji-main no-print">
+                <div class="card-gaji-main card-gaji-toolbar no-print">
                     <div class="card-body p-3">
                         <div class="row g-3 align-items-center">
                             
@@ -433,7 +448,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                 </div>
 
                 <!-- Main Data Card -->
-                <div class="card-gaji-main">
+                <div class="card-gaji-main card-gaji-table">
                     <div class="card-header bg-white border-bottom p-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                         <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
                             <i class="fa-solid fa-wallet text-primary"></i> 
