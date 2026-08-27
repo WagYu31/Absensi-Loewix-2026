@@ -647,15 +647,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                 var bln = '<?php echo $bulan_gaji; ?>';
                 var thn = '<?php echo $tahun_gaji; ?>';
 
-                $.ajax({
-                    url: 'sa-generate-cashbon-otomatis.php',
-                    type: 'POST',
-                    data: { bulan: bln, tahun: thn },
-                    dataType: 'json',
-                    complete: function() {
-                        window.location.href = "generate-data.php?bulan=" + bln + "&tahun=" + thn;
-                    }
-                });
+                window.location.href = "generate-data.php?bulan=" + bln + "&tahun=" + thn;
             }
         }
 

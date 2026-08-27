@@ -86,8 +86,12 @@ if (isset($_GET['bulan']) && isset($_GET['tahun'])) {
             }
         }
 
+        // Jalankan sinkronisasi dan generate potongan cicilan cashbon untuk periode ini
+        include_once "generate-cb.php";
+
         http_response_code(200); // OK
-        header("Location: penggajian.php");
+        header("Location: penggajian.php?bulan=" . urlencode($bulan) . "&tahun=" . urlencode($tahun));
+        exit();
     }
 } else {
     http_response_code(400); // Bad Request
