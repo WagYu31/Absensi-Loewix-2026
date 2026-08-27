@@ -657,50 +657,15 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
             }
         }
 
-        function exportTableToExcel(tableID, filename = '') {
-            filename = filename ? filename + '.xls' : 'laporan-gaji.xls';
+        function exportTableToExcel(tableID, filename = ''){
+            var dataType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            if (!tableSelect) return;
+            var tableHTML = tableSelect.outerHTML;
             
-            var originalTable = document.getElementById(tableID);
-            if (!originalTable) return;
+            filename = filename ? filename + '.xls' : 'excel_data.xls';
             
-            // Clone table to clean up before exporting
-            var tableClone = originalTable.cloneNode(true);
-            
-            // Remove no-print elements (like action column buttons)
-            var noPrintEls = tableClone.querySelectorAll('.no-print');
-            noPrintEls.forEach(function(el) { el.remove(); });
-            
-            // Remove avatar badges so names are clean text
-            var avatars = tableClone.querySelectorAll('.emp-avatar');
-            avatars.forEach(function(av) { av.remove(); });
-            
-            // Build Excel-ready HTML template with clean styling
-            var excelTemplate = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' +
-                '<head>' +
-                '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' +
-                '<x:Name>Laporan Gaji</x:Name>' +
-                '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>' +
-                '</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' +
-                '<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/>' +
-                '<style>' +
-                'table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 10pt; }' +
-                'th { background-color: #1e293b; color: #ffffff; font-weight: bold; border: 1px solid #0f172a; padding: 10px 8px; text-align: center; }' +
-                'td { border: 1px solid #cbd5e1; padding: 6px 10px; vertical-align: middle; }' +
-                '.text-end { text-align: right; }' +
-                '.text-center { text-align: center; }' +
-                'tfoot td { background-color: #f1f5f9; font-weight: bold; }' +
-                '</style>' +
-                '</head>' +
-                '<body>' +
-                '<h3 style="font-family: Arial, sans-serif; margin-bottom: 8px;">Laporan Gaji Karyawan - Periode <?php echo $bulanNames[$bulan_gaji] . ' ' . $tahun_gaji; ?></h3>' +
-                tableClone.outerHTML +
-                '</body>' +
-                '</html>';
-            
-            var blob = new Blob(['\ufeff' + excelTemplate], {
-                type: 'application/vnd.ms-excel;charset=utf-8'
-            });
-            
+            var blob = new Blob(['\ufeff' + tableHTML], { type: dataType });
             var downloadLink = document.createElement("a");
             var url = URL.createObjectURL(blob);
             downloadLink.href = url;
@@ -712,30 +677,23 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
         }
 
         function exportTableToCSV(filename) {
-            filename = filename ? filename : 'laporan-gaji.csv';
             var csv = [];
             var rows = document.querySelectorAll("#tabel-gaji tr");
             
             for (var i = 0; i < rows.length; i++) {
-                var row = [];
-                var cols = rows[i].querySelectorAll("th:not(.no-print), td:not(.no-print)");
-                for (var j = 0; j < cols.length; j++) {
-                    var clone = cols[j].cloneNode(true);
-                    var av = clone.querySelector('.emp-avatar');
-                    if (av) av.remove();
-                    var text = clone.innerText.replace(/(\r\n|\n|\r)/gm, " ").trim().replace(/"/g, '""');
+                var row = [], cols = rows[i].querySelectorAll("td, th");
+                for (var j = 0; j < cols.length - 1; j++) {
+                    var text = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
                     row.push('"' + text + '"');
                 }
-                if (row.length > 0) {
-                    csv.push(row.join(","));
-                }
+                csv.push(row.join(","));
             }
 
-            var blob = new Blob(['\ufeff' + csv.join("\r\n")], { type: 'text/csv;charset=utf-8;' });
+            var blob = new Blob(['\ufeff' + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
             var downloadLink = document.createElement("a");
             var url = URL.createObjectURL(blob);
-            downloadLink.href = url;
             downloadLink.download = filename;
+            downloadLink.href = url;
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
