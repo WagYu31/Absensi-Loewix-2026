@@ -65,7 +65,7 @@ if ($stmt_a) {
 // Insert ke tabel absen_manual
 $stmt_m = $conn->prepare("INSERT INTO absen_manual (tgl_absen, tipe_absen, image, pin, nip, nama, lokasi_absen, lokasi_koordinat, verif) VALUES (?, 'pulang', '', ?, ?, ?, 'Presensi Manual/Sistem', '', 'Yes')");
 if ($stmt_m) {
-    $stmt_m->bind_param("sssss", $tgl_absen_manual, $pin, $nip, $nama);
+    $stmt_m->bind_param("ssss", $tgl_absen_manual, $pin, $nip, $nama);
     $stmt_m->execute();
     $stmt_m->close();
 }
