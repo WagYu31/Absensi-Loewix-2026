@@ -48,7 +48,7 @@ if ($res_shift_req && $res_shift_req->num_rows > 0) {
 }
 
 $current_page_basename = basename($_SERVER['PHP_SELF']); 
-$asset_version = '2026.08.06.2';
+$asset_version = '2026.08.31.1';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -289,6 +289,19 @@ $asset_version = '2026.08.06.2';
             font-weight: 800 !important;
         }
 
+        .btn-disabled-locked,
+        .btn-disabled-locked:disabled {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%) !important;
+            color: #991b1b !important;
+            border: 1.5px solid #fca5a5 !important;
+            border-bottom: 3.5px solid #f87171 !important;
+            box-shadow: 0 3px 8px rgba(220, 38, 38, 0.08) !important;
+            cursor: not-allowed !important;
+            pointer-events: none !important;
+            opacity: 0.95 !important;
+            font-weight: 800 !important;
+        }
+
         .btn-riwayat-absen {
             background: linear-gradient(135deg, #ea580c 0%, #f97316 100%) !important;
             color: #ffffff !important;
@@ -398,6 +411,30 @@ $asset_version = '2026.08.06.2';
             }
         }
     }
+    // Calculate shift check-in time limit (Maksimal 1 jam setelah jadwal masuk shift)
+    $limitHour = 10;
+    $limitMinute = 0;
+    $limitTimeStr = '10:00';
+
+    if ($isSaturday && $final_shifting !== 'TEST') {
+        $limitHour = 9;
+        $limitMinute = 30;
+        $limitTimeStr = '09:30';
+    } else {
+        switch ($final_shifting) {
+            case 'P': $limitHour = 8; $limitMinute = 0; $limitTimeStr = '08:00'; break;
+            case 'M': $limitHour = 9; $limitMinute = 30; $limitTimeStr = '09:30'; break;
+            case 'N': $limitHour = 10; $limitMinute = 0; $limitTimeStr = '10:00'; break;
+            case 'S': $limitHour = 10; $limitMinute = 30; $limitTimeStr = '10:30'; break;
+            case 'T': $limitHour = 10; $limitMinute = 10; $limitTimeStr = '10:10'; break;
+            case 'TEST': $limitHour = 23; $limitMinute = 59; $limitTimeStr = '23:59'; break;
+            default: $limitHour = 10; $limitMinute = 0; $limitTimeStr = '10:00'; break;
+        }
+    }
+
+    $currHour = (int)date('H');
+    $currMinute = (int)date('i');
+    $is_past_checkin_limit = ($final_shifting !== 'TEST') && ($currHour > $limitHour || ($currHour === $limitHour && $currMinute >= $limitMinute));
     ?>
 
     <div class="main-content-wrapper">
@@ -490,6 +527,10 @@ $asset_version = '2026.08.06.2';
                                     <?php if (!empty($today_absen_data['masuk'])): ?>
                                         <button class="btn btn-disabled-recorded w-100 mb-2 py-3" id="btnCheckIn" disabled>
                                             <i class="fas fa-circle-check me-2 text-success"></i>MASUK (TERCATAT)
+                                        </button>
+                                    <?php elseif ($is_past_checkin_limit): ?>
+                                        <button class="btn btn-disabled-locked w-100 mb-2 py-3" id="btnCheckIn" disabled>
+                                            <i class="fas fa-lock me-2 text-danger"></i>MASUK (TERKUNCI - LEWAT 1 JAM TELAT)
                                         </button>
                                     <?php else: ?>
                                         <button class="btn btn-check-in-presensi w-100 mb-2 py-3" id="btnCheckIn" disabled>
@@ -820,35 +861,44 @@ $asset_version = '2026.08.06.2';
             const now = new Date();
             const currentHour = now.getHours();
             const currentMinute = now.getMinutes();
-            <?php
-            $lH = 11; $lM = 0;
-            if ($isSaturday) {
-                $lH = 10; $lM = 30;
-            } else {
-                switch ($final_shifting) {
-                    case 'P': $lH = 9; $lM = 0; break;
-                    case 'M': $lH = 10; $lM = 30; break;
-                    case 'N': $lH = 11; $lM = 0; break;
-                    case 'S': $lH = 11; $lM = 30; break;
-                    case 'T': $lH = 11; $lM = 10; break;
-                    default: $lH = 11; $lM = 0; break;
-                }
-            }
-            echo "const limitHour = $lH;\n";
-            echo "                const limitMinute = $lM;\n";
-            ?>
-            
+            const limitHour = <?php echo $limitHour; ?>;
+            const limitMinute = <?php echo $limitMinute; ?>;
+            const limitTimeStr = '<?php echo $limitTimeStr; ?>';
+
             let isCheckInTime = false;
             if (currentHour < limitHour || (currentHour === limitHour && currentMinute < limitMinute)) {
                 isCheckInTime = true;
             }
-            
-            const isCheckOutTime = !isCheckInTime;
 
-            if (!hasCheckedInToday && isLocationActive) { 
-                if ($('#btnCheckIn').length) $('#btnCheckIn').prop('disabled', false); 
-            } else { 
-                if ($('#btnCheckIn').length) $('#btnCheckIn').prop('disabled', true); 
+            // Atur status dan tampilan tombol Masuk
+            if (hasCheckedInToday) {
+                if ($('#btnCheckIn').length) {
+                    $('#btnCheckIn')
+                        .removeClass('btn-check-in-presensi btn-disabled-locked')
+                        .addClass('btn-disabled-recorded')
+                        .prop('disabled', true)
+                        .html('<i class="fas fa-circle-check me-2 text-success"></i>MASUK (TERCATAT)');
+                }
+            } else if (!isCheckInTime) {
+                // Sudah lewat 1 jam telat -> Kunci tombol masuk
+                if ($('#btnCheckIn').length) {
+                    $('#btnCheckIn')
+                        .removeClass('btn-check-in-presensi btn-disabled-recorded')
+                        .addClass('btn-disabled-locked')
+                        .prop('disabled', true)
+                        .html('<i class="fas fa-lock me-2 text-danger"></i>MASUK (TERKUNCI - LEWAT 1 JAM TELAT)');
+                }
+                $('#lateWarning').removeClass('d-none');
+                $('#lateMessage').html('Waktu presensi masuk telah berakhir (maksimal 1 jam setelah jam masuk: <strong>' + limitTimeStr + ' WIB</strong>). Presensi masuk terkunci.');
+            } else {
+                // Masih dalam batas waktu masuk
+                if ($('#btnCheckIn').length) {
+                    $('#btnCheckIn')
+                        .removeClass('btn-disabled-locked btn-disabled-recorded')
+                        .addClass('btn-check-in-presensi')
+                        .prop('disabled', !isLocationActive)
+                        .html('<i class="fas fa-camera me-2"></i>MASUK (CHECK-IN)');
+                }
             }
 
             if (hasCheckedInToday && !hasCheckedOutToday && isLocationActive) { 

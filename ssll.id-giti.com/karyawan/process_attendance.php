@@ -94,6 +94,42 @@ if ($user_shift_code === 'TEST' || $session_nip === 'TEST001') {
     $verif_status = 'Yes';
 }
 
+// Enforce time lock for Absen Masuk (Cannot clock in past 1 hour late limit)
+if (strtolower($type) === 'masuk') {
+    if (empty($user_shift_code)) {
+        $res_kar_shift = $conn->query("SELECT shifting FROM karyawan WHERE nip = '$session_nip' OR nik = '$session_nip' LIMIT 1");
+        if ($res_kar_shift && $res_kar_shift->num_rows > 0) {
+            $user_shift_code = $res_kar_shift->fetch_assoc()['shifting'];
+        }
+    }
+
+    if ($user_shift_code !== 'TEST' && $session_nip !== 'TEST001') {
+        $is_saturday = (date('N') == 6);
+        $limit_h = 10;
+        $limit_m = 0;
+        $limit_str = '10:00';
+
+        if ($is_saturday) {
+            $limit_h = 9; $limit_m = 30; $limit_str = '09:30';
+        } else {
+            switch ($user_shift_code) {
+                case 'P': $limit_h = 8; $limit_m = 0; $limit_str = '08:00'; break;
+                case 'M': $limit_h = 9; $limit_m = 30; $limit_str = '09:30'; break;
+                case 'N': $limit_h = 10; $limit_m = 0; $limit_str = '10:00'; break;
+                case 'S': $limit_h = 10; $limit_m = 30; $limit_str = '10:30'; break;
+                case 'T': $limit_h = 10; $limit_m = 10; $limit_str = '10:10'; break;
+                default: $limit_h = 10; $limit_m = 0; $limit_str = '10:00'; break;
+            }
+        }
+
+        $curr_h = (int)date('H');
+        $curr_m = (int)date('i');
+        if ($curr_h > $limit_h || ($curr_h === $limit_h && $curr_m >= $limit_m)) {
+            sendJsonResponse(false, '🔒 Presensi masuk terkunci! Waktu presensi masuk telah berakhir (maksimal 1 jam setelah jam masuk shift: ' . $limit_str . ' WIB).');
+        }
+    }
+}
+
 // Enforce time lock for Absen Pulang (Cannot clock out before 15:00 WIB, or 13:00 on Saturday)
 if (strtolower($type) === 'pulang') {
     if (empty($user_shift_code)) {
