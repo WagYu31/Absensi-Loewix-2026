@@ -113,6 +113,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
     <link rel="stylesheet" href="../assets/css/bottom-nav.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/absen-styles.css?01">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <?php include 'nav/sidebar.php'; ?>
@@ -268,7 +269,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                             $keterlambatan_display = $keterlambatan_menit_hari_ini > 0 ? $keterlambatan_menit_hari_ini . " m" : "-";
                                             if ($keterlambatan_menit_hari_ini > 0) $row_class = 'table-danger';
 
-                                            echo "<tr class='$row_class'><td class='d-none d-md-table-cell text-center'>".$no++."</td><td><span class='ps-2'>".substr($dayNameIdn, 0, 3).", </span>".$currentDateObj->format('d/m/y')."</td><td class='text-center'><span class='shift-badge shift-".htmlspecialchars($shift_info[1])."'>".htmlspecialchars($shift_info[0])."</span></td><td class='text-center'>$jam_masuk_display</td><td class='text-center'>$jam_pulang_display</td><td class='d-none d-md-table-cell text-center ".($keterlambatan_menit_hari_ini > 0 ? 'text-danger fw-bold' : '')."'>$keterlambatan_display</td><td class='d-none d-md-table-cell text-center'>$durasi_kerja_display</td><td class='d-none d-md-table-cell'></td></tr>";
+                                            echo "<tr class='$row_class'><td class='d-none d-md-table-cell text-center'>".$no++."</td><td><span class='ps-2'>".substr($dayNameIdn, 0, 3).", </span>".$currentDateObj->format('d/m/y')."</td><td class='text-center'><span class='shift-badge shift-".htmlspecialchars($shift_info[1])."'>".htmlspecialchars($shift_info[0])."</span></td><td class='text-center'>$jam_masuk_display</td><td class='text-center'>$jam_pulang_display</td><td class='d-none d-md-table-cell text-center ".($keterlambatan_menit_hari_ini > 0 ? 'text-danger fw-bold' : '')."'>$keterlambatan_display</td><td class='d-none d-md-table-cell text-center'>$durasi_kerja_display</td><td class='d-none d-md-table-cell text-center'><button type='button' class='btn btn-sm btn-outline-danger py-0 px-2' title='Hapus Presensi Tanggal Ini' onclick=\"hapusPresensiHarian('$nik_to_display', '$currentDateStr', '".$currentDateObj->format('d/m/Y')."')\"><i class='fas fa-trash-alt'></i></button></td></tr>";
                                         } else {
                                             if ($isWorkDay) {
                                                 if (isset($approvedLeaves[$currentDateStr])) {
@@ -346,6 +347,40 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                 }
             });
         });
+
+        function hapusPresensiHarian(nik, tanggal, tglFmt) {
+            Swal.fire({
+                title: 'Hapus Presensi?',
+                text: 'Data presensi pada tanggal ' + tglFmt + ' akan dihapus dari database.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: 'proses-hapus-absen-harian.php',
+                        type: 'POST',
+                        data: { nik: nik, tanggal: tanggal },
+                        dataType: 'json',
+                        success: function(res) {
+                            if (res.success) {
+                                Swal.fire('Terhapus!', res.message, 'success').then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Gagal!', res.message, 'error');
+                            }
+                        },
+                        error: function() {
+                            Swal.fire('Error!', 'Terjadi kesalahan sistem.', 'error');
+                        }
+                    });
+                }
+            });
+        }
     </script>
 </body>
 </html>
