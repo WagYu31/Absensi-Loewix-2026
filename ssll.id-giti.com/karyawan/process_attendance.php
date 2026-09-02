@@ -94,16 +94,21 @@ if ($user_shift_code === 'TEST' || $session_nip === 'TEST001') {
     $verif_status = 'Yes';
 }
 
+$user_nik = '';
+$res_kar_shift = $conn->query("SELECT shifting, nik, nip FROM karyawan WHERE nip = '$session_nip' OR nik = '$session_nip' LIMIT 1");
+if ($res_kar_shift && $res_kar_shift->num_rows > 0) {
+    $kar_info = $res_kar_shift->fetch_assoc();
+    if (empty($user_shift_code)) {
+        $user_shift_code = $kar_info['shifting'];
+    }
+    $user_nik = $kar_info['nik'];
+}
+
+$is_bypass_user = ($session_nip === '577' || $user_nik === '577' || $session_nip === 'TEST001' || $user_shift_code === 'TEST');
+
 // Enforce time lock for Absen Masuk (Cannot clock in past 1 hour late limit)
 if (strtolower($type) === 'masuk') {
-    if (empty($user_shift_code)) {
-        $res_kar_shift = $conn->query("SELECT shifting FROM karyawan WHERE nip = '$session_nip' OR nik = '$session_nip' LIMIT 1");
-        if ($res_kar_shift && $res_kar_shift->num_rows > 0) {
-            $user_shift_code = $res_kar_shift->fetch_assoc()['shifting'];
-        }
-    }
-
-    if ($user_shift_code !== 'TEST' && $session_nip !== 'TEST001' && $session_nip !== '577') {
+    if (!$is_bypass_user) {
         $is_saturday = (date('N') == 6);
         $limit_h = 10;
         $limit_m = 0;
