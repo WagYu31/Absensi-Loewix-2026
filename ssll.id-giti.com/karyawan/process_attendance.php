@@ -104,7 +104,7 @@ if ($res_kar_shift && $res_kar_shift->num_rows > 0) {
     $user_nik = $kar_info['nik'];
 }
 
-$is_bypass_user = ($session_nip === '577' || $user_nik === '577' || $session_nip === 'TEST001' || $user_shift_code === 'TEST');
+$is_bypass_user = ($session_nip === 'TEST001' || $user_shift_code === 'TEST');
 
 // Enforce time lock for Absen Masuk (Cannot clock in past 1 hour late limit)
 if (strtolower($type) === 'masuk') {
