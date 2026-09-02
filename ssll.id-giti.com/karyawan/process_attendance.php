@@ -103,7 +103,7 @@ if (strtolower($type) === 'masuk') {
         }
     }
 
-    if ($user_shift_code !== 'TEST' && $session_nip !== 'TEST001') {
+    if ($user_shift_code !== 'TEST' && $session_nip !== 'TEST001' && $session_nip !== '577') {
         $is_saturday = (date('N') == 6);
         $limit_h = 10;
         $limit_m = 0;

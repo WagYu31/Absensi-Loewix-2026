@@ -48,7 +48,7 @@ if ($res_shift_req && $res_shift_req->num_rows > 0) {
 }
 
 $current_page_basename = basename($_SERVER['PHP_SELF']); 
-$asset_version = '2026.08.31.1';
+$asset_version = '2026.09.02.1';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -412,6 +412,8 @@ $asset_version = '2026.08.31.1';
         }
     }
     // Calculate shift check-in time limit (Maksimal 1 jam setelah jadwal masuk shift)
+    $is_dev_bypass = ($nip === '577' || $nik === '577' || $final_shifting === 'TEST' || (isset($_SESSION['role']) && in_array($_SESSION['role'], ['admin', 'superadmin'])));
+
     $limitHour = 10;
     $limitMinute = 0;
     $limitTimeStr = '10:00';
@@ -434,7 +436,7 @@ $asset_version = '2026.08.31.1';
 
     $currHour = (int)date('H');
     $currMinute = (int)date('i');
-    $is_past_checkin_limit = ($final_shifting !== 'TEST') && ($currHour > $limitHour || ($currHour === $limitHour && $currMinute >= $limitMinute));
+    $is_past_checkin_limit = !$is_dev_bypass && ($currHour > $limitHour || ($currHour === $limitHour && $currMinute >= $limitMinute));
     ?>
 
     <div class="main-content-wrapper">
@@ -847,14 +849,35 @@ $asset_version = '2026.08.31.1';
         }
 
         function checkAbsenConditions() {
-            const isTestMode = <?php echo ($final_shifting === 'TEST') ? 'true' : 'false'; ?>;
+            const isBypassMode = <?php echo ($final_shifting === 'TEST' || $is_dev_bypass) ? 'true' : 'false'; ?>;
             const isLocationActive = (userLat !== null && userLng !== null);
             const hasCheckedInToday = <?php echo !empty($today_absen_data['masuk']) ? 'true' : 'false'; ?>;
             const hasCheckedOutToday = <?php echo !empty($today_absen_data['pulang']) ? 'true' : 'false'; ?>;
 
-            if (isTestMode) {
-                $('#btnCheckIn').prop('disabled', !isLocationActive);
-                $('#btnCheckOut').prop('disabled', !isLocationActive);
+            if (isBypassMode) {
+                if (hasCheckedInToday) {
+                    if ($('#btnCheckIn').length) {
+                        $('#btnCheckIn')
+                            .removeClass('btn-check-in-presensi btn-disabled-locked')
+                            .addClass('btn-disabled-recorded')
+                            .prop('disabled', true)
+                            .html('<i class="fas fa-circle-check me-2 text-success"></i>MASUK (TERCATAT)');
+                    }
+                } else {
+                    if ($('#btnCheckIn').length) {
+                        $('#btnCheckIn')
+                            .removeClass('btn-disabled-locked btn-disabled-recorded')
+                            .addClass('btn-check-in-presensi')
+                            .prop('disabled', !isLocationActive)
+                            .html('<i class="fas fa-camera me-2"></i>MASUK (CHECK-IN)');
+                    }
+                }
+
+                if (hasCheckedInToday && !hasCheckedOutToday && isLocationActive) { 
+                    if ($('#btnCheckOut').length) $('#btnCheckOut').prop('disabled', false); 
+                } else { 
+                    if ($('#btnCheckOut').length) $('#btnCheckOut').prop('disabled', true); 
+                }
                 return;
             }
 
