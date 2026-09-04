@@ -96,9 +96,16 @@ if ($stmt_m2) {
     $stmt_m2->close();
 }
 
+// 4. Update tabel denda dan rincian_gaji agar slip gaji langsung sinkron menjadi Rp 480.000
+$new_denda_rp = 480000;
+
+// Update semua record denda Wahyu Utomo yang bernilai 746000 atau di periode Agustus/September 2026
+$conn->query("UPDATE denda SET jumlah = 480000, keterangan = 'Denda telat Periode Agustus 2026 353m' WHERE (nip = '$nip' OR nip = '$nik') AND (MONTH(tanggal) = 9 OR MONTH(tanggal) = 8 OR jumlah = 746000) AND YEAR(tanggal) = 2026 AND ket1 = 'Denda'");
+$conn->query("UPDATE rincian_gaji SET denda = 480000 WHERE (nip = '$nip' OR nip = '$nik') AND (MONTH(tanggal) = 9 OR MONTH(tanggal) = 8 OR denda = 746000) AND YEAR(tanggal) = 2026");
+
 echo "<div class='alert alert-success mb-3'>
-    <h5 class='fw-bold mb-2'><i class='fa-solid fa-circle-check me-2'></i>Koreksi Berhasil Disimpan!</h5>
-    Data presensi <strong>Senin, 10 Agustus 2026</strong> untuk <strong>" . htmlspecialchars($nama) . "</strong> telah diperbarui:
+    <h5 class='fw-bold mb-2'><i class='fa-solid fa-circle-check me-2'></i>Koreksi Presensi & Slip Gaji Berhasil!</h5>
+    Data presensi <strong>Senin, 10 Agustus 2026</strong> dan <strong>Slip Gaji</strong> untuk <strong>" . htmlspecialchars($nama) . "</strong> telah diperbarui:
     <div class='table-responsive mt-3'>
         <table class='table table-bordered table-sm bg-white'>
             <thead class='table-light'>
@@ -110,24 +117,29 @@ echo "<div class='alert alert-success mb-3'>
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>Jam Masuk</strong></td>
+                    <td><strong>Jam Masuk (10/08/26)</strong></td>
                     <td><span class='text-danger'>11:33</span></td>
                     <td><span class='text-success fw-bold'>09:20</span></td>
                 </tr>
                 <tr>
-                    <td><strong>Jam Pulang</strong></td>
-                    <td>18:01</td>
-                    <td><span class='fw-bold'>18:01</span></td>
-                </tr>
-                <tr>
-                    <td><strong>Keterlambatan</strong></td>
+                    <td><strong>Keterlambatan (10/08/26)</strong></td>
                     <td><span class='text-danger fw-bold'>153 m</span></td>
                     <td><span class='text-warning fw-bold'>20 m</span> (Shift Normal 09:00)</td>
                 </tr>
                 <tr>
-                    <td><strong>Durasi Kerja</strong></td>
-                    <td>6j 28m</td>
-                    <td><span class='fw-bold text-primary'>8j 41m</span></td>
+                    <td><strong>Total Menit Keterlambatan</strong></td>
+                    <td><span class='text-danger fw-bold'>486 menit</span></td>
+                    <td><span class='text-success fw-bold'>353 menit</span></td>
+                </tr>
+                <tr class='table-primary'>
+                    <td><strong>Potongan Denda di Slip Gaji</strong></td>
+                    <td><span class='text-danger fw-bold'>- Rp 746.000</span></td>
+                    <td><span class='text-success fw-bold'>- Rp 480.000</span></td>
+                </tr>
+                <tr class='table-success'>
+                    <td><strong>Gaji Diterima (Take Home Pay)</strong></td>
+                    <td>Rp 6.254.000</td>
+                    <td><span class='text-success fw-bold'>Rp 6.520.000 (+Rp 266.000)</span></td>
                 </tr>
             </tbody>
         </table>
@@ -135,8 +147,8 @@ echo "<div class='alert alert-success mb-3'>
 </div>";
 
 echo "<div class='d-flex justify-content-between mt-4'>
-    <a href='staff/detail-absen.php?nik=577' class='btn btn-primary rounded-3'><i class='fa-solid fa-arrow-left me-1'></i> Buka Detail Absen Wahyu</a>
-    <a href='absensi/detail-absen-kar-mobile.php?nik=577' class='btn btn-outline-secondary rounded-3'>Buka Detail Mobile</a>
+    <a href='karyawan/riwayat-gaji.php' class='btn btn-success rounded-3'><i class='fa-solid fa-file-invoice-dollar me-1'></i> Buka Slip Gaji</a>
+    <a href='staff/detail-absen.php?nik=577' class='btn btn-primary rounded-3'><i class='fa-solid fa-arrow-left me-1'></i> Buka Detail Absen</a>
 </div>";
 
 echo "</div></div></body></html>";
