@@ -52,7 +52,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
     <link rel="stylesheet" href="../assets/css/sidebar.css">
     <link rel="stylesheet" href="../assets/css/bottom-nav.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
-    <link rel="stylesheet" href="../assets/css/absen-styles.css">
+    <link rel="stylesheet" href="../assets/css/absen-styles.css?v=2026.09.05.1">
 </head>
 <body>
     <?php include 'nav/sidebar.php'; ?>
@@ -153,6 +153,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                     $totalMenitKerja = 0;
                                     $jumlah_tidak_absen_masuk = 0;
                                     $jumlah_tidak_absen_pulang = 0;
+                                    $denda_detail_list = [];
 
                                     if ($result && $result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {
@@ -176,6 +177,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                             $jam_scan_pulang = "-";
                                             $durasi_kerja_display = "-";
                                             $is_error_masuk = false;
+                                            $is_error_pulang = false;
 
                                             if ($data_out && $data_out['tgl_out']) {
                                                 $tgl_out_dt = new DateTime($data_out['tgl_out']);
@@ -188,6 +190,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                                     } else {
                                                         $jam_scan_pulang = "<span class='text-danger'>-</span>";
                                                         $jumlah_tidak_absen_pulang++;
+                                                        $is_error_pulang = true;
                                                     }
                                                 } else {
                                                     if (strtotime($jam_scan_masuk_raw) > strtotime("13:00")) {
@@ -200,11 +203,12 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                                     if (strtotime($jam_scan_pulang_raw) < strtotime("11:00")) {
                                                         $jam_scan_pulang = "<span class='text-danger'>-</span>";
                                                         $jumlah_tidak_absen_pulang++;
+                                                        $is_error_pulang = true;
                                                     } else {
                                                         $jam_scan_pulang = $jam_scan_pulang_raw;
                                                     }
 
-                                                    if (!$is_error_masuk && $jam_scan_pulang !== "<span class='text-danger'>-</span>") {
+                                                    if (!$is_error_masuk && !$is_error_pulang) {
                                                         $selisih_detik = $tgl_out_dt->getTimestamp() - $tgl_scan_dt->getTimestamp();
                                                         if ($selisih_detik > 0) {
                                                             $j_kerja = floor($selisih_detik / 3600);
@@ -256,6 +260,24 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                             $jumlah_terlambat_total_menit += $keterlambatan_menit_hari_ini;
                                             $keterlambatan_display = $keterlambatan_menit_hari_ini > 0 ? $keterlambatan_menit_hari_ini . " m" : "-";
 
+                                            $is_late = ($keterlambatan_menit_hari_ini > 0);
+                                            if ($is_late || $is_error_masuk || $is_error_pulang) {
+                                                $denda_detail_list[] = [
+                                                    'tanggal_str' => $tgl_only_db,
+                                                    'tanggal_display' => substr($nama_hari_idn, 0, 3) . ', ' . $tgl_display,
+                                                    'shift_badge' => $shift_info[1] ?? '',
+                                                    'shift_code' => $shift_info[0] ?? '-',
+                                                    'jam_masuk' => $jam_scan_masuk,
+                                                    'jam_pulang' => $jam_scan_pulang,
+                                                    'terlambat_menit' => $keterlambatan_menit_hari_ini,
+                                                    'durasi_kerja' => $durasi_kerja_display,
+                                                    'is_late' => $is_late,
+                                                    'is_miss_in' => $is_error_masuk,
+                                                    'is_miss_out' => $is_error_pulang,
+                                                    'is_alpha' => false,
+                                                ];
+                                            }
+
                                             $row_class = ($keterlambatan_menit_hari_ini > 0 || $is_error_masuk) ? 'table-danger' : '';
 
                                             echo "<tr class='" . $row_class . "'>";
@@ -301,7 +323,7 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                     $total_denda_keseluruhan = $denda_keterlambatan + $denda_tidak_absen;
                     ?>
                     <div class="col-lg-4 col-md-6 col-12">
-                        <div class="card summary-card-item h-100">
+                        <div class="card summary-card-item h-100 clickable-summary-card" role="button" data-bs-toggle="modal" data-bs-target="#modalDetailDenda" style="cursor: pointer;" title="Klik untuk melihat rincian keterlambatan">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div class="summary-icon bg-warning text-white"><i class="fas fa-clock"></i></div>
@@ -311,12 +333,15 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                     </div>
                                 </div>
                                 <hr class="my-2">
-                                <p class="mb-0 text-sm">Denda: <strong class="text-warning">Rp <?php echo number_format($denda_keterlambatan, 0, ',', '.'); ?></strong></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="mb-0 text-sm">Denda: <strong class="text-warning">Rp <?php echo number_format($denda_keterlambatan, 0, ',', '.'); ?></strong></p>
+                                    <small class="text-primary fw-semibold"><i class="fas fa-eye me-1"></i>Rincian</small>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6 col-12">
-                        <div class="card summary-card-item h-100">
+                        <div class="card summary-card-item h-100 clickable-summary-card" role="button" data-bs-toggle="modal" data-bs-target="#modalDetailDenda" style="cursor: pointer;" title="Klik untuk melihat rincian tidak absen">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div class="summary-icon bg-danger text-white"><i class="fas fa-user-times"></i></div>
@@ -326,12 +351,15 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                     </div>
                                 </div>
                                 <hr class="my-2">
-                                <p class="mb-0 text-sm">Denda: <strong class="text-danger">Rp <?php echo number_format($denda_tidak_absen, 0, ',', '.'); ?></strong></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="mb-0 text-sm">Denda: <strong class="text-danger">Rp <?php echo number_format($denda_tidak_absen, 0, ',', '.'); ?></strong></p>
+                                    <small class="text-primary fw-semibold"><i class="fas fa-eye me-1"></i>Rincian</small>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-12 col-12">
-                        <div class="card summary-card-item summary-total-fine h-100">
+                        <div class="card summary-card-item summary-total-fine h-100 clickable-summary-card" role="button" data-bs-toggle="modal" data-bs-target="#modalDetailDenda" style="cursor: pointer;" title="Klik untuk melihat rincian tanggal kena denda">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div class="summary-icon"><i class="fas fa-file-invoice-dollar"></i></div>
@@ -339,6 +367,10 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                         <p class="summary-title mb-0">Akumulasi Denda</p>
                                         <h4 class="summary-value mb-0">Rp <?php echo number_format($total_denda_keseluruhan, 0, ',', '.'); ?></h4>
                                     </div>
+                                </div>
+                                <div class="mt-2 text-white-50 small d-flex align-items-center justify-content-between pt-1" style="border-top: 1px solid rgba(255,255,255,0.25);">
+                                    <span><i class="fas fa-search-plus me-1"></i>Klik rincian tanggal denda</span>
+                                    <i class="fas fa-chevron-right text-xs"></i>
                                 </div>
                             </div>
                         </div>
@@ -375,6 +407,188 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
 
                 <div class="footer no-print">
                     Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Rincian Detail Denda & Tanggal (Karyawan) -->
+    <div class="modal fade" id="modalDetailDenda" tabindex="-1" aria-labelledby="modalDetailDendaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                <!-- Modal Header with Gradient -->
+                <div class="modal-header text-white px-4 py-3" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-white bg-opacity-25 d-flex align-items-center justify-content-center me-3" style="width: 44px; height: 44px;">
+                            <i class="fas fa-receipt fa-lg text-white"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="modalDetailDendaLabel">Rincian Tanggal & Denda Presensi</h5>
+                            <small class="text-white-50">
+                                <?php echo htmlspecialchars($namaKaryawanDisplay); ?> &bull; <?php echo htmlspecialchars($bulanNames[$bulan_filter] . " " . $tahun_filter); ?>
+                            </small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4 bg-light">
+                    <!-- Summary Mini Cards -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4 col-12">
+                            <div class="card border-0 shadow-sm rounded-3 h-100" style="border-left: 4px solid #ffc107 !important;">
+                                <div class="card-body p-3">
+                                    <div class="text-muted small fw-semibold">Total Keterlambatan</div>
+                                    <div class="fs-4 fw-bold text-dark my-1"><?php echo $jumlah_terlambat_total_menit; ?> <small class="fs-6 text-muted">menit</small></div>
+                                    <div class="small text-warning fw-semibold">Denda: Rp <?php echo number_format($denda_keterlambatan, 0, ',', '.'); ?></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="card border-0 shadow-sm rounded-3 h-100" style="border-left: 4px solid #dc3545 !important;">
+                                <div class="card-body p-3">
+                                    <div class="text-muted small fw-semibold">Total Tidak Absen</div>
+                                    <div class="fs-4 fw-bold text-dark my-1"><?php echo ($jumlah_tidak_absen_masuk + $jumlah_tidak_absen_pulang); ?> <small class="fs-6 text-muted">kali</small></div>
+                                    <div class="small text-danger fw-semibold">Denda: Rp <?php echo number_format($denda_tidak_absen, 0, ',', '.'); ?></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="card border-0 shadow-sm rounded-3 text-white h-100" style="background: linear-gradient(135deg, #2979ff 0%, #1565c0 100%);">
+                                <div class="card-body p-3">
+                                    <div class="text-white-50 small fw-semibold">Total Akumulasi Denda</div>
+                                    <div class="fs-4 fw-bold text-white my-1">Rp <?php echo number_format($total_denda_keseluruhan, 0, ',', '.'); ?></div>
+                                    <div class="small text-white-50"><i class="fas fa-calendar-alt me-1"></i><?php echo count($denda_detail_list); ?> Tanggal Terdampak</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Tanggal yang Kena Denda / Pelanggaran -->
+                    <div class="card border-0 shadow-sm rounded-3 overflow-hidden mb-4">
+                        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                            <h6 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-calendar-xmark text-danger me-2"></i>Daftar Tanggal Pelanggaran & Keterlambatan</h6>
+                            <span class="badge bg-danger rounded-pill px-3 py-2"><?php echo count($denda_detail_list); ?> Kejadian</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle mb-0" style="font-size: 0.88rem;">
+                                <thead class="table-light text-center">
+                                    <tr>
+                                        <th width="5%">No</th>
+                                        <th>Tanggal</th>
+                                        <th>Shift</th>
+                                        <th>Masuk</th>
+                                        <th>Pulang</th>
+                                        <th>Keterlambatan</th>
+                                        <th>Jenis Pelanggaran / Rincian</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (empty($denda_detail_list)): ?>
+                                        <tr>
+                                            <td colspan="7" class="text-center py-4 text-success">
+                                                <i class="fas fa-check-circle fa-3x mb-2 d-block text-success opacity-75"></i>
+                                                <strong>Luar Biasa! Tidak ada pelanggaran atau denda di bulan ini.</strong><br>
+                                                <small class="text-muted">Kehadiran tepat waktu dan presensi lengkap setiap hari kerja.</small>
+                                            </td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <?php $no_d = 1; foreach ($denda_detail_list as $item): ?>
+                                            <tr>
+                                                <td class="text-center fw-bold text-muted"><?php echo $no_d++; ?></td>
+                                                <td class="fw-semibold text-nowrap"><?php echo htmlspecialchars($item['tanggal_display']); ?></td>
+                                                <td class="text-center">
+                                                    <span class="shift-badge shift-<?php echo htmlspecialchars($item['shift_badge']); ?>">
+                                                        <?php echo htmlspecialchars($item['shift_code']); ?>
+                                                    </span>
+                                                </td>
+                                                <td class="text-center"><?php echo $item['jam_masuk']; ?></td>
+                                                <td class="text-center"><?php echo $item['jam_pulang']; ?></td>
+                                                <td class="text-center">
+                                                    <?php if ($item['terlambat_menit'] > 0): ?>
+                                                        <span class="badge bg-warning text-dark fw-bold px-2 py-1">
+                                                            <i class="fas fa-clock me-1"></i><?php echo $item['terlambat_menit']; ?> menit
+                                                        </span>
+                                                    <?php else: ?>
+                                                        <span class="text-muted">-</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex flex-wrap gap-1">
+                                                        <?php if ($item['is_late']): ?>
+                                                            <span class="badge bg-warning bg-opacity-25 text-dark border border-warning">
+                                                                <i class="fas fa-hourglass-half me-1"></i>Telat <?php echo $item['terlambat_menit']; ?>m
+                                                            </span>
+                                                        <?php endif; ?>
+                                                        <?php if ($item['is_miss_in']): ?>
+                                                            <span class="badge bg-danger bg-opacity-25 text-danger border border-danger">
+                                                                <i class="fas fa-user-xmark me-1"></i>Tidak Absen Masuk (+Rp 25.000)
+                                                            </span>
+                                                        <?php endif; ?>
+                                                        <?php if ($item['is_miss_out']): ?>
+                                                            <span class="badge bg-danger bg-opacity-25 text-danger border border-danger">
+                                                                <i class="fas fa-arrow-right-from-bracket me-1"></i>Tidak Absen Pulang (+Rp 25.000)
+                                                            </span>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown Skema Perhitungan Denda -->
+                    <div class="card border-0 shadow-sm rounded-3">
+                        <div class="card-header bg-white py-2 border-0">
+                            <small class="fw-bold text-uppercase text-muted"><i class="fas fa-calculator me-1 text-primary"></i>Simulasi Rincian Skema Perhitungan</small>
+                        </div>
+                        <div class="card-body pt-0 pb-3" style="font-size: 0.85rem;">
+                            <ul class="list-group list-group-flush">
+                                <?php
+                                $t1_menit = min($jumlah_terlambat_total_menit, 20);
+                                $t2_menit = ($jumlah_terlambat_total_menit > 20) ? min($jumlah_terlambat_total_menit - 20, 60) : 0;
+                                $t3_menit = ($jumlah_terlambat_total_menit > 80) ? min($jumlah_terlambat_total_menit - 80, 60) : 0;
+                                $t4_menit = ($jumlah_terlambat_total_menit > 140) ? ($jumlah_terlambat_total_menit - 140) : 0;
+
+                                $t1_denda = 0;
+                                $t2_denda = $t2_menit * 300;
+                                $t3_denda = $t3_menit * 600;
+                                $t4_denda = $t4_menit * 2000;
+                                ?>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                    <span>1. Toleransi 20 Menit Pertama (0 - 20 m): <strong><?php echo $t1_menit; ?> m</strong></span>
+                                    <span class="badge bg-success bg-opacity-10 text-success">Gratis (Rp 0)</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                    <span>2. Menit ke 21 s/d 80: <strong><?php echo $t2_menit; ?> m</strong> &times; Rp 300</span>
+                                    <span class="fw-semibold">Rp <?php echo number_format($t2_denda, 0, ',', '.'); ?></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                    <span>3. Menit ke 81 s/d 140: <strong><?php echo $t3_menit; ?> m</strong> &times; Rp 600</span>
+                                    <span class="fw-semibold">Rp <?php echo number_format($t3_denda, 0, ',', '.'); ?></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                    <span>4. Di atas 140 Menit: <strong><?php echo $t4_menit; ?> m</strong> &times; Rp 2.000</span>
+                                    <span class="fw-semibold">Rp <?php echo number_format($t4_denda, 0, ',', '.'); ?></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                    <span>5. Denda Tidak Absen: <strong><?php echo ($jumlah_tidak_absen_masuk + $jumlah_tidak_absen_pulang); ?> kali</strong> &times; Rp 25.000</span>
+                                    <span class="fw-semibold">Rp <?php echo number_format($denda_tidak_absen, 0, ',', '.'); ?></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 bg-primary bg-opacity-10 mt-2 rounded-2 fw-bold text-primary">
+                                    <span>TOTAL AKUMULASI DENDA</span>
+                                    <span>Rp <?php echo number_format($total_denda_keseluruhan, 0, ',', '.'); ?></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-white border-0 px-4 py-3">
+                    <button type="button" class="btn btn-secondary rounded-3 px-4" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
