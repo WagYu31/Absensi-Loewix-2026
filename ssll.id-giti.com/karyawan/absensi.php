@@ -901,10 +901,23 @@ $asset_version = '2026.09.02.2';
                 }
             }
 
-            if (hasCheckedInToday && !hasCheckedOutToday && isLocationActive) { 
-                if ($('#btnCheckOut').length) $('#btnCheckOut').prop('disabled', false); 
-            } else { 
-                if ($('#btnCheckOut').length) $('#btnCheckOut').prop('disabled', true); 
+            // Atur status dan tampilan tombol Pulang (bisa diklik walaupun tidak absen masuk)
+            if (hasCheckedOutToday) {
+                if ($('#btnCheckOut').length) {
+                    $('#btnCheckOut')
+                        .removeClass('btn-check-out-presensi')
+                        .addClass('btn-disabled-recorded')
+                        .prop('disabled', true)
+                        .html('<i class="fas fa-circle-check me-2 text-success"></i>PULANG (TERCATAT)');
+                }
+            } else {
+                if ($('#btnCheckOut').length) {
+                    $('#btnCheckOut')
+                        .removeClass('btn-disabled-recorded')
+                        .addClass('btn-check-out-presensi')
+                        .prop('disabled', !isLocationActive)
+                        .html('<i class="fas fa-door-open me-2"></i>PULANG (CHECK-OUT)');
+                }
             }
         }
 
