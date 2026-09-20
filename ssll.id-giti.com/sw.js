@@ -1,11 +1,15 @@
 /* sw.js - Absensi Loewix PWA Service Worker */
 
-const CACHE_NAME = 'absensi-loewix-v20';
+const CACHE_NAME = 'absensi-loewix-v22';
 const ASSETS_TO_CACHE = [
+  '/img/loewix-icon-192.png',
+  '/img/loewix-icon-512.png',
+  '/img/loewix-logo.png',
   '/img/pwa-icon-192.png',
   '/img/pwa-icon-512.png',
   '/img/logo.png',
-  '/img/giti.png'
+  '/img/giti.png',
+  '/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {

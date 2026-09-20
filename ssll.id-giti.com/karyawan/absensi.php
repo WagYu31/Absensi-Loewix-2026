@@ -58,12 +58,14 @@ $asset_version = '2026.09.02.2';
     <title>Presensi Online 3D - Gravitti Tech</title>
     
     <!-- PWA Web App Manifest -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/manifest.json?v=20260920">
     <meta name="theme-color" content="#2563eb">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="/img/logo.png">
+    <link rel="icon" type="image/png" href="/img/loewix-icon-192.png?v=20260920">
+    <link rel="shortcut icon" href="/favicon.ico?v=20260920">
+    <link rel="apple-touch-icon" href="/img/loewix-icon-512.png?v=20260920">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
