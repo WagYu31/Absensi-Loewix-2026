@@ -231,7 +231,7 @@
             banner.style.display = sessionStorage.getItem('pwa_dismissed') ? 'none' : 'flex';
             banner.innerHTML = `
                 <div class="d-flex align-items-center gap-2.5" style="min-width: 0;">
-                    <img src="/img/loewix-icon-192.png?v=20260920" class="pwa-app-icon" onerror="this.src='/img/logo.png';">
+                    <img src="/img/loewix-icon-192.png?v=20260920b" class="pwa-app-icon" onerror="this.src='/img/loewix-logo.png';">
                     <div class="pwa-text-info">
                         <div class="pwa-title">Instal Absensi Loewix</div>
                         <div class="pwa-desc">ssll.id-giti.com</div>

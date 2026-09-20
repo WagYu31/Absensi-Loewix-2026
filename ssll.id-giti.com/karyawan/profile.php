@@ -26,14 +26,14 @@ $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($wor
     <title>Profil Saya - Gravitti Tech</title>
     
     <!-- PWA Web App Manifest -->
-    <link rel="manifest" href="/manifest.json?v=20260920">
+    <link rel="manifest" href="/manifest-v2.json?v=20260920b">
     <meta name="theme-color" content="#2563eb">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="icon" type="image/png" href="/img/loewix-icon-192.png?v=20260920">
-    <link rel="shortcut icon" href="/favicon.ico?v=20260920">
-    <link rel="apple-touch-icon" href="/img/loewix-icon-512.png?v=20260920">
+    <link rel="icon" type="image/png" href="/img/loewix-icon-192.png?v=20260920b">
+    <link rel="shortcut icon" href="/favicon.ico?v=20260920b">
+    <link rel="apple-touch-icon" href="/img/loewix-icon-512.png?v=20260920b">
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

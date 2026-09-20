@@ -40,15 +40,15 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- PWA Web App Manifest & Icons -->
-    <link rel="manifest" href="/manifest.json?v=20260920">
+    <link rel="manifest" href="/manifest-v2.json?v=20260920b">
     <meta name="theme-color" content="#2563eb">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Absensi Loewix">
-    <link rel="icon" type="image/png" href="/img/loewix-icon-192.png?v=20260920">
-    <link rel="shortcut icon" href="/favicon.ico?v=20260920">
-    <link rel="apple-touch-icon" href="/img/loewix-icon-512.png?v=20260920">
+    <link rel="icon" type="image/png" href="/img/loewix-icon-192.png?v=20260920b">
+    <link rel="shortcut icon" href="/favicon.ico?v=20260920b">
+    <link rel="apple-touch-icon" href="/img/loewix-icon-512.png?v=20260920b">
     
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
