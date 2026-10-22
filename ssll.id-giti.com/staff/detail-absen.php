@@ -257,13 +257,21 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                                 }
                                             }
 
-                                            if ($dayNameEng == "Saturday") $current_shifting = ($current_shifting == "T") ? "TW" : "W";
-                                            $shift_display_map = ["P" => ["S1", "P"], "M" => ["S2", "M"], "N" => ["S3", "N"], "S" => ["S4", "S"], "T" => ["HC", "T"], "W" => ["Sbt", "W"], "TW" => ["HS", "TW"], "TEST" => ["TST", "TEST"]];
+                                            if ($dayNameEng == "Saturday") {
+                                                if ($current_shifting == "T") {
+                                                    $current_shifting = "TW";
+                                                } elseif ($current_shifting == "P8") {
+                                                    $current_shifting = "P8W";
+                                                } else {
+                                                    $current_shifting = "W";
+                                                }
+                                            }
+                                            $shift_display_map = ["P" => ["S1", "P"], "P8" => ["S8", "P8"], "P8W" => ["S8S", "P8"], "M" => ["S2", "M"], "N" => ["S3", "N"], "S" => ["S4", "S"], "T" => ["HC", "T"], "W" => ["Sbt", "W"], "TW" => ["HS", "TW"], "TEST" => ["TST", "TEST"]];
                                             $shift_info = $shift_display_map[$current_shifting] ?? [$current_shifting, ""];
 
                                             $keterlambatan_menit_hari_ini = 0;
                                             if (strpos($jam_masuk_display, 'danger') === false) {
-                                                $waktu_masuk_seharusnya_unix = match ($current_shifting) { "P"=>strtotime($currentDateStr." 07:00:00"), "M"=>strtotime($currentDateStr." 08:30:00"), "N"=>strtotime($currentDateStr." 09:00:00"), "S"=>strtotime($currentDateStr." 09:30:00"), "T"=>strtotime($currentDateStr." 09:10:00"), "W"=>strtotime($currentDateStr." 08:30:00"), "TW"=>strtotime($currentDateStr." 09:10:00"), default=>strtotime($currentDateStr." 09:00:00") };
+                                                $waktu_masuk_seharusnya_unix = match ($current_shifting) { "P"=>strtotime($currentDateStr." 07:00:00"), "P8", "P8W"=>strtotime($currentDateStr." 08:00:00"), "M"=>strtotime($currentDateStr." 08:30:00"), "N"=>strtotime($currentDateStr." 09:00:00"), "S"=>strtotime($currentDateStr." 09:30:00"), "T"=>strtotime($currentDateStr." 09:10:00"), "W"=>strtotime($currentDateStr." 08:30:00"), "TW"=>strtotime($currentDateStr." 09:10:00"), default=>strtotime($currentDateStr." 09:00:00") };
                                                 if ($tgl_scan_dt->getTimestamp() > $waktu_masuk_seharusnya_unix) $keterlambatan_menit_hari_ini = floor(($tgl_scan_dt->getTimestamp() - $waktu_masuk_seharusnya_unix) / 60);
                                             }
                                             $jumlah_terlambat_total_menit += $keterlambatan_menit_hari_ini;

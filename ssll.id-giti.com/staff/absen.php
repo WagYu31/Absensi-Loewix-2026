@@ -270,6 +270,7 @@ if ($res_kar_drop) {
                                 <select id="shift" name="shift" class="form-select rounded-3">
                                     <option value="">-- Semua Shift --</option>
                                     <option value="P" <?php if ($selected_shift == 'P') echo 'selected'; ?>>Shift P (07:00)</option>
+                                    <option value="P8" <?php if ($selected_shift == 'P8') echo 'selected'; ?>>Shift P8 (08:00)</option>
                                     <option value="M" <?php if ($selected_shift == 'M') echo 'selected'; ?>>Shift M (08:30)</option>
                                     <option value="N" <?php if ($selected_shift == 'N') echo 'selected'; ?>>Shift N (09:00)</option>
                                     <option value="S" <?php if ($selected_shift == 'S') echo 'selected'; ?>>Shift S (09:30)</option>

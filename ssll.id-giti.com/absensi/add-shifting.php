@@ -119,6 +119,15 @@ $role = $_SESSION['role'];
                             }
                             echo "<label class='form-check-label text-dark label-shift' for='shiftP_" . $row['nik'] . "'>Pagi (07:00 - 16:00)</label>";
                             echo "</div>";
+                            // Menambahkan radio button untuk shift pagi 08:00
+                            echo "<div class='form-check form-check-inline'>";
+                            if ($row['shifting'] == 'P8') {
+                                echo "<input class='form-check-input input-shift' type='radio' name='shift_" . $row['nik'] . "' id='shiftP8_" . $row['nik'] . "' value='P8' checked>";
+                            } else {
+                                echo "<input class='form-check-input input-shift' type='radio' name='shift_" . $row['nik'] . "' id='shiftP8_" . $row['nik'] . "' value='P8'>";
+                            }
+                            echo "<label class='form-check-label text-dark label-shift' for='shiftP8_" . $row['nik'] . "'>Pagi (08:00 - 17:00)</label>";
+                            echo "</div>";
                             // Menambahkan radio button untuk shift tengah
                             echo "<div class='form-check form-check-inline'>";
                             if ($row['shifting'] == 'M') {

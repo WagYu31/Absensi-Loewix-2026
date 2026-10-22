@@ -314,6 +314,7 @@ $asset_version = time();
                                         <label for="shift" class="form-label"><i class="fa-solid fa-clock me-1 text-primary"></i>Pilih Shift</label>
                                         <select class="form-select" id="shift" name="shift" required>
                                             <option value="P">Shift 1 (07.00 s/d 16.00)</option>
+                                            <option value="P8">Shift P8 (08.00 s/d 17.00)</option>
                                             <option value="M">Shift 2 (08.30 s/d 17.30)</option>
                                             <option value="N">Shift 3 (09.00 s/d 18.00)</option>
                                             <option value="S">Shift 4 (09.30 s/d 18.30)</option>
@@ -418,6 +419,7 @@ $asset_version = time();
                                                 $badge_class = "shift-1";
                                                 switch ($data['shifting']) {
                                                     case 'P': $shifting_display = "Shift 1 (07.00 - 16.00)"; $badge_class = "shift-1"; break;
+                                                    case 'P8': $shifting_display = "Shift P8 (08.00 - 17.00)"; $badge_class = "shift-2"; break;
                                                     case 'M': $shifting_display = "Shift 2 (08.30 - 17.30)"; $badge_class = "shift-2"; break;
                                                     case 'N': $shifting_display = "Shift 3 (09.00 - 18.00)"; $badge_class = "shift-3"; break;
                                                     case 'S': $shifting_display = "Shift 4 (09.30 - 18.30)"; $badge_class = "shift-4"; break;

@@ -194,6 +194,7 @@ foreach ($employees_data as $nip => &$emp) {
                 
                 switch ($current_shift) {
                     case "P": $jam_masuk_target = "07:00"; break;
+                    case "P8": $jam_masuk_target = "08:00"; break;
                     case "M": $jam_masuk_target = "08:30"; break;
                     case "N": $jam_masuk_target = "09:00"; break;
                     case "S": $jam_masuk_target = "09:30"; break;

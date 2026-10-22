@@ -212,6 +212,12 @@ $conn->close();
             box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
         }
 
+        .shift-chip input[type="radio"][value="P8"]:checked + .shift-chip-label {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            border-color: #0284c7;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+
         .shift-chip input[type="radio"][value="T"]:checked + .shift-chip-label {
             background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
             border-color: #b45309;
@@ -261,6 +267,7 @@ $conn->close();
                                 <select id="shift_filter" name="shift_filter" class="form-select rounded-3" onchange="this.form.submit()">
                                     <option value="">-- Semua Shift --</option>
                                     <option value="P" <?php if ($selected_shift_filter == 'P') echo 'selected'; ?>>Shift P (Pagi - 07:00)</option>
+                                    <option value="P8" <?php if ($selected_shift_filter == 'P8') echo 'selected'; ?>>Shift P8 (Pagi - 08:00)</option>
                                     <option value="M" <?php if ($selected_shift_filter == 'M') echo 'selected'; ?>>Shift M (Tengah - 08:30)</option>
                                     <option value="N" <?php if ($selected_shift_filter == 'N') echo 'selected'; ?>>Shift N (Siang - 09:00)</option>
                                     <option value="S" <?php if ($selected_shift_filter == 'S') echo 'selected'; ?>>Shift S (Siang - 09:30)</option>
@@ -341,6 +348,12 @@ $conn->close();
                                                     <label class="shift-chip">
                                                         <input type="radio" value="P" name="shift_<?php echo htmlspecialchars($nik); ?>" <?php if ($curr_shift === 'P') echo 'checked'; ?>>
                                                         <span class="shift-chip-label"><i class="fa-solid fa-sun me-1 opacity-75"></i> Pagi (07.00)</span>
+                                                    </label>
+
+                                                    <!-- Shift Pagi 08.00 (P8) -->
+                                                    <label class="shift-chip">
+                                                        <input type="radio" value="P8" name="shift_<?php echo htmlspecialchars($nik); ?>" <?php if ($curr_shift === 'P8') echo 'checked'; ?>>
+                                                        <span class="shift-chip-label"><i class="fa-solid fa-clock me-1 opacity-75"></i> Pagi (08.00)</span>
                                                     </label>
 
                                                     <!-- Shift Tengah (M) -->

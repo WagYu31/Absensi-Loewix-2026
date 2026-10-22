@@ -163,10 +163,17 @@ if ($stmt_kehadiran_lm) {
             $nama_hari_eng_abs_lm = $jam_masuk_dt->format('l');
 
             if ($nama_hari_eng_abs_lm == "Saturday") {
-                $current_shifting_abs_lm = ($current_shifting_abs_lm == "T") ? "TW" : "W";
+                if ($current_shifting_abs_lm == "T") {
+                    $current_shifting_abs_lm = "TW";
+                } elseif ($current_shifting_abs_lm == "P8") {
+                    $current_shifting_abs_lm = "P8W";
+                } else {
+                    $current_shifting_abs_lm = "W";
+                }
             }
             $jam_masuk_seharusnya_str_abs_lm = match ($current_shifting_abs_lm) {
                 "P" => "07:00:00",
+                "P8", "P8W" => "08:00:00",
                 "M" => "08:30:00",
                 "S", "T", "TW" => "09:30:00",
                 "W" => "08:30:00",

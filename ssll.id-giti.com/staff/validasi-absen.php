@@ -86,12 +86,20 @@ function calculateAbsensiLengkap($conn, $row_karyawan, $bulan_filter, $tahun_fil
 
                 $dayNameEng = date('l', strtotime($currentDateStr));
                 if ($dayNameEng == "Saturday") {
-                    $current_shifting = ($current_shifting == "T") ? "TW" : "W";
+                    if ($current_shifting == "T") {
+                        $current_shifting = "TW";
+                    } elseif ($current_shifting == "P8") {
+                        $current_shifting = "P8W";
+                    } else {
+                        $current_shifting = "W";
+                    }
                 }
 
                 $base_time_str = $currentDateStr;
                 switch ($current_shifting) {
                     case "P": $base_time_str .= " 07:00:00"; break;
+                    case "P8":
+                    case "P8W": $base_time_str .= " 08:00:00"; break;
                     case "M": $base_time_str .= " 08:30:00"; break;
                     case "N": $base_time_str .= " 09:00:00"; break;
                     case "S": $base_time_str .= " 09:30:00"; break;

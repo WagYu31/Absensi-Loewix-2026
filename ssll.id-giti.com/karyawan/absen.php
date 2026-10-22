@@ -236,16 +236,23 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                             }
                                             
                                             if ($nama_hari_eng == "Saturday") {
-                                                $current_shifting = ($current_shifting == "T") ? "TW" : "W";
+                                                if ($current_shifting == "T") {
+                                                    $current_shifting = "TW";
+                                                } elseif ($current_shifting == "P8") {
+                                                    $current_shifting = "P8W";
+                                                } else {
+                                                    $current_shifting = "W";
+                                                }
                                             }
 
-                                            $shift_display_map = ["P" => ["S1", "P"], "M" => ["S2", "M"], "N" => ["S3", "N"], "S" => ["S4", "S"], "T" => ["HC", "T"], "W" => ["Sbt", "W"], "TW" => ["HS", "TW"]];
+                                            $shift_display_map = ["P" => ["S1", "P"], "P8" => ["S8", "P8"], "P8W" => ["S8S", "P8"], "M" => ["S2", "M"], "N" => ["S3", "N"], "S" => ["S4", "S"], "T" => ["HC", "T"], "W" => ["Sbt", "W"], "TW" => ["HS", "TW"]];
                                             $shift_info = $shift_display_map[$current_shifting] ?? [$current_shifting, ""];
 
                                             $keterlambatan_menit_hari_ini = 0;
                                             if (!$is_error_masuk) {
                                                 $waktu_masuk_seharusnya_unix = match ($current_shifting) {
                                                     "P" => strtotime($tgl_only_db . " 07:00:00"),
+                                                    "P8", "P8W" => strtotime($tgl_only_db . " 08:00:00"),
                                                     "M" => strtotime($tgl_only_db . " 08:30:00"),
                                                     "N" => strtotime($tgl_only_db . " 09:00:00"),
                                                     "S" => strtotime($tgl_only_db . " 09:30:00"),

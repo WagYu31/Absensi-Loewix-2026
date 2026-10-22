@@ -170,6 +170,7 @@ $dataa = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                         <label for="shift">Shift</label>
                         <select class="form-control" id="shift" name="shift" required>
                             <option value="P">Shift 1 (07.00 s/d 16.00)</option>
+                            <option value="P8">Shift P8 (08.00 s/d 17.00)</option>
                             <option value="M">Shift 2 (08.30 s/d 17.30)</option>
                             <option value="S">Shift 3 (09.30 s/d 18.30)</option>
                             <option value="T">Shift Harco (09.10 s/d 18.00)</option>
@@ -263,6 +264,8 @@ $dataa = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                         $shifting = $data['shifting'];
                         if ($shifting == "P") {
                             $shifting_1 = "Shift 1 (07.00 s/d 16.00)";
+                        } elseif ($shifting == "P8") {
+                            $shifting_1 = "Shift P8 (08.00 s/d 17.00)";
                         } elseif ($shifting == "M") {
                             $shifting_1 = "Shift 2 (08.30 s/d 17.30)";
                         } elseif ($shifting == "S") {

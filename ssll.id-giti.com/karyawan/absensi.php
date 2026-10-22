@@ -419,12 +419,19 @@ $asset_version = '2026.09.02.2';
     $limitTimeStr = '10:00';
 
     if ($isSaturday && $final_shifting !== 'TEST') {
-        $limitHour = 9;
-        $limitMinute = 30;
-        $limitTimeStr = '09:30';
+        if ($final_shifting === 'P8') {
+            $limitHour = 9;
+            $limitMinute = 0;
+            $limitTimeStr = '09:00';
+        } else {
+            $limitHour = 9;
+            $limitMinute = 30;
+            $limitTimeStr = '09:30';
+        }
     } else {
         switch ($final_shifting) {
             case 'P': $limitHour = 8; $limitMinute = 0; $limitTimeStr = '08:00'; break;
+            case 'P8': $limitHour = 9; $limitMinute = 0; $limitTimeStr = '09:00'; break;
             case 'M': $limitHour = 9; $limitMinute = 30; $limitTimeStr = '09:30'; break;
             case 'N': $limitHour = 10; $limitMinute = 0; $limitTimeStr = '10:00'; break;
             case 'S': $limitHour = 10; $limitMinute = 30; $limitTimeStr = '10:30'; break;
@@ -485,23 +492,24 @@ $asset_version = '2026.09.02.2';
                                     <h5 class="section-title-presensi-card mb-2"><i class="fa-regular fa-calendar-check me-2"></i>JADWAL ANDA HARI INI</h5>
                                     <p class="shift-name-presensi-card mb-2">
                                         Shift: <?php
-                                                $shiftNames = ['P' => 'Pagi', 'M' => 'Tengah', 'N' => 'Siang', 'S' => 'Siang', 'T' => 'Harco (HC)', 'TEST' => 'Shift Testing (24 Jam)'];
+                                                $shiftNames = ['P' => 'Pagi', 'P8' => 'Pagi (08:00)', 'M' => 'Tengah', 'N' => 'Siang', 'S' => 'Siang', 'T' => 'Harco (HC)', 'TEST' => 'Shift Testing (24 Jam)'];
                                                 echo $shiftNames[$final_shifting] ?? $final_shifting;
                                                 ?>
                                     </p>
                                     <?php
                                     $shiftSchedule = '';
                                     if ($isSaturday && $final_shifting !== 'TEST') {
-                                        $shiftSchedule = '08.30 - 13.00';
+                                        $shiftSchedule = ($final_shifting === 'P8') ? '08.00 - 13.00' : '08.30 - 13.00';
                                     } else {
                                         switch ($final_shifting) {
-                                            case 'P': $shiftSchedule = '07.00 - 16.00'; break;
-                                            case 'M': $shiftSchedule = '08.30 - 17.30'; break;
-                                            case 'N': $shiftSchedule = '09.00 - 18.00'; break;
-                                            case 'S': $shiftSchedule = '09.30 - 18.30'; break;
-                                            case 'T': $shiftSchedule = '09.10 - 18.00'; break;
-                                            case 'TEST': $shiftSchedule = 'Bisa Masuk & Pulang Kapan Saja (Test Mode)'; break; 
-                                            default: $shiftSchedule = 'Tidak Terdefinisi';
+                                             case 'P': $shiftSchedule = '07.00 - 16.00'; break;
+                                             case 'P8': $shiftSchedule = '08.00 - 17.00'; break;
+                                             case 'M': $shiftSchedule = '08.30 - 17.30'; break;
+                                             case 'N': $shiftSchedule = '09.00 - 18.00'; break;
+                                             case 'S': $shiftSchedule = '09.30 - 18.30'; break;
+                                             case 'T': $shiftSchedule = '09.10 - 18.00'; break;
+                                             case 'TEST': $shiftSchedule = 'Bisa Masuk & Pulang Kapan Saja (Test Mode)'; break; 
+                                             default: $shiftSchedule = 'Tidak Terdefinisi';
                                         }
                                     }
                                     ?>
@@ -823,10 +831,11 @@ $asset_version = '2026.09.02.2';
             <?php
             $lateThresholdPHP = '';
             if ($isSaturday && $final_shifting !== 'TEST') {
-                $lateThresholdPHP = '08:30';
+                $lateThresholdPHP = ($final_shifting === 'P8') ? '08:00' : '08:30';
             } else {
                 switch ($final_shifting) {
                     case 'P': $lateThresholdPHP = '07:00'; break;
+                    case 'P8': $lateThresholdPHP = '08:00'; break;
                     case 'M': $lateThresholdPHP = '08:30'; break;
                     case 'N': $lateThresholdPHP = '09:00'; break;
                     case 'S': $lateThresholdPHP = '09:30'; break;
