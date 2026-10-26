@@ -536,13 +536,29 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
 
                                         foreach ($denda_detail_list as $item): 
                                             $denda_telat_row = 0;
+                                            $info_tooltip = "";
                                             if ($item['terlambat_menit'] > 0) {
-                                                $denda_telat_row = $calc_fine($m_cum_before + $item['terlambat_menit']) - $calc_fine($m_cum_before);
-                                                $m_cum_before += $item['terlambat_menit'];
+                                                $m_start = $m_cum_before;
+                                                $m_end = $m_cum_before + $item['terlambat_menit'];
+                                                $denda_telat_row = $calc_fine($m_end) - $calc_fine($m_start);
+                                                $m_cum_before = $m_end;
+
+                                                if ($m_start < 20 && $m_end > 20) {
+                                                    $m_gratis = 20 - $m_start;
+                                                    $m_bayar = $m_end - 20;
+                                                    $info_tooltip = "Habis kuota 20m sebulan: {$m_gratis}m gratis + {$m_bayar}m x Rp " . number_format($telatst, 0, ',', '.');
+                                                } elseif ($m_end <= 20) {
+                                                    $info_tooltip = "Masih dalam toleransi 20 menit sebulan (Akumulasi: {$m_end}m / 20m)";
+                                                } else {
+                                                    $info_tooltip = "Akumulasi keterlambatan menit ke-{$m_start} s/d {$m_end} sebulan";
+                                                }
                                             }
                                             $denda_miss_row = 0;
                                             if (!empty($item['is_miss_in'])) $denda_miss_row += $gabsen;
                                             if (!empty($item['is_miss_out'])) $denda_miss_row += $gabsen;
+                                            if ($denda_miss_row > 0) {
+                                                $info_tooltip .= ($info_tooltip ? " | " : "") . "Denda tidak absen: Rp " . number_format($denda_miss_row, 0, ',', '.');
+                                            }
                                             $denda_total_row = $denda_telat_row + $denda_miss_row;
                                         ?>
                                             <tr>
@@ -590,11 +606,11 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                                 </td>
                                                 <td class="text-center text-nowrap">
                                                     <?php if ($denda_total_row > 0): ?>
-                                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 fw-bold px-2.5 py-1">
+                                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 fw-bold px-2.5 py-1" title="<?php echo htmlspecialchars($info_tooltip); ?>" style="cursor: help;">
                                                             Rp <?php echo number_format($denda_total_row, 0, ',', '.'); ?>
                                                         </span>
                                                     <?php elseif ($item['terlambat_menit'] > 0): ?>
-                                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1" title="Toleransi 20 menit pertama gratis">
+                                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1" title="<?php echo htmlspecialchars($info_tooltip ?: 'Toleransi 20 menit pertama gratis'); ?>" style="cursor: help;">
                                                             <i class="fas fa-check me-1"></i>Rp 0
                                                         </span>
                                                     <?php else: ?>
