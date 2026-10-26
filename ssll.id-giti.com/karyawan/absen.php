@@ -488,19 +488,50 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                         <th>Pulang</th>
                                         <th>Keterlambatan</th>
                                         <th>Jenis Pelanggaran / Rincian</th>
+                                        <th width="12%">Denda</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($denda_detail_list)): ?>
                                         <tr>
-                                            <td colspan="7" class="text-center py-4 text-success">
+                                            <td colspan="8" class="text-center py-4 text-success">
                                                 <i class="fas fa-check-circle fa-3x mb-2 d-block text-success opacity-75"></i>
                                                 <strong>Luar Biasa! Tidak ada pelanggaran atau denda di bulan ini.</strong><br>
                                                 <small class="text-muted">Kehadiran tepat waktu dan presensi lengkap setiap hari kerja.</small>
                                             </td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php $no_d = 1; foreach ($denda_detail_list as $item): ?>
+                                        <?php 
+                                        $no_d = 1; 
+                                        $m_cum_before = 0;
+                                        $telatst = 300; $telatd = 600; $telattg = 2000; $gabsen = 25000;
+                                        $getdnd = "SELECT * FROM dnd WHERE id = 1";
+                                        $resdnd = $conn->query($getdnd);
+                                        if ($resdnd && $dnd = $resdnd->fetch_assoc()) {
+                                            $gabsen = $dnd['gabsen'] ?? 25000;
+                                            $telatst = $dnd['telatst'] ?? 300;
+                                            $telatd = $dnd['telatd'] ?? 600;
+                                            $telattg = $dnd['telattg'] ?? 2000;
+                                        }
+
+                                        $calc_fine = function($total_m) use ($telatst, $telatd, $telattg) {
+                                            if ($total_m <= 20) return 0;
+                                            if ($total_m <= 80) return ($total_m - 20) * $telatst;
+                                            if ($total_m <= 140) return (60 * $telatst) + (($total_m - 80) * $telatd);
+                                            return (60 * $telatst) + (60 * $telatd) + (($total_m - 140) * $telattg);
+                                        };
+
+                                        foreach ($denda_detail_list as $item): 
+                                            $denda_telat_row = 0;
+                                            if ($item['terlambat_menit'] > 0) {
+                                                $denda_telat_row = $calc_fine($m_cum_before + $item['terlambat_menit']) - $calc_fine($m_cum_before);
+                                                $m_cum_before += $item['terlambat_menit'];
+                                            }
+                                            $denda_miss_row = 0;
+                                            if (!empty($item['is_miss_in'])) $denda_miss_row += $gabsen;
+                                            if (!empty($item['is_miss_out'])) $denda_miss_row += $gabsen;
+                                            $denda_total_row = $denda_telat_row + $denda_miss_row;
+                                        ?>
                                             <tr>
                                                 <td class="text-center fw-bold text-muted"><?php echo $no_d++; ?></td>
                                                 <td class="fw-semibold text-nowrap"><?php echo htmlspecialchars($item['tanggal_display']); ?></td>
@@ -539,10 +570,37 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                                                         <?php endif; ?>
                                                     </div>
                                                 </td>
+                                                <td class="text-center text-nowrap">
+                                                    <?php if ($denda_total_row > 0): ?>
+                                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 fw-bold px-2.5 py-1">
+                                                            Rp <?php echo number_format($denda_total_row, 0, ',', '.'); ?>
+                                                        </span>
+                                                    <?php elseif ($item['terlambat_menit'] > 0): ?>
+                                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1" title="Toleransi 20 menit pertama gratis">
+                                                            <i class="fas fa-check me-1"></i>Rp 0
+                                                        </span>
+                                                    <?php else: ?>
+                                                        <span class="text-muted">-</span>
+                                                    <?php endif; ?>
+                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </tbody>
+                                <?php if (!empty($denda_detail_list)): ?>
+                                <tfoot class="table-light fw-bold border-top">
+                                    <tr>
+                                        <td colspan="5" class="text-end">TOTAL</td>
+                                        <td class="text-center text-danger"><?php echo $jumlah_terlambat_total_menit; ?> m</td>
+                                        <td></td>
+                                        <td class="text-center">
+                                            <span class="badge bg-danger text-white px-2.5 py-1 fs-6">
+                                                Rp <?php echo number_format($total_denda_keseluruhan, 0, ',', '.'); ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                                <?php endif; ?>
                             </table>
                         </div>
                     </div>
