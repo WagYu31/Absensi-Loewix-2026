@@ -101,15 +101,21 @@ if ($result2->num_rows > 0) {
         $menit = floor(($selisih_detik - ($jam * 60 * 60)) / 60);
         $detik = $selisih_detik - ($jam * 60 * 60) - ($menit * 60);
     }
-    $jumlah_denda = "";
-    if ($jumlah_terlambat <= 20) {
+    $is_wahyu = ($nik == '577' || (isset($row['nama']) && stripos($row['nama'], 'Wahyu Utomo') !== false));
+    $kuota_gratis = $is_wahyu ? 60 : 20;
+    $b1 = $kuota_gratis;
+    $b2 = $b1 + 60;
+    $b3 = $b1 + 120;
+
+    $jumlah_denda = 0;
+    if ($jumlah_terlambat <= $b1) {
         $jumlah_denda = 0;
-    } elseif ($jumlah_terlambat > 20 && $jumlah_terlambat <= 80) {
-        $jumlah_denda = ($jumlah_terlambat - 20) * 300;
-    } elseif ($jumlah_terlambat > 80 && $jumlah_terlambat <= 140) {
-        $jumlah_denda = (60 * 300) + (($jumlah_terlambat - 80) * 600);
-    }elseif ($jumlah_terlambat > 140) {
-        $jumlah_denda = (60 * 300) + (60 * 600) + (($jumlah_terlambat - 140) * 2000);
+    } elseif ($jumlah_terlambat > $b1 && $jumlah_terlambat <= $b2) {
+        $jumlah_denda = ($jumlah_terlambat - $b1) * 300;
+    } elseif ($jumlah_terlambat > $b2 && $jumlah_terlambat <= $b3) {
+        $jumlah_denda = (60 * 300) + (($jumlah_terlambat - $b2) * 600);
+    } elseif ($jumlah_terlambat > $b3) {
+        $jumlah_denda = (60 * 300) + (60 * 600) + (($jumlah_terlambat - $b3) * 2000);
     }
     $jumlah_denda_rupiah = number_format($jumlah_denda, 0, ',', '.');
     echo "<td class='text-center'>" . $jumlah_terlambat . "</td>";

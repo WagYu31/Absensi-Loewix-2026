@@ -319,33 +319,28 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
                 <h5 class="section-title mt-4">Ringkasan Denda Bulan Ini</h5>
                 <div class="row g-3 summary-cards-container">
                     <?php
+                    $is_wahyu = ($nik_to_display == '577' || (isset($namaKaryawanDisplay) && stripos($namaKaryawanDisplay, 'Wahyu Utomo') !== false));
+                    $kuota_gratis = $is_wahyu ? 60 : 20;
+                    $b1 = $kuota_gratis;
+                    $b2 = $b1 + 60;
+                    $b3 = $b1 + 120;
+
                     // Inisialisasi variabel denda keterlambatan dengan nilai awal 0
                     $denda_keterlambatan = 0;
                     
-                    // Cek apakah total keterlambatan lebih dari 20 menit (karena menit 1-20 gratis)
-                    if ($jumlah_terlambat_total_menit > 20) {
-                    
-                        // Jika terlambat antara 21 - 80 menit
-                        if ($jumlah_terlambat_total_menit <= 80) {
-                            // Denda adalah sisa menit setelah 20 menit dikali 300
-                            $denda_keterlambatan = ($jumlah_terlambat_total_menit - 20) * 300;
+                    if ($jumlah_terlambat_total_menit > $b1) {
+                        if ($jumlah_terlambat_total_menit <= $b2) {
+                            $denda_keterlambatan = ($jumlah_terlambat_total_menit - $b1) * 300;
                         } 
-                        // Jika terlambat antara 81 - 140 menit
-                        elseif ($jumlah_terlambat_total_menit <= 140) {
-                            // Denda penuh untuk jenjang pertama (60 menit * 300)
+                        elseif ($jumlah_terlambat_total_menit <= $b3) {
                             $denda_jenjang_1 = 60 * 300; 
-                            // Ditambah denda untuk sisa menit di jenjang kedua (total menit dikurangi 80) dikali 600
-                            $denda_jenjang_2 = ($jumlah_terlambat_total_menit - 80) * 600;
+                            $denda_jenjang_2 = ($jumlah_terlambat_total_menit - $b2) * 600;
                             $denda_keterlambatan = $denda_jenjang_1 + $denda_jenjang_2;
                         } 
-                        // Jika terlambat lebih dari 140 menit
                         else {
-                            // Denda penuh untuk jenjang pertama (60 menit * 300)
                             $denda_jenjang_1 = 60 * 300;
-                            // Denda penuh untuk jenjang kedua (60 menit * 600)
                             $denda_jenjang_2 = 60 * 600;
-                            // Ditambah denda untuk sisa menit di jenjang ketiga (total menit dikurangi 140) dikali 2000
-                            $denda_jenjang_3 = ($jumlah_terlambat_total_menit - 140) * 2000;
+                            $denda_jenjang_3 = ($jumlah_terlambat_total_menit - $b3) * 2000;
                             $denda_keterlambatan = $denda_jenjang_1 + $denda_jenjang_2 + $denda_jenjang_3;
                         }
                     }
@@ -404,29 +399,29 @@ $current_page_basename = basename($_SERVER['PHP_SELF']);
 
                 <div class="card mt-4 mb-4 no-print">
                     <div class="card-body">
-                        <h5 class="card-title mb-3"><i class="fa-solid fa-scale-balanced title-icon me-2"></i>Informasi Perhitungan Denda</h5>
+                        <h5 class="card-title mb-3"><i class="fa-solid fa-scale-balanced title-icon me-2"></i>Informasi Perhitungan Denda<?php if ($is_wahyu) echo ' <span class="badge bg-primary ms-2" style="font-size:0.75rem; vertical-align: middle;">Khusus Wahyu Utomo: Kuota 60 Menit</span>'; ?></h5>
                         <div class="fine-info-table">
                             <div class="fine-info-row">
                                 <div class="fine-info-condition">
-                                    <i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan : 20 menit pertama
+                                    <i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan : <?php echo $b1; ?> menit pertama
                                 </div>
                                 <div class="fine-info-amount">Gratis</div>
                             </div>
                             <div class="fine-info-row">
                                 <div class="fine-info-condition">
-                                    <i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan menit ke 21 s/d 80
+                                    <i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan menit ke <?php echo ($b1 + 1); ?> s/d <?php echo $b2; ?>
                                 </div>
                                 <div class="fine-info-amount">Rp 300,- <span class="per-unit">/menit</span></div>
                             </div>
                             <div class="fine-info-row">
                                 <div class="fine-info-condition">
-                                    <i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan menit ke 81 s/d 140
+                                    <i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan menit ke <?php echo ($b2 + 1); ?> s/d <?php echo $b3; ?>
                                 </div>
                                 <div class="fine-info-amount">Rp 600,- <span class="per-unit">/menit</span></div>
                             </div>
                             <div class="fine-info-row">
                                 <div class="fine-info-condition">
-                                    <i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan setelah 140 menit
+                                    <i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan setelah <?php echo $b3; ?> menit
                                 </div>
                                 <div class="fine-info-amount">Rp 2.000,- <span class="per-unit">/menit</span></div>
                             </div>

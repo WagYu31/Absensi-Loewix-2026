@@ -117,11 +117,17 @@ function calculateAbsensiLengkap($conn, $row_karyawan, $bulan_filter, $tahun_fil
         }
     }
 
+    $is_wahyu = ($nik == '577' || $nip_karyawan == '577' || $nip_karyawan == '16577');
+    $kuota_gratis = $is_wahyu ? 60 : 20;
+    $b1 = $kuota_gratis;
+    $b2 = $b1 + 60;
+    $b3 = $b1 + 120;
+
     $denda_terlambat_rp = 0;
-    if ($total_menit_terlambat > 20) {
-        if ($total_menit_terlambat <= 80) $denda_terlambat_rp = ($total_menit_terlambat - 20) * 300;
-        elseif ($total_menit_terlambat <= 140) $denda_terlambat_rp = (60 * 300) + (($total_menit_terlambat - 80) * 600);
-        else $denda_terlambat_rp = (60 * 300) + (60 * 600) + (($total_menit_terlambat - 140) * 2000);
+    if ($total_menit_terlambat > $b1) {
+        if ($total_menit_terlambat <= $b2) $denda_terlambat_rp = ($total_menit_terlambat - $b1) * 300;
+        elseif ($total_menit_terlambat <= $b3) $denda_terlambat_rp = (60 * 300) + (($total_menit_terlambat - $b2) * 600);
+        else $denda_terlambat_rp = (60 * 300) + (60 * 600) + (($total_menit_terlambat - $b3) * 2000);
     }
 
     $jumlah_kejadian_tidak_absen = $total_tidak_absen_masuk + $total_tidak_absen_pulang;

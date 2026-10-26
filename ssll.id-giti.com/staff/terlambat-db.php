@@ -183,14 +183,24 @@ if ($resdnd) {
     }
 }
 
+$is_wahyu = ((isset($row['nik']) && $row['nik'] == '577') || 
+             (isset($row['nip']) && ($row['nip'] == '577' || $row['nip'] == '16577')) || 
+             (isset($row['nama']) && stripos($row['nama'], 'Wahyu Utomo') !== false) || 
+             (isset($nik) && $nik == '577'));
+
+$kuota_gratis = $is_wahyu ? 60 : 20;
+$b1 = $kuota_gratis;
+$b2 = $b1 + 60;
+$b3 = $b1 + 120;
+
 $denda_terlambat_rp = 0;
-if ($total_menit_terlambat > 20) {
-    if ($total_menit_terlambat <= 80) {
-        $denda_terlambat_rp = ($total_menit_terlambat - 20) * $telatst;
-    } elseif ($total_menit_terlambat <= 140) {
-        $denda_terlambat_rp = (60 * $telatst) + (($total_menit_terlambat - 80) * $telatd);
+if ($total_menit_terlambat > $b1) {
+    if ($total_menit_terlambat <= $b2) {
+        $denda_terlambat_rp = ($total_menit_terlambat - $b1) * $telatst;
+    } elseif ($total_menit_terlambat <= $b3) {
+        $denda_terlambat_rp = (60 * $telatst) + (($total_menit_terlambat - $b2) * $telatd);
     } else {
-        $denda_terlambat_rp = (60 * $telatst) + (60 * $telatd) + (($total_menit_terlambat - 140) * $telattg);
+        $denda_terlambat_rp = (60 * $telatst) + (60 * $telatd) + (($total_menit_terlambat - $b3) * $telattg);
     }
 }
 

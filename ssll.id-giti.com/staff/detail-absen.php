@@ -358,11 +358,17 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                         }
                     }
                     
+                    $is_wahyu = ($nik_to_display == '577' || (isset($namaKaryawanDisplay) && stripos($namaKaryawanDisplay, 'Wahyu Utomo') !== false));
+                    $kuota_gratis = $is_wahyu ? 60 : 20;
+                    $b1 = $kuota_gratis;
+                    $b2 = $b1 + 60;
+                    $b3 = $b1 + 120;
+
                     $denda_keterlambatan = 0;
-                    if ($jumlah_terlambat_total_menit > 20) {
-                        if ($jumlah_terlambat_total_menit <= 80) $denda_keterlambatan = ($jumlah_terlambat_total_menit - 20) * $telatst;
-                        elseif ($jumlah_terlambat_total_menit <= 140) $denda_keterlambatan = (60 * $telatst) + (($jumlah_terlambat_total_menit - 80) * $telatd);
-                        else $denda_keterlambatan = (60 * $telatst) + (60 * $telatd) + (($jumlah_terlambat_total_menit - 140) * $telattg);
+                    if ($jumlah_terlambat_total_menit > $b1) {
+                        if ($jumlah_terlambat_total_menit <= $b2) $denda_keterlambatan = ($jumlah_terlambat_total_menit - $b1) * $telatst;
+                        elseif ($jumlah_terlambat_total_menit <= $b3) $denda_keterlambatan = (60 * $telatst) + (($jumlah_terlambat_total_menit - $b2) * $telatd);
+                        else $denda_keterlambatan = (60 * $telatst) + (60 * $telatd) + (($jumlah_terlambat_total_menit - $b3) * $telattg);
                     }
                     $denda_tidak_absen = ($jumlah_tidak_absen_masuk + $jumlah_tidak_absen_pulang) * $gabsen;
                     $total_denda_keseluruhan = $denda_keterlambatan + $denda_tidak_absen;
@@ -436,7 +442,7 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                     </div>
                 </div>
 
-                <div class="card mt-4 mb-4 no-print"><div class="card-body"><h5 class="card-title mb-3"><i class="fa-solid fa-scale-balanced title-icon me-2"></i>Informasi Perhitungan Denda</h5><div class="fine-info-table"><div class="fine-info-row"><div class="fine-info-condition"><i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan : 20 menit pertama</div><div class="fine-info-amount">Gratis</div></div><div class="fine-info-row"><div class="fine-info-condition"><i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan menit ke 21 s/d 80</div><div class="fine-info-amount">Rp 300,- <span class="per-unit">/menit</span></div></div><div class="fine-info-row"><div class="fine-info-condition"><i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan menit ke 81 s/d 140</div><div class="fine-info-amount">Rp 600,- <span class="per-unit">/menit</span></div></div><div class="fine-info-row"><div class="fine-info-condition"><i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan setelah 140 menit</div><div class="fine-info-amount">Rp 2.000,- <span class="per-unit">/menit</span></div></div><div class="fine-info-row"><div class="fine-info-condition"><i class="fa-solid fa-circle-dot fine-info-icon"></i>Tidak absen (masuk/pulang)</div><div class="fine-info-amount">Rp 25.000,- <span class="per-unit">/kejadian</span></div></div></div></div></div>
+                <div class="card mt-4 mb-4 no-print"><div class="card-body"><h5 class="card-title mb-3"><i class="fa-solid fa-scale-balanced title-icon me-2"></i>Informasi Perhitungan Denda<?php if ($is_wahyu) echo ' <span class="badge bg-primary ms-2" style="font-size:0.75rem; vertical-align: middle;">Khusus Wahyu Utomo: Kuota 60 Menit</span>'; ?></h5><div class="fine-info-table"><div class="fine-info-row"><div class="fine-info-condition"><i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan : <?php echo $b1; ?> menit pertama</div><div class="fine-info-amount">Gratis</div></div><div class="fine-info-row"><div class="fine-info-condition"><i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan menit ke <?php echo ($b1 + 1); ?> s/d <?php echo $b2; ?></div><div class="fine-info-amount">Rp 300,- <span class="per-unit">/menit</span></div></div><div class="fine-info-row"><div class="fine-info-condition"><i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan menit ke <?php echo ($b2 + 1); ?> s/d <?php echo $b3; ?></div><div class="fine-info-amount">Rp 600,- <span class="per-unit">/menit</span></div></div><div class="fine-info-row"><div class="fine-info-condition"><i class="fa-solid fa-circle-dot fine-info-icon"></i>Keterlambatan setelah <?php echo $b3; ?> menit</div><div class="fine-info-amount">Rp 2.000,- <span class="per-unit">/menit</span></div></div><div class="fine-info-row"><div class="fine-info-condition"><i class="fa-solid fa-circle-dot fine-info-icon"></i>Tidak absen (masuk/pulang)</div><div class="fine-info-amount">Rp 25.000,- <span class="per-unit">/kejadian</span></div></div></div></div></div>
                 <div class="footer no-print">Copyright &copy; Gravitti Technology <?php echo date("Y"); ?>. All Rights Reserved.<br><small>Version 1.2.2</small></div>
             </div>
         </div>
@@ -527,11 +533,11 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                         <?php 
                                         $no_d = 1; 
                                         $m_cum_before = 0;
-                                        $calc_fine = function($total_m) use ($telatst, $telatd, $telattg) {
-                                            if ($total_m <= 20) return 0;
-                                            if ($total_m <= 80) return ($total_m - 20) * $telatst;
-                                            if ($total_m <= 140) return (60 * $telatst) + (($total_m - 80) * $telatd);
-                                            return (60 * $telatst) + (60 * $telatd) + (($total_m - 140) * $telattg);
+                                        $calc_fine = function($total_m) use ($b1, $b2, $b3, $telatst, $telatd, $telattg) {
+                                            if ($total_m <= $b1) return 0;
+                                            if ($total_m <= $b2) return ($total_m - $b1) * $telatst;
+                                            if ($total_m <= $b3) return (60 * $telatst) + (($total_m - $b2) * $telatd);
+                                            return (60 * $telatst) + (60 * $telatd) + (($total_m - $b3) * $telattg);
                                         };
 
                                         foreach ($denda_detail_list as $item): 
@@ -543,12 +549,12 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                                 $denda_telat_row = $calc_fine($m_end) - $calc_fine($m_start);
                                                 $m_cum_before = $m_end;
 
-                                                if ($m_start < 20 && $m_end > 20) {
-                                                    $m_gratis = 20 - $m_start;
-                                                    $m_bayar = $m_end - 20;
-                                                    $info_tooltip = "Habis kuota 20m sebulan: {$m_gratis}m gratis + {$m_bayar}m x Rp " . number_format($telatst, 0, ',', '.');
-                                                } elseif ($m_end <= 20) {
-                                                    $info_tooltip = "Masih dalam toleransi 20 menit sebulan (Akumulasi: {$m_end}m / 20m)";
+                                                if ($m_start < $b1 && $m_end > $b1) {
+                                                    $m_gratis = $b1 - $m_start;
+                                                    $m_bayar = $m_end - $b1;
+                                                    $info_tooltip = "Habis kuota {$b1}m sebulan: {$m_gratis}m gratis + {$m_bayar}m x Rp " . number_format($telatst, 0, ',', '.');
+                                                } elseif ($m_end <= $b1) {
+                                                    $info_tooltip = "Masih dalam toleransi {$b1} menit sebulan (Akumulasi: {$m_end}m / {$b1}m)";
                                                 } else {
                                                     $info_tooltip = "Akumulasi keterlambatan menit ke-{$m_start} s/d {$m_end} sebulan";
                                                 }
@@ -647,10 +653,10 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                         <div class="card-body pt-0 pb-3" style="font-size: 0.85rem;">
                             <ul class="list-group list-group-flush">
                                 <?php
-                                $t1_menit = min($jumlah_terlambat_total_menit, 20);
-                                $t2_menit = ($jumlah_terlambat_total_menit > 20) ? min($jumlah_terlambat_total_menit - 20, 60) : 0;
-                                $t3_menit = ($jumlah_terlambat_total_menit > 80) ? min($jumlah_terlambat_total_menit - 80, 60) : 0;
-                                $t4_menit = ($jumlah_terlambat_total_menit > 140) ? ($jumlah_terlambat_total_menit - 140) : 0;
+                                $t1_menit = min($jumlah_terlambat_total_menit, $b1);
+                                $t2_menit = ($jumlah_terlambat_total_menit > $b1) ? min($jumlah_terlambat_total_menit - $b1, 60) : 0;
+                                $t3_menit = ($jumlah_terlambat_total_menit > $b2) ? min($jumlah_terlambat_total_menit - $b2, 60) : 0;
+                                $t4_menit = ($jumlah_terlambat_total_menit > $b3) ? ($jumlah_terlambat_total_menit - $b3) : 0;
 
                                 $t1_denda = 0;
                                 $t2_denda = $t2_menit * $telatst;
@@ -658,19 +664,19 @@ $bulanNames = ['01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => '
                                 $t4_denda = $t4_menit * $telattg;
                                 ?>
                                 <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
-                                    <span>1. Toleransi 20 Menit Pertama (0 - 20 m): <strong><?php echo $t1_menit; ?> m</strong></span>
+                                    <span>1. Toleransi <?php echo $b1; ?> Menit Pertama (0 - <?php echo $b1; ?> m): <strong><?php echo $t1_menit; ?> m</strong></span>
                                     <span class="badge bg-success bg-opacity-10 text-success">Gratis (Rp 0)</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
-                                    <span>2. Menit ke 21 s/d 80: <strong><?php echo $t2_menit; ?> m</strong> &times; Rp <?php echo number_format($telatst, 0, ',', '.'); ?></span>
+                                    <span>2. Menit ke <?php echo ($b1 + 1); ?> s/d <?php echo $b2; ?>: <strong><?php echo $t2_menit; ?> m</strong> &times; Rp <?php echo number_format($telatst, 0, ',', '.'); ?></span>
                                     <span class="fw-semibold">Rp <?php echo number_format($t2_denda, 0, ',', '.'); ?></span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
-                                    <span>3. Menit ke 81 s/d 140: <strong><?php echo $t3_menit; ?> m</strong> &times; Rp <?php echo number_format($telatd, 0, ',', '.'); ?></span>
+                                    <span>3. Menit ke <?php echo ($b2 + 1); ?> s/d <?php echo $b3; ?>: <strong><?php echo $t3_menit; ?> m</strong> &times; Rp <?php echo number_format($telatd, 0, ',', '.'); ?></span>
                                     <span class="fw-semibold">Rp <?php echo number_format($t3_denda, 0, ',', '.'); ?></span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
-                                    <span>4. Di atas 140 Menit: <strong><?php echo $t4_menit; ?> m</strong> &times; Rp <?php echo number_format($telattg, 0, ',', '.'); ?></span>
+                                    <span>4. Di atas <?php echo $b3; ?> Menit: <strong><?php echo $t4_menit; ?> m</strong> &times; Rp <?php echo number_format($telattg, 0, ',', '.'); ?></span>
                                     <span class="fw-semibold">Rp <?php echo number_format($t4_denda, 0, ',', '.'); ?></span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
